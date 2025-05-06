@@ -38,4 +38,7 @@ public class Product {
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoriesProducts> categorias = new ArrayList<CategoriesProducts>();
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CoursesCareersProduct> cursos_carreras = new ArrayList<CoursesCareersProduct>();
 }
