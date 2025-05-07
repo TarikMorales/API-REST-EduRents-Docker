@@ -27,5 +27,4 @@ public class AdminProductController {
     public ShowProductDTO crearProducto(@RequestBody ProductDTO productoDTO){
         return adminProductService.crearProducto(productoDTO);
     }
-
 }

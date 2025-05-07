@@ -12,4 +12,6 @@ public interface AdminProductService {
 
     ShowProductDTO crearProducto(ProductDTO productoDTO);
 
+    ShowProductDTO editarProducto(Integer id, ProductDTO productoDTO);
+
 }

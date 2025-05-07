@@ -109,30 +109,18 @@ public class AdminProductServiceImpl implements AdminProductService {
         return productoDTOMostrar;
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<ShowProductDTO> obtenerTodosLosProductos() {
-        List<Product> productos = productRepository.findAll();
-        return productos.stream()
-                .map(this::convertToShowProductDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
-    @Override
-    public ShowProductDTO crearProducto(ProductDTO productoDTO) {
-
-        Product producto = new Product();
-
+    private Product convertToProduct(Product producto, ProductDTO productoDTO, String tipo) {
         producto.setNombre(productoDTO.getNombre());
         producto.setDescripcion(productoDTO.getDescripcion());
         producto.setPrecio(productoDTO.getPrecio());
         producto.setEstado(productoDTO.getEstado());
         producto.setFecha_creacion(LocalDate.now());
+        if (tipo.equals("editar")) {
+            producto.setFecha_modificacion(LocalDate.now());
+        }
         producto.setCantidad_disponible(productoDTO.getCantidad_disponible());
         producto.setAcepta_intercambio(productoDTO.getAcepta_intercambio());
 
-        // Asignacion de vendedor
         Seller vendedor = sellerRepository.findById(productoDTO.getId_vendedor())
                 .orElseThrow(() -> new RuntimeException("Vendedor no encontrado"));
         producto.setVendedor(vendedor);
@@ -183,6 +171,39 @@ public class AdminProductServiceImpl implements AdminProductService {
             producto.setCursos_carreras(cursosCarreras);
         }
 
+        return producto;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerTodosLosProductos() {
+        List<Product> productos = productRepository.findAll();
+        return productos.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public ShowProductDTO crearProducto(ProductDTO productoDTO) {
+
+        Product producto = new Product();
+        // Convertimos el DTO a entidad
+        producto = convertToProduct(producto, productoDTO, "crear");
+
+        // Convertimos a DTO para devolver
+        ShowProductDTO productoDTOMostrar = convertToShowProductDTO(producto);
+        return productoDTOMostrar;
+    }
+
+    @Transactional
+    @Override
+    public ShowProductDTO editarProducto(Integer id, ProductDTO productoDTO) {
+        Product producto = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + id));
+
+        // Convertimos el DTO a entidad
+        producto = convertToProduct(producto, productoDTO, "editar");
         // Convertimos a DTO para devolver
         ShowProductDTO productoDTOMostrar = convertToShowProductDTO(producto);
         return productoDTOMostrar;
