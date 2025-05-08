@@ -129,6 +129,7 @@ public class AdminProductServiceImpl implements AdminProductService {
         productRepository.save(producto);
 
         // Asignamos las imagenes al producto
+        producto.getImagenes().clear();
         if (productoDTO.getUrls_imagenes() != null) {
             List<Image> imagenes = productoDTO.getUrls_imagenes().stream()
                     .map(url -> {
@@ -138,11 +139,11 @@ public class AdminProductServiceImpl implements AdminProductService {
                         imageRepository.save(imagen);
                         return imagen;
                     }).toList();
-            producto.getImagenes().clear();
             producto.getImagenes().addAll(imagenes);
         }
 
         // Categorias del producto
+        producto.getCategorias().clear();
         if (productoDTO.getCategorias() != null) {
             List<CategoriesProducts> categorias = productoDTO.getCategorias().stream()
                     .map(catId -> {
@@ -154,11 +155,11 @@ public class AdminProductServiceImpl implements AdminProductService {
                         categoriesProductsRepository.save(rel);
                         return rel;
                     }).toList();
-            producto.getCategorias().clear();
             producto.getCategorias().addAll(categorias);
         }
 
         // Cursos y carreras del producto
+        producto.getCursos_carreras().clear();
         if (productoDTO.getCursos_carreras() != null) {
             List<CoursesCareersProduct> cursosCarreras = productoDTO.getCursos_carreras().stream()
                     .map(id -> {
@@ -170,7 +171,6 @@ public class AdminProductServiceImpl implements AdminProductService {
                         coursesCareersProductRepository.save(rel);
                         return rel;
                     }).toList();
-            producto.getCursos_carreras().clear();
             producto.getCursos_carreras().addAll(cursosCarreras);
         }
 

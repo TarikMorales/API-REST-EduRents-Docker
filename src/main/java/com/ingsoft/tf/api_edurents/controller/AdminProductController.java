@@ -27,4 +27,9 @@ public class AdminProductController {
     public ShowProductDTO crearProducto(@RequestBody ProductDTO productoDTO){
         return adminProductService.crearProducto(productoDTO);
     }
+
+    @PutMapping("/{id}")
+    public ShowProductDTO editarProducto(@PathVariable Integer id, @RequestBody ProductDTO productoDTO){
+        return adminProductService.editarProducto(id, productoDTO);
+    }
 }
