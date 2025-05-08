@@ -2,7 +2,6 @@ package com.ingsoft.tf.api_edurents.service;
 
 import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
-import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 
 import java.util.List;
 
