@@ -129,6 +129,9 @@ public class AdminProductServiceImpl implements AdminProductService {
         productRepository.save(producto);
 
         // Asignamos las imagenes al producto
+        if (tipo.equals("editar")) {
+            imageRepository.deleteImagesByProductID(producto.getId());
+        }
         if (productoDTO.getUrls_imagenes() != null) {
             List<Image> imagenes = productoDTO.getUrls_imagenes().stream()
                     .map(url -> {
@@ -142,6 +145,9 @@ public class AdminProductServiceImpl implements AdminProductService {
         }
 
         // Categorias del producto
+        if (tipo.equals("editar")) {
+            categoriesProductsRepository.deleteCatProdByProductID(producto.getId());
+        }
         if (productoDTO.getCategorias() != null) {
             List<CategoriesProducts> categorias = productoDTO.getCategorias().stream()
                     .map(catId -> {
@@ -157,6 +163,9 @@ public class AdminProductServiceImpl implements AdminProductService {
         }
 
         // Cursos y carreras del producto
+        if (tipo.equals("editar")) {
+            coursesCareersProductRepository.deleteCCPByProductID(producto.getId());
+        }
         if (productoDTO.getCursos_carreras() != null) {
             List<CoursesCareersProduct> cursosCarreras = productoDTO.getCursos_carreras().stream()
                     .map(id -> {
