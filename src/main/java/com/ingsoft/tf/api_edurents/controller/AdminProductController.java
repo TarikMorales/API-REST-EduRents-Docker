@@ -32,4 +32,10 @@ public class AdminProductController {
     public ShowProductDTO editarProducto(@PathVariable Integer id, @RequestBody ProductDTO productoDTO){
         return adminProductService.editarProducto(id, productoDTO);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void eliminarProducto(@PathVariable Integer id){
+        adminProductService.eliminarProducto(id);
+    }
 }
