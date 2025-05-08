@@ -211,4 +211,12 @@ public class AdminProductServiceImpl implements AdminProductService {
         ShowProductDTO productoDTOMostrar = convertToShowProductDTO(producto);
         return productoDTOMostrar;
     }
+
+    @Transactional
+    @Override
+    public void eliminarProducto(Integer id) {
+        Product producto = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + id));
+        productRepository.delete(producto);
+    }
 }
