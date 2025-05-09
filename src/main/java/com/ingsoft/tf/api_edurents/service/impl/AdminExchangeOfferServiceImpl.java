@@ -1,6 +1,7 @@
 package com.ingsoft.tf.api_edurents.service.impl;
 
 import com.ingsoft.tf.api_edurents.dto.ExchangeOfferDTO;
+import com.ingsoft.tf.api_edurents.mappers.ExchangeOfferMapper;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
 import com.ingsoft.tf.api_edurents.repository.exchanges.ExchangeOfferRepository;
 import com.ingsoft.tf.api_edurents.service.exchanges.AdminExchangeOfferService;
@@ -20,14 +21,7 @@ public class AdminExchangeOfferServiceImpl implements AdminExchangeOfferService 
 
     @Override
     public List<ExchangeOfferDTO> getOffersByUser(Integer idUsuario){
-        return exchangeOfferRepository.findByUsuarioId(idUsuario).stream()
-                .map(offer -> new ExchangeOfferDTO(
-                        offer.getUsuario().getId(),
-                        offer.getProducto().getId(),
-                        offer.getMensaje_propuesta(),
-                        offer.getEstado()
-                ))
-                .collect(Collectors.toList());
+        return ExchangeOfferMapper.toDTOs(exchangeOfferRepository.findAllByUsuarioId(idUsuario));
     }
 
     @Override
@@ -36,8 +30,8 @@ public class AdminExchangeOfferServiceImpl implements AdminExchangeOfferService 
     }
 
     @Override
-    public List<ExchangeOffer> getAll() {
-        return List.of();
+    public List<ExchangeOfferDTO> getAll() {
+        return ExchangeOfferMapper.toDTOs(exchangeOfferRepository.findAll());
     }
 
     @Override
