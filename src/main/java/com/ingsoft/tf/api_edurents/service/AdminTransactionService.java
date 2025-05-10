@@ -13,4 +13,6 @@ public interface AdminTransactionService {
 
     List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario);
 
+    void elimiarTransaccion(Integer id);
+
 }

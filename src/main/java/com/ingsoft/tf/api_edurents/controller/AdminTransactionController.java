@@ -32,4 +32,10 @@ public class AdminTransactionController {
         return adminTransactionService.obtenerTransaccionesPorUsuario(idUsuario);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void eliminarTransaccion(@PathVariable Integer id){
+        adminTransactionService.eliminarTransaccion(id);
+    }
+
 }
