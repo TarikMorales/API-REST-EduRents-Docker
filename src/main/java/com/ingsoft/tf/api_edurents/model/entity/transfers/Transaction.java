@@ -18,8 +18,13 @@ public class Transaction {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    private TransactionStatus estado;
+    private PaymentMethod metodo_pago;
+
     private LocalDateTime fecha_transaccion;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus estado;
+
 
     @ManyToOne
     @JoinColumn(name = "id_producto",
@@ -30,8 +35,5 @@ public class Transaction {
     @JoinColumn(name = "id_usuario",
             referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_usuario_transaccion"), nullable = false)
     private User usuarios;
-
-    @OneToMany(mappedBy = "transaccion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PaymentMethodsTransactions> metodos_pago = new ArrayList<PaymentMethodsTransactions>();
 
 }
