@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/transactions")
@@ -18,6 +20,11 @@ public class AdminTransactionController {
     @PostMapping
     public ShowTransactionDTO crearTransaccion(@RequestBody TransactionDTO transaccionDTO) {
         return adminTransactionService.crearTransaccion(transaccionDTO);
+    }
+
+    @GetMapping
+    public List<ShowTransactionDTO> obtenerTransacciones() {
+        return adminTransactionService.obtenerTransacciones();
     }
 
 }
