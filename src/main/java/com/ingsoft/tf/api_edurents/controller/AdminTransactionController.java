@@ -34,8 +34,8 @@ public class AdminTransactionController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void eliminarTransaccion(@PathVariable Integer id){
-        adminTransactionService.eliminarTransaccion(id);
+    public void cancelarTransaccion(@PathVariable Integer id){
+        adminTransactionService.cancelarTransaccion(id);
     }
 
 }
