@@ -42,23 +42,27 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
         transaccionDTOMostrar.setMetodo_pago(transaccion.getMetodo_pago());
 
         // Asignar Usuario
-        if (transaccion.getUsuarios() != null) {
+        if (transaccion.getUsuario() != null) {
             UserDTO usuarioDTO = new UserDTO();
-            usuarioDTO.setId(transaccion.getUsuarios().getId());
-            usuarioDTO.setNombres(transaccion.getUsuarios().getNombres());
-            usuarioDTO.setApellidos(transaccion.getUsuarios().getApellidos());
-            usuarioDTO.setCorreo(transaccion.getUsuarios().getCorreo());
-            usuarioDTO.setCodigo_universitario(transaccion.getUsuarios().getCodigo_universitario());
-            usuarioDTO.setCiclo(transaccion.getUsuarios().getCiclo());
+            usuarioDTO.setId(transaccion.getUsuario().getId());
+            usuarioDTO.setNombres(transaccion.getUsuario().getNombres());
+            usuarioDTO.setApellidos(transaccion.getUsuario().getApellidos());
+            usuarioDTO.setCorreo(transaccion.getUsuario().getCorreo());
+            usuarioDTO.setCodigo_universitario(transaccion.getUsuario().getCodigo_universitario());
+            usuarioDTO.setCiclo(transaccion.getUsuario().getCiclo());
+
+            transaccionDTOMostrar.setUsuario(usuarioDTO);
         }
 
         // Asignar Producto
-        if (transaccion.getProductos() != null) {
+        if (transaccion.getProducto() != null) {
             ProductDTO productoDTO = new ProductDTO();
-            productoDTO.setId(transaccion.getProductos().getId());
-            productoDTO.setNombre(transaccion.getProductos().getNombre());
-            productoDTO.setDescripcion(transaccion.getProductos().getDescripcion());
-            productoDTO.setPrecio(transaccion.getProductos().getPrecio());
+            productoDTO.setId(transaccion.getProducto().getId());
+            productoDTO.setNombre(transaccion.getProducto().getNombre());
+            productoDTO.setDescripcion(transaccion.getProducto().getDescripcion());
+            productoDTO.setPrecio(transaccion.getProducto().getPrecio());
+
+            transaccionDTOMostrar.setProducto(productoDTO);
         }
 
         return transaccionDTOMostrar;
@@ -78,13 +82,13 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
         // Asignacion Usuario
         User usuario = userRepository.findById(transaccionDTO.getId_usuario())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        transaccion.setUsuarios(usuario);
+        transaccion.setUsuario(usuario);
 
 
         // Asignacion Producto
         Product product = productRepository.findById(transaccionDTO.getId_producto())
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-        transaccion.setProductos(product);
+        transaccion.setProducto(product);
 
         // Guardamos la transaccion
         transactionRepository.save(transaccion);

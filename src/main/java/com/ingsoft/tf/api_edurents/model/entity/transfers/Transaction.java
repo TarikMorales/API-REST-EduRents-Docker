@@ -29,11 +29,11 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "id_producto",
             referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_producto_transaccion"), nullable = false)
-    private Product productos;
+    private Product producto;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario",
             referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_usuario_transaccion"), nullable = false)
-    private User usuarios;
+    private User usuario;
 
 }
