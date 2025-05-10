@@ -153,6 +153,7 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional()
     @Override
     public List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario) {
         User usuario = userRepository.findById(idUsuario)
@@ -165,5 +166,17 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional()
+    @Override
+    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuarioPorEstado(Integer idUsuario, TransactionStatus estado) {
+        User usuario = userRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        List<Transaction> transacciones = transactionRepository.findByUsuarioAndEstado(usuario, estado);
+
+        return transacciones.stream()
+                .map(this::convertShowTransactionDTO)
+                .collect(Collectors.toList());
+    }
 
 }
