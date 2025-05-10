@@ -27,4 +27,9 @@ public class AdminTransactionController {
         return adminTransactionService.obtenerTransacciones();
     }
 
+    @GetMapping("/usuario/{idUsuario}")
+    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(@PathVariable Integer idUsuario) {
+        return adminTransactionService.obtenerTransaccionesPorUsuario(idUsuario);
+    }
+
 }

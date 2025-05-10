@@ -10,4 +10,7 @@ public interface AdminTransactionService {
     ShowTransactionDTO crearTransaccion(TransactionDTO transaccionDTO);
 
     List<ShowTransactionDTO> obtenerTransacciones();
+
+    List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario);
+
 }

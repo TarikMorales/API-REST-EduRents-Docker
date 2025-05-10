@@ -105,33 +105,30 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
 
     }
 
-    private Transaction convertToTransaction(Transaction transaccion, TransactionDTO transaccionDTO, String tipo) {
-        Transaction transaction = new Transaction();
-
-        transaccion.setFecha_transaccion(LocalDate.now().atStartOfDay());
+    private Transaction convertToTransaction(Transaction transaction, TransactionDTO transaccionDTO, String tipo) {
+        transaction.setFecha_transaccion(LocalDate.now().atStartOfDay());
         transaction.setMetodo_pago(transaccionDTO.getMetodo_pago());
 
-        if (tipo == "crear"){
+        if (tipo.equals("crear")) {
             transaction.setEstado(TransactionStatus.PENDIENTE);
+        } else {
+            transaction.setEstado(TransactionStatus.PAGADO);
         }
 
-        else { transaction.setEstado(TransactionStatus.PAGADO); }
-
-        // Asignacion Usuario
+        // Asignación Usuario
         User usuario = userRepository.findById(transaccionDTO.getId_usuario())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        transaccion.setUsuario(usuario);
+        transaction.setUsuario(usuario);
 
-        // Asignacion Producto
+        // Asignación Producto
         Product product = productRepository.findById(transaccionDTO.getId_producto())
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-        transaccion.setProducto(product);
+        transaction.setProducto(product);
 
-        // Guardamos la transaccion
-        transactionRepository.save(transaccion);
-
-        return transaction;
+        // Guardamos y retornamos
+        return transactionRepository.save(transaction);
     }
+
 
     @Transactional
     @Override
@@ -155,5 +152,18 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
                 .map(this::convertShowTransactionDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario) {
+        User usuario = userRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        List<Transaction> transacciones = transactionRepository.findByUsuario(usuario);
+
+        return transacciones.stream()
+                .map(this::convertShowTransactionDTO)
+                .collect(Collectors.toList());
+    }
+
 
 }
