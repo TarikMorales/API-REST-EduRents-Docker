@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 public class ProductDTO {
 
+    private Integer id;
     private Integer id_vendedor;
     private String nombre;
     private String descripcion;
