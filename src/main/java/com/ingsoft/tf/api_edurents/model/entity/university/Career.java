@@ -1,0 +1,22 @@
+package com.ingsoft.tf.api_edurents.model.entity.university;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+@Entity
+@Table(name = "carreras")
+public class Career {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String nombre;
+    private String codigo;
+
+    @OneToMany(mappedBy = "carrera", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CoursesCareers> cursos = new ArrayList<CoursesCareers>();
+}
