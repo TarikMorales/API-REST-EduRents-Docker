@@ -179,4 +179,17 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    @Override
+    public ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion, TransactionStatus nuevoEstado) {
+        Transaction transaccion = transactionRepository.findById(idTransaccion)
+                .orElseThrow(() -> new RuntimeException("Transacción no encontrada con id: " + idTransaccion));
+
+        transaccion.setEstado(nuevoEstado);
+        transactionRepository.save(transaccion);
+
+        // Retornar DTO completo
+        return convertShowTransactionDTO(transaccion);
+    }
+
 }
