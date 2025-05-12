@@ -1,6 +1,7 @@
 package com.ingsoft.tf.api_edurents.controller;
 
 import com.ingsoft.tf.api_edurents.dto.user.RecoverPasswordDTO;
+import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 import com.ingsoft.tf.api_edurents.service.AdminUserService;
 import jakarta.validation.Valid;
