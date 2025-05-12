@@ -1,0 +1,41 @@
+package com.ingsoft.tf.api_edurents.controller;
+
+import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
+import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
+import com.ingsoft.tf.api_edurents.model.entity.product.Product;
+import com.ingsoft.tf.api_edurents.service.AdminProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/products")
+public class AdminProductController {
+
+    private final AdminProductService adminProductService;
+
+    @GetMapping
+    public List<ShowProductDTO> obtenerProductos(){
+        return adminProductService.obtenerTodosLosProductos();
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public ShowProductDTO crearProducto(@RequestBody ProductDTO productoDTO){
+        return adminProductService.crearProducto(productoDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ShowProductDTO editarProducto(@PathVariable Integer id, @RequestBody ProductDTO productoDTO){
+        return adminProductService.editarProducto(id, productoDTO);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void eliminarProducto(@PathVariable Integer id){
+        adminProductService.eliminarProducto(id);
+    }
+}
