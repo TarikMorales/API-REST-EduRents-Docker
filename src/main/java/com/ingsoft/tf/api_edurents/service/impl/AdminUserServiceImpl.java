@@ -1,8 +1,10 @@
 package com.ingsoft.tf.api_edurents.service.impl;
 
-import com.ingsoft.tf.api_edurents.dto.user.LoginDTO;
+import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
+import com.ingsoft.tf.api_edurents.model.entity.university.Career;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
+import com.ingsoft.tf.api_edurents.repository.university.CareerRepository;
 import com.ingsoft.tf.api_edurents.repository.user.UserRepository;
 import com.ingsoft.tf.api_edurents.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CareerRepository careerRepository;
+
     public UserDTO convertToUserDTO(User usuario) {
         UserDTO usuarioDTO = new UserDTO();
         usuarioDTO.setId(usuario.getId());
@@ -29,18 +34,30 @@ public class AdminUserServiceImpl implements AdminUserService {
         return usuarioDTO;
     }
 
-    @Transactional(readOnly = true)
+    private User convertToUser(RegisterDTO datosRegistro) {
+        User usuario = new User();
+        usuario.setNombres(datosRegistro.getNombres());
+        usuario.setApellidos(datosRegistro.getApellidos());
+        usuario.setCorreo(datosRegistro.getCorreo());
+        usuario.setCodigo_universitario(datosRegistro.getCodigo_universitario());
+        usuario.setCiclo(datosRegistro.getCiclo());
+        Career carrera = careerRepository.findById(datosRegistro.getId_carrera())
+                .orElseThrow(() -> new RuntimeException("La carrera no existe"));
+        usuario.setCarrera(carrera);
+        usuario.setContrasena(datosRegistro.getContrasena());
+        usuario.setFoto_url(datosRegistro.getFoto_url());
+        return usuario;
+    }
+
+    @Transactional
     @Override
-    public UserDTO loginUsuario(LoginDTO datosLogin) {
-        if (userRepository.existsUserByCorreo(datosLogin.getCorreo())){
-            User usuario = userRepository.findByCorreoAndContrasena(datosLogin.getCorreo(), datosLogin.getContrasena());
-            if (usuario != null) {
-                return convertToUserDTO(usuario);
-            } else {
-                throw new RuntimeException("La contraseña es incorrecta");
-            }
+    public UserDTO registerUsuario(RegisterDTO datosRegistro) {
+        if (!userRepository.existsUserByCorreo(datosRegistro.getCorreo())) {
+            User usuario = convertToUser(datosRegistro);
+            userRepository.save(usuario);
+            return convertToUserDTO(usuario);
         } else {
-            throw new RuntimeException("Credenciales inválidas");
+            throw new RuntimeException("El correo ya está registrado en otra cuenta");
         }
     }
 }
