@@ -43,6 +43,12 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Autowired
     private ImageRepository imageRepository;
 
+    private StockDTO convertToProductStockDTO(Product producto) {
+        StockDTO dto = new StockDTO();
+        dto.setId(producto.getId());
+        dto.setCantidad_disponible(producto.getCantidad_disponible());
+        return dto;
+    }
     private ShowProductDTO convertToShowProductDTO(Product producto) {
 
         ShowProductDTO productoDTOMostrar = new ShowProductDTO();
@@ -186,6 +192,12 @@ public class AdminProductServiceImpl implements AdminProductService {
         // Convertimos a DTO para devolver
         ShowProductDTO productoDTOMostrar = convertToShowProductDTO(producto);
         return productoDTOMostrar;
+    }
+
+    public StockDTO obtenerStockProductoPorId(Integer idProducto) {
+        Product producto = productRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + idProducto));
+        return convertToProductStockDTO(producto);
     }
 
     public UpdateProductDTO actualizarCantidadDisponible(Integer idProducto, Integer nuevaCantidad) {

@@ -4,7 +4,9 @@ import com.ingsoft.tf.api_edurents.dto.user.SellerDTO;
 import com.ingsoft.tf.api_edurents.model.entity.product.ProductStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
