@@ -5,6 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.hibernate.validator.constraints.URL;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ProductDTO {
 
     private Boolean acepta_intercambio;
 
-    private List<String> urls_imagenes;
+    private List<@URL(message = "El campo debe ser una URL válida") String> urls_imagenes;
     private List<@Positive(message = "El id de categoria debe ser válido") Integer> categorias;
     private List<@Positive(message = "El id del curso de la carrera debe ser válido") Integer> cursos_carreras;
 }
