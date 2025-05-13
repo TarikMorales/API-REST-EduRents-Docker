@@ -4,6 +4,7 @@ import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
@@ -81,13 +82,13 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
 
         // Asignacion Usuario
         User usuario = userRepository.findById(transaccionDTO.getId_usuario())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         transaccion.setUsuario(usuario);
 
 
         // Asignacion Producto
         Product product = productRepository.findById(transaccionDTO.getId_producto())
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
         transaccion.setProducto(product);
 
         // Guardamos la transaccion
