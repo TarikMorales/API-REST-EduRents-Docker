@@ -4,6 +4,7 @@ import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
@@ -117,12 +118,12 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
 
         // Asignación Usuario
         User usuario = userRepository.findById(transaccionDTO.getId_usuario())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         transaction.setUsuario(usuario);
 
         // Asignación Producto
         Product product = productRepository.findById(transaccionDTO.getId_producto())
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
         transaction.setProducto(product);
 
         // Guardamos y retornamos
@@ -156,7 +157,7 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
     @Override
     public List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario) {
         User usuario = userRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
         List<Transaction> transacciones = transactionRepository.findByUsuario(usuario);
 
