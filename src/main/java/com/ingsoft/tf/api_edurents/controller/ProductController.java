@@ -20,8 +20,8 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping
-    public List<ProductDTO> getAllProductsBySellerId(@RequestParam("sellerId") Integer sellerId) {
+    @GetMapping("/seller/{sellerId}")
+    public List<ProductDTO> getAllProductsBySellerId(@PathVariable Integer sellerId) {
         return productService.getAllProductsBySellerId(sellerId);
     }
 }
