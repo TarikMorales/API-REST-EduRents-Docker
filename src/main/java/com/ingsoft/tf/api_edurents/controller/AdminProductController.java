@@ -4,6 +4,7 @@ import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.service.AdminProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +25,12 @@ public class AdminProductController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ShowProductDTO crearProducto(@RequestBody ProductDTO productoDTO){
+    public ShowProductDTO crearProducto(@Valid @RequestBody ProductDTO productoDTO){
         return adminProductService.crearProducto(productoDTO);
     }
 
     @PutMapping("/{id}")
-    public ShowProductDTO editarProducto(@PathVariable Integer id, @RequestBody ProductDTO productoDTO){
+    public ShowProductDTO editarProducto(@PathVariable Integer id, @Valid @RequestBody ProductDTO productoDTO){
         return adminProductService.editarProducto(id, productoDTO);
     }
 }
