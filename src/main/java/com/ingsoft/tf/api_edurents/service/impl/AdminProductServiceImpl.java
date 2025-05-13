@@ -2,6 +2,7 @@ package com.ingsoft.tf.api_edurents.service.impl;
 
 import com.ingsoft.tf.api_edurents.dto.product.*;
 import com.ingsoft.tf.api_edurents.dto.user.SellerDTO;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.product.*;
 import com.ingsoft.tf.api_edurents.model.entity.university.CoursesCareers;
 import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
@@ -122,7 +123,7 @@ public class AdminProductServiceImpl implements AdminProductService {
         producto.setAcepta_intercambio(productoDTO.getAcepta_intercambio());
 
         Seller vendedor = sellerRepository.findById(productoDTO.getId_vendedor())
-                .orElseThrow(() -> new RuntimeException("Vendedor no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado"));
         producto.setVendedor(vendedor);
 
         // Guardamos el producto
@@ -148,7 +149,7 @@ public class AdminProductServiceImpl implements AdminProductService {
             List<CategoriesProducts> categorias = productoDTO.getCategorias().stream()
                     .map(catId -> {
                         Category categoria = categoryRepository.findById(catId)
-                                .orElseThrow(() -> new RuntimeException("Categoría no encontrada con id: " + catId));
+                                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + catId));
                         CategoriesProducts rel = new CategoriesProducts();
                         rel.setProducto(producto);
                         rel.setCategoria(categoria);
@@ -164,7 +165,7 @@ public class AdminProductServiceImpl implements AdminProductService {
             List<CoursesCareersProduct> cursosCarreras = productoDTO.getCursos_carreras().stream()
                     .map(id -> {
                         CoursesCareers cursoCarrera = coursesCareersRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Curso/Carrera no encontrado con id: " + id));
+                                .orElseThrow(() -> new ResourceNotFoundException("Curso/Carrera no encontrado con id: " + id));
                         CoursesCareersProduct rel = new CoursesCareersProduct();
                         rel.setProducto(producto);
                         rel.setCurso_carrera(cursoCarrera);
@@ -203,7 +204,7 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Override
     public ShowProductDTO editarProducto(Integer id, ProductDTO productoDTO) {
         Product producto = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
 
         // Convertimos el DTO a entidad
         producto = convertToProduct(producto, productoDTO, "editar");
