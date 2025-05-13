@@ -21,9 +21,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getProductsByCategory(Integer category_id) {
-        List<CategoriesProducts> relations = CategoriesProductsRepository.findByCategoriaId(category_id);
-        return null;
+    public List<ProductDTO> findByCategoryId(Integer categoryId) {
+        return ProductMapper.toDTOs(productRepository.findByCategoryId(categoryId));
     }
 
     @Override
