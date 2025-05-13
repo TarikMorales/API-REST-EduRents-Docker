@@ -4,6 +4,7 @@ import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
 import com.ingsoft.tf.api_edurents.service.AdminTransactionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class AdminTransactionController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ShowTransactionDTO crearTransaccion(@RequestBody TransactionDTO transaccionDTO) {
+    public ShowTransactionDTO crearTransaccion(@RequestBody @Valid TransactionDTO transaccionDTO) {
         return adminTransactionService.crearTransaccion(transaccionDTO);
     }
 
