@@ -17,4 +17,6 @@ public class ProductController {
     public List<ProductDTO> getAllProducts() {
         return productService.getAllProducts();
     }
+
+
 }

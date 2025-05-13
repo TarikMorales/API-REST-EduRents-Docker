@@ -187,4 +187,71 @@ public class AdminProductServiceImpl implements AdminProductService {
         ShowProductDTO productoDTOMostrar = convertToShowProductDTO(producto);
         return productoDTOMostrar;
     }
+
+    public UpdateProductDTO actualizarCantidadDisponible(Integer idProducto, Integer nuevaCantidad) {
+        if (nuevaCantidad < 0) {
+            throw new IllegalArgumentException("La cantidad no puede ser negativa");
+        }
+        Product producto = productRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        producto.setCantidad_disponible(nuevaCantidad);
+        productRepository.save(producto);
+        UpdateProductDTO productoDTOMostrar = convertToUpdateProductDTO(producto);
+        return productoDTOMostrar;
+    }
+    private UpdateProductDTO convertToUpdateProductDTO(Product producto) {
+        UpdateProductDTO dto = new UpdateProductDTO();
+
+        dto.setId(producto.getId());
+        dto.setNombre(producto.getNombre());
+        dto.setDescripcion(producto.getDescripcion());
+        dto.setPrecio(producto.getPrecio());
+        dto.setEstado(producto.getEstado());
+        dto.setCantidad_disponible(producto.getCantidad_disponible());
+        dto.setAcepta_intercambio(producto.getAcepta_intercambio());
+        dto.setFecha_modificacion(producto.getFecha_modificacion());
+        dto.setFecha_creacion(producto.getFecha_creacion());
+
+        // Asignar imagenes
+        if (producto.getImagenes() != null) {
+            List<ImageDTO> imagenesDTO = producto.getImagenes().stream()
+                    .map(imagen -> {
+                        ImageDTO imagenDTO = new ImageDTO();
+                        imagenDTO.setId(imagen.getId());
+                        imagenDTO.setUrl(imagen.getUrl());
+                        return imagenDTO;
+                    }).collect(Collectors.toList());
+            dto.setImagenes(imagenesDTO);
+        }
+
+        // Asignar categorias
+        if (producto.getCategorias() != null) {
+            List<CategoryDTO> categoriasDTO = producto.getCategorias().stream()
+                    .map(cat -> {
+                        CategoryDTO categoriaDTO = new CategoryDTO();
+                        categoriaDTO.setId(cat.getCategoria().getId());
+                        categoriaDTO.setNombre(cat.getCategoria().getNombre());
+                        return categoriaDTO;
+                    }).collect(Collectors.toList());
+            dto.setCategorias(categoriasDTO);
+        }
+
+        // Asignar cursos y carreras
+        if (producto.getCursos_carreras() != null) {
+            List<CourseCareerDTO> cursosCarrerasDTO = producto.getCursos_carreras().stream()
+                    .map(cursoCarrera -> {
+                        CourseCareerDTO cursoCarreraDTO = new CourseCareerDTO();
+                        cursoCarreraDTO.setId_carrera(cursoCarrera.getCurso_carrera().getCarrera().getId());
+                        cursoCarreraDTO.setCarrera(cursoCarrera.getCurso_carrera().getCarrera().getNombre());
+                        cursoCarreraDTO.setId_curso(cursoCarrera.getCurso_carrera().getCurso().getId());
+                        cursoCarreraDTO.setCurso(cursoCarrera.getCurso_carrera().getCurso().getNombre());
+                        return cursoCarreraDTO;
+                    }).collect(Collectors.toList());
+            dto.setCursos_carreras(cursosCarrerasDTO);
+        }
+
+        return dto;
+    }
+
 }
