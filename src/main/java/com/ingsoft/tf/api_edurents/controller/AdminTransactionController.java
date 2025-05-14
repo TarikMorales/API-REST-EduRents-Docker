@@ -2,7 +2,7 @@ package com.ingsoft.tf.api_edurents.controller;
 
 import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
-import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.transaction.TransactionStatus;
 import com.ingsoft.tf.api_edurents.service.AdminTransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

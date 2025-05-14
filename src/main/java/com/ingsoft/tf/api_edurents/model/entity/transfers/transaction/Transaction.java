@@ -1,4 +1,4 @@
-package com.ingsoft.tf.api_edurents.model.entity.transfers;
+package com.ingsoft.tf.api_edurents.model.entity.transfers.transaction;
 
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity

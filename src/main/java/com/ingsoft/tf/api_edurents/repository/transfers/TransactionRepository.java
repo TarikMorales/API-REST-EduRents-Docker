@@ -1,7 +1,7 @@
 package com.ingsoft.tf.api_edurents.repository.transfers;
 
-import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
-import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.transaction.Transaction;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.transaction.TransactionStatus;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,10 +1,9 @@
 package com.ingsoft.tf.api_edurents.dto.transfers;
 
-import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
-import com.ingsoft.tf.api_edurents.model.entity.transfers.PaymentMethod;
-import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.transaction.PaymentMethod;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.transaction.TransactionStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;

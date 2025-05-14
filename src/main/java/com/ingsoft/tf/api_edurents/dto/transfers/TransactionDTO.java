@@ -1,10 +1,8 @@
 package com.ingsoft.tf.api_edurents.dto.transfers;
 
-import com.ingsoft.tf.api_edurents.model.entity.transfers.PaymentMethod;
-import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.transaction.PaymentMethod;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
