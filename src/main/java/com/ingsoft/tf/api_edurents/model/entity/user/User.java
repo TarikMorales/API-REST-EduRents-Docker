@@ -2,6 +2,7 @@ package com.ingsoft.tf.api_edurents.model.entity.user;
 
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
+import com.ingsoft.tf.api_edurents.model.entity.university.Career;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,6 +24,9 @@ public class User {
     private String codigo_universitario;
     private Byte ciclo;
     private String foto_url;
+    @ManyToOne
+    @JoinColumn(name = "career_id")
+    Career career = new Career();
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Seller vendedor;
