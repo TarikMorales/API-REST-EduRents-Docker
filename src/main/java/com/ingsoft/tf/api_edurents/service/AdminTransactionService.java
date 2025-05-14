@@ -17,4 +17,6 @@ public interface AdminTransactionService {
 
     ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion, TransactionStatus nuevoEstado);
 
+    void cancelarTransaccion(Integer id);
+
 }
