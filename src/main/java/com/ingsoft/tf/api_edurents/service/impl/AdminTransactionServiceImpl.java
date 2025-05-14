@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,11 +59,45 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
 
         // Asignar Producto
         if (transaccion.getProducto() != null) {
+            Product producto = transaccion.getProducto();
             ProductDTO productoDTO = new ProductDTO();
-            productoDTO.setId(transaccion.getProducto().getId());
-            productoDTO.setNombre(transaccion.getProducto().getNombre());
-            productoDTO.setDescripcion(transaccion.getProducto().getDescripcion());
-            productoDTO.setPrecio(transaccion.getProducto().getPrecio());
+
+            productoDTO.setId(producto.getId());
+            productoDTO.setNombre(producto.getNombre());
+            productoDTO.setDescripcion(producto.getDescripcion());
+            productoDTO.setPrecio(producto.getPrecio());
+            productoDTO.setEstado(producto.getEstado());
+            productoDTO.setCantidad_disponible(producto.getCantidad_disponible());
+            productoDTO.setAcepta_intercambio(producto.getAcepta_intercambio());
+
+            // id_vendedor
+            if (producto.getVendedor() != null) {
+                productoDTO.setId_vendedor(producto.getVendedor().getId());
+            }
+
+            // urls_imagenes
+            if (producto.getImagenes() != null) {
+                List<String> urls = producto.getImagenes().stream()
+                        .map(imagen -> imagen.getUrl()) // Suponiendo que `Image` tiene un campo `url`
+                        .collect(Collectors.toList());
+                productoDTO.setUrls_imagenes(urls);
+            }
+
+            // categorias
+            if (producto.getCategorias() != null) {
+                List<Integer> categorias = producto.getCategorias().stream()
+                        .map(catProd -> catProd.getCategoria().getId()) // Suponiendo que `CategoriesProducts` tiene `getCategoria().getId()`
+                        .collect(Collectors.toList());
+                productoDTO.setCategorias(categorias);
+            }
+
+            // cursos_carreras
+            if (producto.getCursos_carreras() != null) {
+                List<Integer> cursos = producto.getCursos_carreras().stream()
+                        .map(ccp -> ccp.getCurso_carrera().getId()) // Suponiendo que `CoursesCareersProduct` tiene `getCurso_carrera().getId()`
+                        .collect(Collectors.toList());
+                productoDTO.setCursos_carreras(cursos);
+            }
 
             transaccionDTOMostrar.setProducto(productoDTO);
         }
@@ -70,33 +106,72 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
 
     }
 
+    private Transaction convertToTransaction(Transaction transaction, TransactionDTO transaccionDTO, String tipo) {
+        transaction.setFecha_transaccion(LocalDate.now().atStartOfDay());
+        transaction.setMetodo_pago(transaccionDTO.getMetodo_pago());
+
+        if (tipo.equals("crear")) {
+            transaction.setEstado(TransactionStatus.PENDIENTE);
+        } else {
+            transaction.setEstado(TransactionStatus.PAGADO);
+        }
+
+        // Asignación Usuario
+        User usuario = userRepository.findById(transaccionDTO.getId_usuario())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        transaction.setUsuario(usuario);
+
+        // Asignación Producto
+        Product product = productRepository.findById(transaccionDTO.getId_producto())
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+        transaction.setProducto(product);
+
+        // Guardamos y retornamos
+        return transactionRepository.save(transaction);
+    }
+
+
     @Transactional
     @Override
     public ShowTransactionDTO crearTransaccion(TransactionDTO transaccionDTO) {
 
         Transaction transaccion = new Transaction();
 
-        transaccion.setMetodo_pago(transaccionDTO.getMetodo_pago());
-        transaccion.setFecha_transaccion(LocalDate.now().atStartOfDay());
-        transaccion.setEstado(TransactionStatus.PENDIENTE);
-
-        // Asignacion Usuario
-        User usuario = userRepository.findById(transaccionDTO.getId_usuario())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-        transaccion.setUsuario(usuario);
-
-
-        // Asignacion Producto
-        Product product = productRepository.findById(transaccionDTO.getId_producto())
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
-        transaccion.setProducto(product);
-
-        // Guardamos la transaccion
-        transactionRepository.save(transaccion);
-
+        // Convertimos DTO a entidad
+        transaccion = convertToTransaction(transaccion, transaccionDTO, "crear");
+      
         // Convertimos a DTO para devolver
         return convertShowTransactionDTO(transaccion);
+    }
 
+    @Transactional()
+    @Override
+    public List<ShowTransactionDTO> obtenerTransacciones() {
+        List<Transaction> transacciones = transactionRepository.findAll();
+        return transacciones.stream()
+                .map(this::convertShowTransactionDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional()
+    @Override
+    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario) {
+        User usuario = userRepository.findById(idUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        List<Transaction> transacciones = transactionRepository.findByUsuario(usuario);
+
+        return transacciones.stream()
+                .map(this::convertShowTransactionDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional()
+    @Override
+    public void cancelarTransaccion(Integer id){
+        Transaction transaccion = transactionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaccion no encontrada con id: " + id));
+        transactionRepository.delete(transaccion);
     }
 
 

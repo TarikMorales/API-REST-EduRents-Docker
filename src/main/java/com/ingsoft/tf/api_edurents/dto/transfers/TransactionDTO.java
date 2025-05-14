@@ -19,4 +19,5 @@ public class TransactionDTO {
     @NotNull(message = "Debes elegir un metodo de pago")
     @Enumerated(EnumType.STRING)
     private PaymentMethod metodo_pago;
+    
 }
