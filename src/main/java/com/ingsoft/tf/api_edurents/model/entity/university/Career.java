@@ -1,6 +1,7 @@
 package com.ingsoft.tf.api_edurents.model.entity.university;
 
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
