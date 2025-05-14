@@ -15,5 +15,8 @@ public interface AdminTransactionService {
 
     List<ShowTransactionDTO> obtenerTransaccionesPorUsuarioPorEstado(Integer idUsuario, TransactionStatus estado);
 
+    ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion, TransactionStatus nuevoEstado);
+
+    void cancelarTransaccion(Integer id);
 
 }

@@ -139,10 +139,9 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
 
         // Convertimos DTO a entidad
         transaccion = convertToTransaction(transaccion, transaccionDTO, "crear");
-
+      
         // Convertimos a DTO para devolver
         return convertShowTransactionDTO(transaccion);
-
     }
 
     @Transactional()
@@ -178,6 +177,27 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
         return transacciones.stream()
                 .map(this::convertShowTransactionDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion, TransactionStatus nuevoEstado) {
+        Transaction transaccion = transactionRepository.findById(idTransaccion)
+                .orElseThrow(() -> new ResourceNotFoundException("Transacción no encontrada con id: " + idTransaccion));
+
+        transaccion.setEstado(nuevoEstado);
+        transactionRepository.save(transaccion);
+
+        // Retornar DTO completo
+        return convertShowTransactionDTO(transaccion);
+    }
+  
+    @Transactional()
+    @Override
+    public void cancelarTransaccion(Integer id){
+        Transaction transaccion = transactionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaccion no encontrada con id: " + id));
+        transactionRepository.delete(transaccion);
     }
 
 }

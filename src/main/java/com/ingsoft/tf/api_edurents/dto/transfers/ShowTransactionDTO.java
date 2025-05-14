@@ -23,4 +23,5 @@ public class ShowTransactionDTO {
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus estado;
+
 }
