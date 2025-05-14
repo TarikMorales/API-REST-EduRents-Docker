@@ -2,6 +2,8 @@ package com.ingsoft.tf.api_edurents.service.impl;
 
 import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
+import com.ingsoft.tf.api_edurents.exception.BadRequestException;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.university.Career;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
 import com.ingsoft.tf.api_edurents.repository.university.CareerRepository;
@@ -42,7 +44,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         usuario.setCodigo_universitario(datosRegistro.getCodigo_universitario());
         usuario.setCiclo(datosRegistro.getCiclo());
         Career carrera = careerRepository.findById(datosRegistro.getId_carrera())
-                .orElseThrow(() -> new RuntimeException("La carrera no existe"));
+                .orElseThrow(() -> new ResourceNotFoundException("La carrera no existe"));
         usuario.setCarrera(carrera);
         usuario.setContrasena(datosRegistro.getContrasena());
         usuario.setFoto_url(datosRegistro.getFoto_url());
@@ -57,7 +59,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             userRepository.save(usuario);
             return convertToUserDTO(usuario);
         } else {
-            throw new RuntimeException("El correo ya está registrado en otra cuenta");
+            throw new BadRequestException("El correo ya está registrado en otra cuenta");
         }
     }
 }
