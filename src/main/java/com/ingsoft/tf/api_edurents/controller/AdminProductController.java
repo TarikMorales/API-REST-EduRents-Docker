@@ -32,4 +32,9 @@ public class AdminProductController {
         return new ResponseEntity<ShowProductDTO>(producto, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity <ShowProductDTO> editarProducto(@PathVariable Integer id, @Valid @RequestBody ProductDTO productoDTO){
+        ShowProductDTO producto = adminProductService.editarProducto(id, productoDTO);
+        return new ResponseEntity<ShowProductDTO>(producto, HttpStatus.OK);
+    }
 }
