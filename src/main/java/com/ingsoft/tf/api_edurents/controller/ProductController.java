@@ -23,11 +23,4 @@ public class ProductController {
     public List<ProductDTO> getFilteredProducts(@PathVariable Integer carreraId, @PathVariable Integer cursoID) {
         return productService.getFilteredProducts(carreraId, cursoID);
     }
-    // Manejo de excepciones
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        // Aquí puedes personalizar el mensaje de error
-        String errorMessage = ex.getMessage();  // Obtiene el mensaje de la excepción
-        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND); // Devuelve 404 con el mensaje de error
-    }
 }
