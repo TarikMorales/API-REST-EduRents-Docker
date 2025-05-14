@@ -18,7 +18,7 @@ public class ProductDTO {
     @Size(min = 1, max = 100, message = "El nombre debe tener entre 1 y 100 caracteres")
     private String nombre;
 
-    @Size(min = 20, max = 500, message = "El nombre debe tener entre 20 y 500 caracteres")
+    @Size(min = 20, max = 500, message = "La descripción debe tener entre 20 y 500 caracteres")
     private String descripcion;
 
     @Digits(integer = 5, fraction = 2, message = "El precio debe ser un número con hasta 5 dígitos enteros y 2 decimales")
