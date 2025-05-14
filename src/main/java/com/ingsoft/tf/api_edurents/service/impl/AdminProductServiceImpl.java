@@ -44,7 +44,7 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Autowired
     private ImageRepository imageRepository;
 
-    private ShowProductDTO convertToShowProductDTO(Product producto) {
+    public ShowProductDTO convertToShowProductDTO(Product producto) {
 
         ShowProductDTO productoDTOMostrar = new ShowProductDTO();
 
