@@ -24,12 +24,14 @@ public class User {
     private String codigo_universitario;
     private Byte ciclo;
     private String foto_url;
-    @ManyToOne
-    @JoinColumn(name = "career_id")
-    Career career = new Career();
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Seller vendedor;
+
+    @ManyToOne
+    @JoinColumn(name = "id_carrera",
+            referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_usuario_carrera"), nullable = false)
+    private Career carrera;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transacciones = new ArrayList<Transaction>();

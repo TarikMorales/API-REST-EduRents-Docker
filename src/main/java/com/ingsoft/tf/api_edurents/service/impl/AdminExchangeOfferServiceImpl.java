@@ -48,6 +48,7 @@ public class AdminExchangeOfferServiceImpl implements AdminExchangeOfferService 
         usuarioDTO.setCorreo(intercambio.getUsuario().getCorreo());
         usuarioDTO.setCodigo_universitario(intercambio.getUsuario().getCodigo_universitario());
         usuarioDTO.setCiclo(intercambio.getUsuario().getCiclo());
+        usuarioDTO.setCarrera(intercambio.getUsuario().getCarrera().getNombre());
         intercambioDTOMostrar.setUsuario(usuarioDTO);
 
         ShowProductDTO productoDTO = adminProductService.convertToShowProductDTO(intercambio.getProducto());
