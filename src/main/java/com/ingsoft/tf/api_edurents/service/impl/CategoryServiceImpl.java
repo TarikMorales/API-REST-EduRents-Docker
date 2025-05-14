@@ -2,6 +2,7 @@ package com.ingsoft.tf.api_edurents.service.impl;
 
 import com.ingsoft.tf.api_edurents.dto.CategoryDTO;
 import com.ingsoft.tf.api_edurents.mapper.CategoryMapper;
+import com.ingsoft.tf.api_edurents.model.entity.product.Category;
 import com.ingsoft.tf.api_edurents.repository.product.CategoryRepository;
 import com.ingsoft.tf.api_edurents.service.product.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDTO> getAllCategories() {
-        return CategoryMapper.toDTOs(categoryRepository.findAll());
+        List<Category> categories = categoryRepository.findAll();
+        if (categories.isEmpty()) {
+            throw new RuntimeException("No categories found");
+        }
+        return CategoryMapper.toDTOs(categories);
     };
 }
