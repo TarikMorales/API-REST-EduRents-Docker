@@ -21,7 +21,7 @@ public class AdminProductController {
 
     @GetMapping
     public ResponseEntity<List<ShowProductDTO>> obtenerProductos(){
-        List<ShowProductDTO> productos =  adminProductService.obtenerTodosLosProductos();
+        List<ShowProductDTO> productos = adminProductService.obtenerTodosLosProductos();
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
     }
 
