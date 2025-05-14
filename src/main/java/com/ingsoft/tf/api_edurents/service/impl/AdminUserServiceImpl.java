@@ -1,5 +1,6 @@
 package com.ingsoft.tf.api_edurents.service.impl;
 
+import com.ingsoft.tf.api_edurents.dto.user.LoginDTO;
 import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 import com.ingsoft.tf.api_edurents.exception.BadRequestException;
@@ -60,6 +61,21 @@ public class AdminUserServiceImpl implements AdminUserService {
             return convertToUserDTO(usuario);
         } else {
             throw new BadRequestException("El correo ya está registrado en otra cuenta");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public UserDTO loginUsuario(LoginDTO datosLogin) {
+        if (userRepository.existsUserByCorreo(datosLogin.getCorreo())){
+            User usuario = userRepository.findByCorreoAndContrasena(datosLogin.getCorreo(), datosLogin.getContrasena());
+            if (usuario != null) {
+                return convertToUserDTO(usuario);
+            } else {
+                throw new RuntimeException("La contraseña es incorrecta");
+            }
+        } else {
+            throw new RuntimeException("Credenciales inválidas");
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.ingsoft.tf.api_edurents.controller;
 
+import com.ingsoft.tf.api_edurents.dto.user.LoginDTO;
 import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 import com.ingsoft.tf.api_edurents.service.AdminUserService;
@@ -20,6 +21,12 @@ public class AdminUserController {
     public ResponseEntity<UserDTO> registro(@Valid @RequestBody RegisterDTO registro) {
         UserDTO userDTO = adminUserService.registerUsuario(registro);
         return new ResponseEntity<UserDTO>(userDTO, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<UserDTO> login(@Valid @RequestBody LoginDTO datosLogin) {
+        UserDTO userDTO = adminUserService.loginUsuario(datosLogin);
+        return new ResponseEntity<UserDTO>(userDTO, HttpStatus.OK);
     }
 
 }
