@@ -11,4 +11,6 @@ public interface AdminUserService {
 
     UserDTO loginUsuario(LoginDTO datosLogin);
 
+    UserDTO registerUsuario(RegisterDTO datosRegistro);
+
 }

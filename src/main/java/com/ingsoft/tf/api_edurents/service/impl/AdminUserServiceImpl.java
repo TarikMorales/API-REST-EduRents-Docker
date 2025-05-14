@@ -73,25 +73,26 @@ public class AdminUserServiceImpl implements AdminUserService {
             if (usuario != null) {
                 return convertToUserDTO(usuario);
             } else {
-                throw new RuntimeException("La contraseña es incorrecta");
+                throw new BadRequestException("La contraseña es incorrecta");
             }
         } else {
-            throw new RuntimeException("Credenciales inválidas");
+            throw new BadRequestException("Credenciales inválidas");
         }
+    }
       
     @Transactional
     @Override
     public UserDTO cambioContrasenaUsuario(Integer id, RecoverPasswordDTO nuevosDatos) {
         User usuario = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("El usuario no existe"));
+                .orElseThrow(() -> new ResourceNotFoundException("El usuario no existe"));
         if (!usuario.getCorreo().equals(nuevosDatos.getCorreo())) {
-            throw new RuntimeException("Correo incorrecto");
+            throw new BadRequestException("Correo incorrecto");
         }
         if (!usuario.getContrasena().equals(nuevosDatos.getContrasena())) {
-            throw new RuntimeException("Contraseña incorrecta");
+            throw new BadRequestException("Contraseña incorrecta");
         }
         if (usuario.getContrasena().equals(nuevosDatos.getNuevaContrasena())) {
-            throw new RuntimeException("La nueva contraseña no puede ser igual a la anterior");
+            throw new BadRequestException("La nueva contraseña no puede ser igual a la anterior");
         }
 
         usuario.setContrasena(nuevosDatos.getNuevaContrasena());
