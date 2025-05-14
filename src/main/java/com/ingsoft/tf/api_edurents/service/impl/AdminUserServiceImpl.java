@@ -1,8 +1,11 @@
 package com.ingsoft.tf.api_edurents.service.impl;
 
 import com.ingsoft.tf.api_edurents.dto.user.RecoverPasswordDTO;
+import com.ingsoft.tf.api_edurents.dto.user.LoginDTO;
 import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
+import com.ingsoft.tf.api_edurents.exception.BadRequestException;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.university.Career;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
 import com.ingsoft.tf.api_edurents.repository.university.CareerRepository;
@@ -43,13 +46,39 @@ public class AdminUserServiceImpl implements AdminUserService {
         usuario.setCodigo_universitario(datosRegistro.getCodigo_universitario());
         usuario.setCiclo(datosRegistro.getCiclo());
         Career carrera = careerRepository.findById(datosRegistro.getId_carrera())
-                .orElseThrow(() -> new RuntimeException("La carrera no existe"));
+                .orElseThrow(() -> new ResourceNotFoundException("La carrera no existe"));
         usuario.setCarrera(carrera);
         usuario.setContrasena(datosRegistro.getContrasena());
         usuario.setFoto_url(datosRegistro.getFoto_url());
         return usuario;
     }
 
+    @Transactional
+    @Override
+    public UserDTO registerUsuario(RegisterDTO datosRegistro) {
+        if (!userRepository.existsUserByCorreo(datosRegistro.getCorreo())) {
+            User usuario = convertToUser(datosRegistro);
+            userRepository.save(usuario);
+            return convertToUserDTO(usuario);
+        } else {
+            throw new BadRequestException("El correo ya está registrado en otra cuenta");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public UserDTO loginUsuario(LoginDTO datosLogin) {
+        if (userRepository.existsUserByCorreo(datosLogin.getCorreo())){
+            User usuario = userRepository.findByCorreoAndContrasena(datosLogin.getCorreo(), datosLogin.getContrasena());
+            if (usuario != null) {
+                return convertToUserDTO(usuario);
+            } else {
+                throw new RuntimeException("La contraseña es incorrecta");
+            }
+        } else {
+            throw new RuntimeException("Credenciales inválidas");
+        }
+      
     @Transactional
     @Override
     public UserDTO cambioContrasenaUsuario(Integer id, RecoverPasswordDTO nuevosDatos) {

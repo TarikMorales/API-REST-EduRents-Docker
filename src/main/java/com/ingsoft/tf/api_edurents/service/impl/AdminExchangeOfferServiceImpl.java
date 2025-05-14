@@ -4,6 +4,7 @@ import com.ingsoft.tf.api_edurents.dto.exchanges.ExchangeOfferDTO;
 import com.ingsoft.tf.api_edurents.dto.exchanges.ShowExchangeOfferDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeStatus;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
@@ -68,11 +69,11 @@ public class AdminExchangeOfferServiceImpl implements AdminExchangeOfferService 
         }
 
         Product producto = productRepository.findById(intercambioDTO.getId_producto())
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
         intercambio.setProducto(producto);
 
         User usuario = userRepository.findById(intercambioDTO.getId_usuario())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         intercambio.setUsuario(usuario);
 
         exchangeOfferRepository.save(intercambio);
