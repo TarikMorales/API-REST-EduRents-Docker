@@ -1,5 +1,6 @@
 package com.ingsoft.tf.api_edurents.controller;
 
+import com.ingsoft.tf.api_edurents.dto.user.RecoverPasswordDTO;
 import com.ingsoft.tf.api_edurents.dto.user.LoginDTO;
 import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
@@ -17,10 +18,10 @@ public class AdminUserController {
 
     private final AdminUserService adminUserService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserDTO> registro(@Valid @RequestBody RegisterDTO registro) {
-        UserDTO userDTO = adminUserService.registerUsuario(registro);
-        return new ResponseEntity<UserDTO>(userDTO, HttpStatus.CREATED);
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> cambioContrasena(@PathVariable("id") Integer id, @Valid @RequestBody RecoverPasswordDTO nuevosDatos) {
+        UserDTO userDTO = adminUserService.cambioContrasenaUsuario(id, nuevosDatos);
+        return new ResponseEntity<UserDTO>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping("/login")

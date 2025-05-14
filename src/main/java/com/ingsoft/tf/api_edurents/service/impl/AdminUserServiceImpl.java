@@ -1,5 +1,6 @@
 package com.ingsoft.tf.api_edurents.service.impl;
 
+import com.ingsoft.tf.api_edurents.dto.user.RecoverPasswordDTO;
 import com.ingsoft.tf.api_edurents.dto.user.LoginDTO;
 import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
@@ -77,5 +78,24 @@ public class AdminUserServiceImpl implements AdminUserService {
         } else {
             throw new RuntimeException("Credenciales inválidas");
         }
+      
+    @Transactional
+    @Override
+    public UserDTO cambioContrasenaUsuario(Integer id, RecoverPasswordDTO nuevosDatos) {
+        User usuario = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("El usuario no existe"));
+        if (!usuario.getCorreo().equals(nuevosDatos.getCorreo())) {
+            throw new RuntimeException("Correo incorrecto");
+        }
+        if (!usuario.getContrasena().equals(nuevosDatos.getContrasena())) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+        if (usuario.getContrasena().equals(nuevosDatos.getNuevaContrasena())) {
+            throw new RuntimeException("La nueva contraseña no puede ser igual a la anterior");
+        }
+
+        usuario.setContrasena(nuevosDatos.getNuevaContrasena());
+        userRepository.save(usuario);
+        return convertToUserDTO(usuario);
     }
 }
