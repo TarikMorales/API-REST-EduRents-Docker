@@ -1,6 +1,7 @@
 package com.ingsoft.tf.api_edurents.dto.transfers;
 
 import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
+import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.PaymentMethod;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 public class ShowTransactionDTO {
     private Integer id;
-    private ProductDTO producto;
+    private ShowProductDTO producto;
     private UserDTO usuario;
 
     @Enumerated(EnumType.STRING)
@@ -23,4 +24,5 @@ public class ShowTransactionDTO {
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus estado;
+
 }

@@ -1,8 +1,11 @@
 package com.ingsoft.tf.api_edurents.service.impl;
 
+import com.ingsoft.tf.api_edurents.dto.product.ImageDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
+import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
+import com.ingsoft.tf.api_edurents.dto.user.SellerDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
@@ -35,6 +38,9 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AdminProductServiceImpl adminProductService;
+
     private ShowTransactionDTO convertShowTransactionDTO(Transaction transaccion) {
 
         ShowTransactionDTO transaccionDTOMostrar = new ShowTransactionDTO();
@@ -60,44 +66,7 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
         // Asignar Producto
         if (transaccion.getProducto() != null) {
             Product producto = transaccion.getProducto();
-            ProductDTO productoDTO = new ProductDTO();
-
-            productoDTO.setId(producto.getId());
-            productoDTO.setNombre(producto.getNombre());
-            productoDTO.setDescripcion(producto.getDescripcion());
-            productoDTO.setPrecio(producto.getPrecio());
-            productoDTO.setEstado(producto.getEstado());
-            productoDTO.setCantidad_disponible(producto.getCantidad_disponible());
-            productoDTO.setAcepta_intercambio(producto.getAcepta_intercambio());
-
-            // id_vendedor
-            if (producto.getVendedor() != null) {
-                productoDTO.setId_vendedor(producto.getVendedor().getId());
-            }
-
-            // urls_imagenes
-            if (producto.getImagenes() != null) {
-                List<String> urls = producto.getImagenes().stream()
-                        .map(imagen -> imagen.getUrl()) // Suponiendo que `Image` tiene un campo `url`
-                        .collect(Collectors.toList());
-                productoDTO.setUrls_imagenes(urls);
-            }
-
-            // categorias
-            if (producto.getCategorias() != null) {
-                List<Integer> categorias = producto.getCategorias().stream()
-                        .map(catProd -> catProd.getCategoria().getId()) // Suponiendo que `CategoriesProducts` tiene `getCategoria().getId()`
-                        .collect(Collectors.toList());
-                productoDTO.setCategorias(categorias);
-            }
-
-            // cursos_carreras
-            if (producto.getCursos_carreras() != null) {
-                List<Integer> cursos = producto.getCursos_carreras().stream()
-                        .map(ccp -> ccp.getCurso_carrera().getId()) // Suponiendo que `CoursesCareersProduct` tiene `getCurso_carrera().getId()`
-                        .collect(Collectors.toList());
-                productoDTO.setCursos_carreras(cursos);
-            }
+            ShowProductDTO productoDTO = adminProductService.convertToShowProductDTO(producto);
 
             transaccionDTOMostrar.setProducto(productoDTO);
         }
@@ -139,10 +108,9 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
 
         // Convertimos DTO a entidad
         transaccion = convertToTransaction(transaccion, transaccionDTO, "crear");
-
+      
         // Convertimos a DTO para devolver
         return convertShowTransactionDTO(transaccion);
-
     }
 
     @Transactional()
@@ -154,6 +122,7 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional()
     @Override
     public List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario) {
         User usuario = userRepository.findById(idUsuario)
@@ -166,5 +135,38 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional()
+    @Override
+    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuarioPorEstado(Integer idUsuario, TransactionStatus estado) {
+        User usuario = userRepository.findById(idUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        List<Transaction> transacciones = transactionRepository.findByUsuarioAndEstado(usuario, estado);
+
+        return transacciones.stream()
+                .map(this::convertShowTransactionDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional()
+    @Override
+    public ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion, TransactionStatus nuevoEstado) {
+        Transaction transaccion = transactionRepository.findById(idTransaccion)
+                .orElseThrow(() -> new ResourceNotFoundException("Transacción no encontrada con id: " + idTransaccion));
+
+        transaccion.setEstado(nuevoEstado);
+        transactionRepository.save(transaccion);
+
+        // Retornar DTO completo
+        return convertShowTransactionDTO(transaccion);
+    }
+  
+    @Transactional()
+    @Override
+    public void cancelarTransaccion(Integer id){
+        Transaction transaccion = transactionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaccion no encontrada con id: " + id));
+        transactionRepository.delete(transaccion);
+    }
 
 }

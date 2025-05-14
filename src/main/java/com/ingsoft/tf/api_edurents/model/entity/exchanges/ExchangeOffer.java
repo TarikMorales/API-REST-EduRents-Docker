@@ -12,6 +12,7 @@ public class ExchangeOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String mensaje_propuesta;
 
     @Enumerated(EnumType.STRING)
