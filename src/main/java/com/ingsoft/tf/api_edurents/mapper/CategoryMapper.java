@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 public class CategoryMapper {
     public static CategoryDTO toDTO(Category category) {
         CategoryDTO dto = new CategoryDTO();
-        category.getId();
-        category.getNombre();
+        dto.setId(category.getId());
+        dto.setName(category.getNombre());
         return dto;
     }
     public static List<CategoryDTO> toDTOs(List<Category> category){
