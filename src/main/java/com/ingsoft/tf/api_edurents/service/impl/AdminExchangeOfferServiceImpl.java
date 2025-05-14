@@ -4,6 +4,7 @@ import com.ingsoft.tf.api_edurents.dto.ExchangeOfferDTO;
 import com.ingsoft.tf.api_edurents.mapper.ExchangeOfferMapper;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
 import com.ingsoft.tf.api_edurents.repository.exchanges.ExchangeOfferRepository;
+import com.ingsoft.tf.api_edurents.repository.user.UserRepository;
 import com.ingsoft.tf.api_edurents.service.exchanges.AdminExchangeOfferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,13 @@ import java.util.stream.Collectors;
 public class AdminExchangeOfferServiceImpl implements AdminExchangeOfferService {
     @Autowired
     private ExchangeOfferRepository exchangeOfferRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<ExchangeOfferDTO> getOffersByUser(Integer idUsuario){
+        userRepository.findById(idUsuario)
+                .orElseThrow(()->new RuntimeException("User ID not found"));
         return ExchangeOfferMapper.toDTOs(exchangeOfferRepository.findAllByUsuario_Id(idUsuario));
     }
 
