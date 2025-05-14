@@ -62,4 +62,6 @@ public class UpdateProductDTO {
 
     @NotNull(message = "Los cursos/carreras no pueden ser nulos")
     private List<@Valid CourseCareerDTO> cursos_carreras;
+
+
 }

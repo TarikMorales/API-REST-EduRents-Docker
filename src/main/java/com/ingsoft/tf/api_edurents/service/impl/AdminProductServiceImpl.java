@@ -266,18 +266,38 @@ public class AdminProductServiceImpl implements AdminProductService {
 
         return dto;
     }
-    public UpdateProductDTO actualizarFechaExpiracion(Integer id, LocalDate nuevaFecha) {
+    public UpdateProductDTO actualizarFechaExpiracion(Integer id, LocalDate fechaExpiracion) {
+        // Obtener el producto por ID
         Product producto = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con ID: " + id));
-        producto.setFecha_expiracion(nuevaFecha);
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        // Actualizar la fecha de expiración
+        producto.setFecha_expiracion(fechaExpiracion);
+
+        // Guardar el producto actualizado
         productRepository.save(producto);
-        return convertToUpdateProductDTO(producto);
+
+        // Crear y devolver el DTO con la nueva fecha de expiración
+        UpdateProductDTO dto = new UpdateProductDTO();
+        dto.setFecha_expiracion(producto.getFecha_expiracion());
+
+        return dto;
     }
     public ShowProductDTO obtenerFechaExpiracion(Integer id) {
+        // Obtener el producto de la base de datos
         Product producto = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con ID: " + id));
-        return convertToShowProductDTO(producto);
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        // Verifica si la fecha de expiración es null en la entidad
+        System.out.println("Fecha Expiración en el Producto: " + producto.getFecha_expiracion());
+
+        // Crear un DTO para devolver solo la información necesaria
+        ShowProductDTO dto = new ShowProductDTO();
+        dto.setFecha_expiracion(producto.getFecha_expiracion());
+
+        return dto;
     }
+
 
 
 }

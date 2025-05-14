@@ -50,15 +50,19 @@ public class AdminProductController {
         return ResponseEntity.ok(dto);
     }
 
-   // @PutMapping("/{id}/fecha-expiracion")
-   // public UpdateProductDTO actualizarFechaExpiracion(
-   //         @PathVariable Integer id,
-   //         @RequestBody UpdateProductDTO request) {
-   //     return adminProductService.actualizarFechaExpiracion(id, request.getFecha_expiracion());
-  //  }
+    @PutMapping("/{id}/fecha-expiracion")
+    public ResponseEntity<UpdateProductDTO> actualizarFechaExpiracion(
+            @PathVariable Integer id,
+            @RequestBody UpdateProductDTO request) {
 
-     @PutMapping("/{id}/fecha-expiracion")
-      public UpdateProductDTO actualizarFechaExpiracion(@PathVariable Integer id, @RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
-         return adminProductService.actualizarFechaExpiracion(id, fecha);
-     }
+        UpdateProductDTO updatedProduct = adminProductService.actualizarFechaExpiracion(id, request.getFecha_expiracion());
+        return ResponseEntity.ok(updatedProduct);
+    }
+
+
+
+    // @PutMapping("/{id}/fecha-expiracion")
+   //   public UpdateProductDTO actualizarFechaExpiracion(@PathVariable Integer id, @RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
+    //     return adminProductService.actualizarFechaExpiracion(id, fecha);
+     //}
 }

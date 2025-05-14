@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-   // @ExceptionHandler(ResourceNotFoundException.class)
-    //public ResponseEntity<CustomErrorResponse> handleModelNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-    //    CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(),
-    //            ex.getMessage(),
-              //  request.getDescription(false));
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<CustomErrorResponse> handleModelNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false));
 
-    //    return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
-    //}
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<CustomErrorResponse> handleModelBadRequestException(BadRequestException ex, WebRequest request) {
