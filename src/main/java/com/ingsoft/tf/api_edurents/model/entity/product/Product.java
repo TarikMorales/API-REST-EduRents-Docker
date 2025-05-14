@@ -27,6 +27,8 @@ public class Product {
 
     private LocalDate fecha_creacion;
     private LocalDate fecha_modificacion;
+    private LocalDate fecha_expiracion;
+
     private Integer cantidad_disponible;
     private Boolean acepta_intercambio;
 

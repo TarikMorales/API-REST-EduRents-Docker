@@ -7,10 +7,12 @@ import com.ingsoft.tf.api_edurents.dto.product.UpdateProductDTO;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.service.AdminProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,4 +43,22 @@ public class AdminProductController {
     public StockDTO obtenerStock(@PathVariable Integer id) {
         return adminProductService.obtenerStockProductoPorId(id);
     }
+
+    @GetMapping("/{id}/fecha-expiracion")
+    public ResponseEntity<ShowProductDTO> obtenerFechaExpiracion(@PathVariable Integer id) {
+        ShowProductDTO dto = adminProductService.obtenerFechaExpiracion(id);
+        return ResponseEntity.ok(dto);
+    }
+
+   // @PutMapping("/{id}/fecha-expiracion")
+   // public UpdateProductDTO actualizarFechaExpiracion(
+   //         @PathVariable Integer id,
+   //         @RequestBody UpdateProductDTO request) {
+   //     return adminProductService.actualizarFechaExpiracion(id, request.getFecha_expiracion());
+  //  }
+
+     @PutMapping("/{id}/fecha-expiracion")
+      public UpdateProductDTO actualizarFechaExpiracion(@PathVariable Integer id, @RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
+         return adminProductService.actualizarFechaExpiracion(id, fecha);
+     }
 }

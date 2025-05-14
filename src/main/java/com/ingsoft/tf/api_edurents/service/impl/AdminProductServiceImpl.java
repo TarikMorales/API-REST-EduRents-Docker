@@ -9,6 +9,7 @@ import com.ingsoft.tf.api_edurents.repository.product.*;
 import com.ingsoft.tf.api_edurents.repository.university.CoursesCareersRepository;
 import com.ingsoft.tf.api_edurents.repository.user.SellerRepository;
 import com.ingsoft.tf.api_edurents.service.AdminProductService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -265,5 +266,18 @@ public class AdminProductServiceImpl implements AdminProductService {
 
         return dto;
     }
+    public UpdateProductDTO actualizarFechaExpiracion(Integer id, LocalDate nuevaFecha) {
+        Product producto = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con ID: " + id));
+        producto.setFecha_expiracion(nuevaFecha);
+        productRepository.save(producto);
+        return convertToUpdateProductDTO(producto);
+    }
+    public ShowProductDTO obtenerFechaExpiracion(Integer id) {
+        Product producto = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con ID: " + id));
+        return convertToShowProductDTO(producto);
+    }
+
 
 }

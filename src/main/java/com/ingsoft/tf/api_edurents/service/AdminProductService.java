@@ -6,6 +6,7 @@ import com.ingsoft.tf.api_edurents.dto.product.StockDTO;
 import com.ingsoft.tf.api_edurents.dto.product.UpdateProductDTO;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AdminProductService {
@@ -16,4 +17,7 @@ public interface AdminProductService {
 
     StockDTO obtenerStockProductoPorId(Integer idProducto);
     UpdateProductDTO actualizarCantidadDisponible(Integer id, Integer nuevaCantidad);
+
+    UpdateProductDTO actualizarFechaExpiracion (Integer id, LocalDate nuevaFecha);
+    ShowProductDTO obtenerFechaExpiracion(Integer id);
 }

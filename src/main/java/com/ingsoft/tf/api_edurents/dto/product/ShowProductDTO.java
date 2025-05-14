@@ -4,6 +4,7 @@ import com.ingsoft.tf.api_edurents.dto.user.SellerDTO;
 import com.ingsoft.tf.api_edurents.model.entity.product.ProductStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,8 @@ public class ShowProductDTO {
 
     private LocalDate fecha_creacion;
     private LocalDate fecha_modificacion;
+    @PastOrPresent(message = "La fecha de expiracion no puede ser futura")
+    private LocalDate fecha_expiracion;
 
     private SellerDTO vendedor;
 
