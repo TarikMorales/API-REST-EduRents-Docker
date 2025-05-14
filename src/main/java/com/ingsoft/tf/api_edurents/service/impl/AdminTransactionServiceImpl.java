@@ -168,11 +168,36 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
 
     @Transactional()
     @Override
+    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuarioPorEstado(Integer idUsuario, TransactionStatus estado) {
+        User usuario = userRepository.findById(idUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        List<Transaction> transacciones = transactionRepository.findByUsuarioAndEstado(usuario, estado);
+
+        return transacciones.stream()
+                .map(this::convertShowTransactionDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion, TransactionStatus nuevoEstado) {
+        Transaction transaccion = transactionRepository.findById(idTransaccion)
+                .orElseThrow(() -> new ResourceNotFoundException("Transacción no encontrada con id: " + idTransaccion));
+
+        transaccion.setEstado(nuevoEstado);
+        transactionRepository.save(transaccion);
+
+        // Retornar DTO completo
+        return convertShowTransactionDTO(transaccion);
+    }
+  
+    @Transactional()
+    @Override
     public void cancelarTransaccion(Integer id){
         Transaction transaccion = transactionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaccion no encontrada con id: " + id));
         transactionRepository.delete(transaccion);
     }
-
 
 }
