@@ -14,4 +14,6 @@ public interface AdminProductService {
 
     ShowProductDTO editarProducto(Integer id, ProductDTO productoDTO);
 
+    void eliminarProducto(Integer id);
+
 }

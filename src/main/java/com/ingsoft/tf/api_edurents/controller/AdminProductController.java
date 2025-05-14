@@ -33,8 +33,15 @@ public class AdminProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity <ShowProductDTO> editarProducto(@PathVariable Integer id, @Valid @RequestBody ProductDTO productoDTO){
+    public ResponseEntity<ShowProductDTO> editarProducto(@PathVariable Integer id, @Valid @RequestBody ProductDTO productoDTO){
         ShowProductDTO producto = adminProductService.editarProducto(id, productoDTO);
         return new ResponseEntity<ShowProductDTO>(producto, HttpStatus.OK);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ShowProductDTO> eliminarProducto(@PathVariable Integer id){
+        adminProductService.eliminarProducto(id);
+        return new ResponseEntity<ShowProductDTO>(HttpStatus.NO_CONTENT);
     }
 }
