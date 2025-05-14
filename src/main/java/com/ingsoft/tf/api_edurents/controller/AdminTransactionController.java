@@ -46,6 +46,7 @@ public class AdminTransactionController {
     public ResponseEntity<ShowTransactionDTO> confirmarEntregaPago(@PathVariable Integer id) {
         ShowTransactionDTO updated = adminTransactionService.confirmarEntregaPago(id, TransactionStatus.PAGADO);
         return ResponseEntity.ok(updated);
+    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
