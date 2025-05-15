@@ -12,5 +12,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE u.correo =:correo AND u.contrasena =:contrasena")
     User findByCorreoAndContrasena(@Param("correo") String correo, @Param("contrasena") String contrasena);
-  
+
 }
