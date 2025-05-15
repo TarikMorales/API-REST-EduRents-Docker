@@ -42,7 +42,7 @@ public class AdminTransactionController {
         return adminTransactionService.obtenerTransaccionesPorUsuarioPorEstado(idUsuario, estado);
     }
 
-    @PutMapping("/{id}/confirmar")
+    @PutMapping("/{id}/confirm")
     public ResponseEntity<ShowTransactionDTO> confirmarEntregaPago(@PathVariable Integer id) {
         ShowTransactionDTO updated = adminTransactionService.confirmarEntregaPago(id, TransactionStatus.PAGADO);
         return ResponseEntity.ok(updated);

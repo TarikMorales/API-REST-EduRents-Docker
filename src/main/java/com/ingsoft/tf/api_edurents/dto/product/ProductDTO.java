@@ -7,6 +7,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -31,6 +32,9 @@ public class ProductDTO {
     private Integer cantidad_disponible;
 
     private Boolean acepta_intercambio;
+
+    @Future(message = "La fecha de expiración debe ser una fecha futura")
+    private LocalDate fecha_expiracion;
 
     private List<@URL(message = "El campo debe ser una URL válida") String> urls_imagenes;
 

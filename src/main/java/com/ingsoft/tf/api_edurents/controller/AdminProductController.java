@@ -3,17 +3,13 @@ package com.ingsoft.tf.api_edurents.controller;
 import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.StockDTO;
-import com.ingsoft.tf.api_edurents.dto.product.UpdateProductDTO;
-import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.service.AdminProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -37,9 +33,9 @@ public class AdminProductController {
     }
 
     //ACTUALIZAR CANTIDAD DE STOCK POR ID DE PRODUCTO
-    @PutMapping("/{id}/updateStock")
-    public UpdateProductDTO actualizarCantidadDisponible(@PathVariable Integer id, @RequestBody UpdateProductDTO dto) {
-        return adminProductService.actualizarCantidadDisponible(id, dto.getCantidad_disponible());
+    @PutMapping("/{id}/update-stock")
+    public ShowProductDTO actualizarCantidadDisponible(@PathVariable Integer id, @RequestBody Integer cantidad) {
+        return adminProductService.actualizarCantidadDisponible(id, cantidad);
     }
     //MOSTRAR SOLO LA CANTIDAD DE STOCK POR ID DE PRODUCTO
     @GetMapping("/{id}/stock")
@@ -47,18 +43,18 @@ public class AdminProductController {
         return adminProductService.obtenerStockProductoPorId(id);
     }
 
-    @GetMapping("/{id}/fecha-expiracion")
+    @GetMapping("/{id}/expiration-date")
     public ResponseEntity<ShowProductDTO> obtenerFechaExpiracion(@PathVariable Integer id) {
         ShowProductDTO dto = adminProductService.obtenerFechaExpiracion(id);
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping("/{id}/fecha-expiracion")
-    public ResponseEntity<UpdateProductDTO> actualizarFechaExpiracion(
+    @PutMapping("/{id}/expiration-date")
+    public ResponseEntity<ShowProductDTO> actualizarFechaExpiracion(
             @PathVariable Integer id,
-            @RequestBody UpdateProductDTO request) {
+            @RequestBody ProductDTO request) {
 
-        UpdateProductDTO updatedProduct = adminProductService.actualizarFechaExpiracion(id, request.getFecha_expiracion());
+        ShowProductDTO updatedProduct = adminProductService.actualizarFechaExpiracion(id, request.getFecha_expiracion());
         return ResponseEntity.ok(updatedProduct);
     }
 
@@ -75,7 +71,7 @@ public class AdminProductController {
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
     }
 
-    @GetMapping("/{carreraId}/{cursoId}")
+    @GetMapping("/career/{carreraId}/course/{cursoId}")
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCursoYCarrera(@PathVariable Integer carreraId, @PathVariable Integer cursoId) {
         List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCursoYCarrera(carreraId, cursoId);
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
