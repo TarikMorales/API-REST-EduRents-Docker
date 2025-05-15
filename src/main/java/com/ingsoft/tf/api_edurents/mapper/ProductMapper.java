@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductMapper {
+  
     public static ProductDTO toDTO(Product product){
         ProductDTO dto = new ProductDTO();
         dto.setId(product.getId());
         dto.setNombre(product.getNombre());
         dto.setPrecio(product.getPrecio());
-
         if (product.getCategorias() != null && !product.getCategorias().isEmpty()) {
             List<CategoriesProducts> categorias = product.getCategorias();
             dto.setCategorias(categorias);
