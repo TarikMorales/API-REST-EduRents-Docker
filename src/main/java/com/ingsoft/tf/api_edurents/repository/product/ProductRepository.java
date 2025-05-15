@@ -27,5 +27,5 @@ WHERE ccp.curso_carrera.curso.id = :courseId
 
     @Query("SELECT p FROM Product p WHERE p.vendedor.id = :id_vendedor")
     List<Product> findByVendedor(@Param("id_vendedor") Integer id_vendedor);
-           
+
 }

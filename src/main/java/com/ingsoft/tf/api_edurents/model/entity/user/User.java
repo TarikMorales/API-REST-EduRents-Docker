@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "usuarios")
 public class User {
+  
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -32,7 +33,7 @@ public class User {
     @JoinColumn(name = "id_carrera",
             referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_usuario_carrera"), nullable = false)
     private Career carrera;
-  
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transacciones = new ArrayList<Transaction>();
 
