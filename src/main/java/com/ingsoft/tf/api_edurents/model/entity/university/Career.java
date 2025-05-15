@@ -1,5 +1,7 @@
 package com.ingsoft.tf.api_edurents.model.entity.university;
 
+import com.ingsoft.tf.api_edurents.model.entity.user.User;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,4 +21,7 @@ public class Career {
 
     @OneToMany(mappedBy = "carrera", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CoursesCareers> cursos = new ArrayList<CoursesCareers>();
+
+    @OneToMany(mappedBy = "carrera", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<User> usuarios = new ArrayList<User>();
 }
