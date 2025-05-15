@@ -1,7 +1,7 @@
 package com.ingsoft.tf.api_edurents.model.entity.product;
 
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
-import com.ingsoft.tf.api_edurents.model.entity.transfers.transaction.Transaction;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
 import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
 import jakarta.persistence.*;
 import lombok.Data;

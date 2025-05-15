@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -18,8 +16,13 @@ public class Transaction {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    private TransactionStatus estado;
+    private PaymentMethod metodo_pago;
+
     private LocalDateTime fecha_transaccion;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus estado;
+
 
     @ManyToOne
     @JoinColumn(name = "id_producto",
@@ -30,8 +33,5 @@ public class Transaction {
     @JoinColumn(name = "id_usuario",
             referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_usuario_transaccion"), nullable = false)
     private User usuario;
-
-    @OneToMany(mappedBy = "transaccion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PaymentMethodsTransactions> metodos_pago = new ArrayList<PaymentMethodsTransactions>();
 
 }
