@@ -1,6 +1,7 @@
 package com.ingsoft.tf.api_edurents.service.impl;
 
 import com.ingsoft.tf.api_edurents.dto.user.SellerDTO;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
 import com.ingsoft.tf.api_edurents.repository.user.SellerRepository;
 import com.ingsoft.tf.api_edurents.service.AdminSellerService;
@@ -33,7 +34,7 @@ public class AdminSellerServiceImpl implements AdminSellerService {
     @Override
     public SellerDTO getConfiabilidadById(Integer id) {
         Seller seller = sellerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Vendedor no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado con ID: " + id));
         return convertToDTO(seller);
     }
 
@@ -41,7 +42,7 @@ public class AdminSellerServiceImpl implements AdminSellerService {
     @Override
     public SellerDTO updateConfiabilidad(Integer id, Boolean nuevaConfiabilidad) {
         Seller seller = sellerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Vendedor no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado con ID: " + id));
 
         seller.setConfiabilidad(nuevaConfiabilidad);
         seller = sellerRepository.save(seller);

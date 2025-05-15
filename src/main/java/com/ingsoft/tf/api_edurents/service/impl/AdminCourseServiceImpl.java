@@ -1,6 +1,7 @@
 package com.ingsoft.tf.api_edurents.service.impl;
 
 import com.ingsoft.tf.api_edurents.dto.university.CourseDTO;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.university.CoursesCareers;
 import com.ingsoft.tf.api_edurents.repository.university.CourseRepository;
 import com.ingsoft.tf.api_edurents.repository.university.CoursesCareersRepository;
@@ -37,7 +38,7 @@ public class AdminCourseServiceImpl implements AdminCourseService {
                     })
                     .toList();
         } else {
-            throw new RuntimeException("No se encontraron cursos para la carrera con ID: " + idCarrera);
+            throw new ResourceNotFoundException("No se encontraron cursos para la carrera con ID: " + idCarrera);
         }
     }
 

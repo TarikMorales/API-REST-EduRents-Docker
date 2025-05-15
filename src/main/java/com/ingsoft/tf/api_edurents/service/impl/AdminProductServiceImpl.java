@@ -235,7 +235,7 @@ public class AdminProductServiceImpl implements AdminProductService {
     public ShowProductDTO actualizarFechaExpiracion(Integer id, LocalDate fechaExpiracion) {
         // Obtener el producto por ID
         Product producto = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
 
         // Actualizar la fecha de expiración
         producto.setFecha_expiracion(fechaExpiracion);
