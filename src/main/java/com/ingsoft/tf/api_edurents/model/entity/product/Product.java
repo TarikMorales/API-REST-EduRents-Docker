@@ -1,7 +1,7 @@
 package com.ingsoft.tf.api_edurents.model.entity.product;
 
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
-import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.transaction.Transaction;
 import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -27,6 +27,8 @@ public class Product {
 
     private LocalDate fecha_creacion;
     private LocalDate fecha_modificacion;
+    private LocalDate fecha_expiracion;
+
     private Integer cantidad_disponible;
     private Boolean acepta_intercambio;
 

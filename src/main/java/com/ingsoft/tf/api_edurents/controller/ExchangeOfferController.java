@@ -16,10 +16,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/exchanges")
 public class ExchangeOfferController {
     private final AdminExchangeOfferService adminExchangeOfferService;
-
+  
     @GetMapping("/seller/{sellerId}")
     public List<ExchangeOfferDTO> getOffersByUser(@PathVariable Integer sellerId) {
         return adminExchangeOfferService.getOffersByUser(sellerId);
+    }
+  
+    @GetMapping("/user/{idUsuario}")
+    public List<ExchangeOfferDTO> getOffersByUser(@PathVariable Integer idUsuario) {
+        return adminExchangeOfferService.getOffersByUser(idUsuario);
     }
 }
 
