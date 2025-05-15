@@ -33,11 +33,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getFilteredProducts(Integer carreraId, Integer cursoID) {
+    public List<ProductDTO> getFilteredProducts(Integer carreraId, Integer cursoId) {
         // Verificar si el curso existe
-        Optional<Course> courseOptional = courseRepository.findById(cursoID);
+        Optional<Course> courseOptional = courseRepository.findById(cursoId);
         if (!courseOptional.isPresent()) {
-            throw new RuntimeException("Curso no encontrado con ID: " + cursoID);
+            throw new RuntimeException("Curso no encontrado con ID: " + cursoId);
         }
 
         // Verificar si la carrera existe
@@ -47,10 +47,10 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // Si ambos existen, buscar los productos
-        List<Product> products = productRepository.findByCareerAndCourse(carreraId, cursoID);
+        List<Product> products = productRepository.findByCareerAndCourse(carreraId, cursoId);
 
         if (products.isEmpty()) {
-            throw new RuntimeException("No se encontraron productos para la Carrera ID: " + carreraId + " y Curso ID: " + cursoID);
+            throw new RuntimeException("No se encontraron productos para la Carrera ID: " + carreraId + " y Curso ID: " + cursoId);
         }
 
         return ProductMapper.toDTOs(products);

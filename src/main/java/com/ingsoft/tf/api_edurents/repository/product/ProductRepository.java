@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("""
-SELECT DISTINCT p.id FROM Product p
+SELECT DISTINCT p FROM Product p
 JOIN p.cursos_carreras ccp
-WHERE ccp.curso_carrera.curso.id=:courseId
-    AND ccp.curso_carrera.curso.id=:cursoId
+WHERE ccp.curso_carrera.curso.id = :courseId
+  AND ccp.curso_carrera.carrera.id = :careerId
 """)
     List<Product> findByCareerAndCourse(
             @Param("careerId") Integer careerId,

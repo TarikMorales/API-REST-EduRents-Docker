@@ -19,8 +19,8 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/product/{carreraId}/{cursoID}")
-    public List<ProductDTO> getFilteredProducts(@PathVariable Integer carreraId, @PathVariable Integer cursoID) {
-        return productService.getFilteredProducts(carreraId, cursoID);
+    @GetMapping("/{carreraId}/{cursoId}")
+    public List<ProductDTO> getFilteredProducts(@PathVariable Integer carreraId, @PathVariable Integer cursoId) {
+        return productService.getFilteredProducts(carreraId, cursoId);
     }
 }
