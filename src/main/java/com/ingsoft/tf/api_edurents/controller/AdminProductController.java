@@ -69,6 +69,12 @@ public class AdminProductController {
         return new ResponseEntity<ShowProductDTO>(producto, HttpStatus.OK);
     }
 
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorVendedor(@PathVariable Integer sellerId) {
+        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorVendedor(sellerId);
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public ResponseEntity<ShowProductDTO> eliminarProducto(@PathVariable Integer id){

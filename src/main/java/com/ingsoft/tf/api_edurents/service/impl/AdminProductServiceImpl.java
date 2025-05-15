@@ -331,6 +331,18 @@ public class AdminProductServiceImpl implements AdminProductService {
         return productoDTOMostrar;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorVendedor(Integer idVendedor) {
+        List<Product> productos = productRepository.findByVendedor(idVendedor);
+        if (productos.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para el vendedor con id: " + idVendedor);
+        }
+        return productos.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     @Override
     public void eliminarProducto(Integer id) {
