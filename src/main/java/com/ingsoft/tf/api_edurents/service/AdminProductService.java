@@ -16,8 +16,15 @@ public interface AdminProductService {
     ShowProductDTO crearProducto(ProductDTO productoDTO);
 
     StockDTO obtenerStockProductoPorId(Integer idProducto);
+  
     UpdateProductDTO actualizarCantidadDisponible(Integer id, Integer nuevaCantidad);
 
     UpdateProductDTO actualizarFechaExpiracion (Integer id, LocalDate nuevaFecha);
+  
     ShowProductDTO obtenerFechaExpiracion(Integer id);
+  
+    ShowProductDTO editarProducto(Integer id, ProductDTO productoDTO);
+
+    void eliminarProducto(Integer id);
+
 }
