@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductMapper {
+
     public static ProductDTO toDTO(Product product){
         ProductDTO dto = new ProductDTO();
         dto.setId(product.getId());
