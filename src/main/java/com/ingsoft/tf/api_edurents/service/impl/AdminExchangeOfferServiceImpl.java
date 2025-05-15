@@ -113,4 +113,17 @@ public class AdminExchangeOfferServiceImpl implements AdminExchangeOfferService 
         }
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowExchangeOfferDTO> obtenerIntercambiosPorVendedor(Integer id) {
+        List<ExchangeOffer> intercambios = exchangeOfferRepository.findAllByVendedorId(id);
+        if (!intercambios.isEmpty()) {
+            return intercambios.stream()
+                    .map(this::convertToShowExchangeOfferDTO)
+                    .toList();
+        } else {
+            throw new ResourceNotFoundException("No se encontraron intercambios para el vendedor con ID: " + id);
+        }
+    }
+
 }
