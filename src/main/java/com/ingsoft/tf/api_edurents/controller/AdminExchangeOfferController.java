@@ -31,4 +31,10 @@ public class AdminExchangeOfferController {
         return new ResponseEntity<ShowExchangeOfferDTO>(ofertaIntercambio, HttpStatus.CREATED);
     }
 
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<ShowExchangeOfferDTO>> obtenerIntercambiosPorUsuario(@PathVariable Integer id){
+        List<ShowExchangeOfferDTO> ofertasIntercambio = adminExchangeOfferService.obtenerIntercambiosPorUsuario(id);
+        return new ResponseEntity<List<ShowExchangeOfferDTO>>(ofertasIntercambio, HttpStatus.OK);
+    }
+
 }

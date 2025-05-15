@@ -8,4 +8,5 @@ import java.util.List;
 public interface AdminExchangeOfferService {
     List<ShowExchangeOfferDTO> obtenerTodosLosIntercambios();
     ShowExchangeOfferDTO crearIntercambio(ExchangeOfferDTO intercambioDTO);
+    List<ShowExchangeOfferDTO> obtenerIntercambiosPorUsuario(Integer id);
 }
