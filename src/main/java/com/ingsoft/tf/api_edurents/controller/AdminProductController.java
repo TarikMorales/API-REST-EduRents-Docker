@@ -2,6 +2,8 @@ package com.ingsoft.tf.api_edurents.controller;
 
 import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
+import com.ingsoft.tf.api_edurents.dto.product.StockDTO;
+import com.ingsoft.tf.api_edurents.dto.product.UpdateProductDTO;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.service.AdminProductService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,17 @@ public class AdminProductController {
         return new ResponseEntity<ShowProductDTO>(producto, HttpStatus.CREATED);
     }
 
+    //ACTUALIZAR CANTIDAD DE STOCK POR ID DE PRODUCTO
+    @PutMapping("/{id}/updateStock")
+    public UpdateProductDTO actualizarCantidadDisponible(@PathVariable Integer id, @RequestBody UpdateProductDTO dto) {
+        return adminProductService.actualizarCantidadDisponible(id, dto.getCantidad_disponible());
+    }
+    //MOSTRAR SOLO LA CANTIDAD DE STOCK POR ID DE PRODUCTO
+    @GetMapping("/{id}/stock")
+    public StockDTO obtenerStock(@PathVariable Integer id) {
+        return adminProductService.obtenerStockProductoPorId(id);
+    }
+  
     @PutMapping("/{id}")
     public ResponseEntity<ShowProductDTO> editarProducto(@PathVariable Integer id, @Valid @RequestBody ProductDTO productoDTO){
         ShowProductDTO producto = adminProductService.editarProducto(id, productoDTO);
