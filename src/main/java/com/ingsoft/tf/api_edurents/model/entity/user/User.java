@@ -38,5 +38,4 @@ public class User {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExchangeOffer> intercambios = new ArrayList<ExchangeOffer>();
-
 }
