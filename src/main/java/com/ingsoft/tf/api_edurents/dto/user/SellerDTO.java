@@ -10,4 +10,6 @@ public class SellerDTO {
     private Boolean confiabilidad;
     private Boolean sin_demoras;
     private Boolean buena_atencion;
+
+    private String nombreUsuario;
 }
