@@ -1,5 +1,6 @@
 package com.ingsoft.tf.api_edurents.dto.product;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ingsoft.tf.api_edurents.dto.user.SellerDTO;
 import com.ingsoft.tf.api_edurents.model.entity.product.ProductStatus;
 import jakarta.persistence.EnumType;
@@ -45,6 +46,9 @@ public class UpdateProductDTO {
     @PastOrPresent(message = "La fecha de modificación no puede ser futura")
     private LocalDate fecha_modificacion;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fecha_expiracion;
+
     @NotNull(message = "El vendedor no puede ser nulo")
     private SellerDTO vendedor;
 
@@ -58,4 +62,6 @@ public class UpdateProductDTO {
 
     @NotNull(message = "Los cursos/carreras no pueden ser nulos")
     private List<@Valid CourseCareerDTO> cursos_carreras;
+
+
 }
