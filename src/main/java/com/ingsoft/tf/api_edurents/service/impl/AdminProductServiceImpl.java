@@ -355,6 +355,18 @@ public class AdminProductServiceImpl implements AdminProductService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCategoria(Integer idCategoria) {
+        List<Product> productos = productRepository.findByCategoryId(idCategoria);
+        if (productos.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la categoría con id: " + idCategoria);
+        }
+        return productos.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     @Override
     public void eliminarProducto(Integer id) {

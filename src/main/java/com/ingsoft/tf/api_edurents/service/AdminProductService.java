@@ -29,6 +29,8 @@ public interface AdminProductService {
 
     List<ShowProductDTO> obtenerProductosPorCursoYCarrera(Integer idCarrera, Integer idCurso);
 
+    List<ShowProductDTO> obtenerProductosPorCategoria(Integer idCategoria);
+
     void eliminarProducto(Integer id);
 
 }
