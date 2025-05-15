@@ -1,7 +1,8 @@
 package com.ingsoft.tf.api_edurents.model.entity.user;
 
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
-import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.transaction.Transaction;
+import com.ingsoft.tf.api_edurents.model.entity.university.Career;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,6 +27,11 @@ public class User {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Seller vendedor;
+
+    @ManyToOne
+    @JoinColumn(name = "id_carrera",
+            referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_usuario_carrera"), nullable = false)
+    private Career carrera;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transacciones = new ArrayList<Transaction>();
