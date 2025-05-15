@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class ExchangeOfferController {
     private final AdminExchangeOfferService adminExchangeOfferService;
 
-    @GetMapping
-    public List<ExchangeOfferDTO> getOffersByUser(@RequestParam("id_usuario") Integer idUsuario) {
+    @GetMapping("/user/{idUsuario}")
+    public List<ExchangeOfferDTO> getOffersByUser(@PathVariable Integer idUsuario) {
         return adminExchangeOfferService.getOffersByUser(idUsuario);
     }
 }
