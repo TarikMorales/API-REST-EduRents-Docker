@@ -32,10 +32,11 @@ public class User {
     @JoinColumn(name = "id_carrera",
             referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_usuario_carrera"), nullable = false)
     private Career carrera;
-
+  
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transacciones = new ArrayList<Transaction>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExchangeOffer> intercambios = new ArrayList<ExchangeOffer>();
+
 }

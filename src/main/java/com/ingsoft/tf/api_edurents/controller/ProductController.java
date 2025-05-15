@@ -14,7 +14,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
+
     private final ProductRepository productRepository;
+
     private final ProductService productService;
 
     @GetMapping
@@ -22,6 +24,11 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
+    @GetMapping("/category/{categoryId}")
+    public List<ProductDTO> getProductsByCategoryId(@PathVariable Integer categoryId) {
+        return productService.findByCategoryId(categoryId);
+    }
+  
     @GetMapping("/{carreraId}/{cursoId}")
     public List<ProductDTO> getFilteredProducts(@PathVariable Integer carreraId, @PathVariable Integer cursoId) {
         return productService.getFilteredProducts(carreraId, cursoId);
