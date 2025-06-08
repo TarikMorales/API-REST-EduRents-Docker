@@ -29,6 +29,12 @@ public interface AdminProductService {
 
     List<ShowProductDTO> obtenerProductosPorCategoria(Integer idCategoria);
 
+    List<ShowProductDTO> obtenerTop10ProductosPorVistas();
+
+    List<ShowProductDTO> obtenerTop10ProductosPorCantidadDeIntercambios();
+
+    List<ShowProductDTO> obtener10ProductosRecientes();
+
     void eliminarProducto(Integer id);
 
 }

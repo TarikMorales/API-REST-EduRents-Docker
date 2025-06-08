@@ -89,4 +89,22 @@ public class AdminProductController {
         adminProductService.eliminarProducto(id);
         return new ResponseEntity<ShowProductDTO>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/products/trendy")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosTrendy(){
+        List<ShowProductDTO> productos = adminProductService.obtenerTop10ProductosPorVistas();
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/top-exchanges")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosTopExchange(){
+        List<ShowProductDTO> productos = adminProductService.obtenerTop10ProductosPorCantidadDeIntercambios();
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/recents")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosRecents(){
+        List<ShowProductDTO> productos = adminProductService.obtener10ProductosRecientes();
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
 }

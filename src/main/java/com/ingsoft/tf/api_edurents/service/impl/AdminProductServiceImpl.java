@@ -14,6 +14,9 @@ import com.ingsoft.tf.api_edurents.service.AdminProductService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.codec.ServerSentEventHttpMessageWriter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -321,5 +324,44 @@ public class AdminProductServiceImpl implements AdminProductService {
         Product producto = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
         productRepository.delete(producto);
+    }
+
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtenerTop10ProductosPorVistas() {
+        Pageable top10 = PageRequest.of(0, 10);
+        List<Product> products = productRepository.findAllByOrderByVistasDesc(top10);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para el top 10 en base a vistas");
+        }
+        return products.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtenerTop10ProductosPorCantidadDeIntercambios() {
+        Pageable top10 = PageRequest.of(0, 10);
+        List<Product> products = productRepository.findTopProductsByExchangeOfferCount(top10);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para el top 10 em base a cantidad de intercambios");
+        }
+        return products.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtener10ProductosRecientes(){
+        Pageable top10 = PageRequest.of(0, 10);
+        List<Product> products = productRepository.findAllByOrderByFecha_creacionDesc(top10);
+        if(products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos recientes");
+        }
+        return products.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
     }
 }
