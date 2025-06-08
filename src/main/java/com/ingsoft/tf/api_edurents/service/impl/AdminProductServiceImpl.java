@@ -349,7 +349,7 @@ public class AdminProductServiceImpl implements AdminProductService {
 
     @Transactional
     @Override
-    public List<ShowProductDTO> obtenerProcutosPorCarreraCursoYCategoria(Integer idCarrera, Integer idCurso, Integer idCategoria) {
+    public List<ShowProductDTO> obtenerProductosPorCarreraCursoYCategoria(Integer idCarrera, Integer idCurso, Integer idCategoria) {
         List<Product> productos = productRepository.findByCareerAndCourseAndCategorias(idCarrera, idCurso, idCategoria);
         if(productos.isEmpty()) {
             throw new ResourceNotFoundException("No se encontraron productos para la carrera con id: " + idCarrera + ",curso con id: " + idCurso + "y categoria con id: " + idCategoria);

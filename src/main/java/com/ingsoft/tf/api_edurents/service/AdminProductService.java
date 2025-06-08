@@ -33,7 +33,7 @@ public interface AdminProductService {
 
     List<ShowProductDTO> obtenerProductosPorCurso(Integer idCurso);
 
-    List<ShowProductDTO> obtenerProductosPorCarreraCursoCategoria(Integer idCarrera, Integer idCurso, Integer idCategoria);
+    List<ShowProductDTO> obtenerProductosPorCarreraCursoYCategoria(Integer idCarrera, Integer idCurso, Integer idCategoria);
 
     void eliminarProducto(Integer id);
 

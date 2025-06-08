@@ -98,7 +98,7 @@ public class AdminProductController {
 
     @GetMapping("career/{idCareer}/course/{idCourse}/category/{idCategory}")
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCarreraCursoCategoria(@PathVariable Integer idCareer, @PathVariable Integer idCourse, @PathVariable Integer idCategory) {
-        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCarreraCursoCategoria(idCareer, idCourse, idCategory);
+        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCarreraCursoYCategoria(idCareer, idCourse, idCategory);
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
     }
 
