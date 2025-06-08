@@ -322,4 +322,40 @@ public class AdminProductServiceImpl implements AdminProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
         productRepository.delete(producto);
     }
+
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCarrera(Integer idCarrera) {
+        List<Product> productos = productRepository.findByCareer(idCarrera);
+        if(productos.isEmpty()) {
+            throw new ResourceNotFoundException(("No se encontraron productos para la carrera con id: " + idCarrera));
+        }
+        return productos.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCurso(Integer idCurso) {
+        List<Product> productos = productRepository.findByCourse(idCurso);
+        if(productos.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para el curso con id: " + idCurso);
+        }
+        return productos.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtenerProcutosPorCarreraCursoYCategoria(Integer idCarrera, Integer idCurso, Integer idCategoria) {
+        List<Product> productos = productRepository.findByCareerAndCourseAndCategorias(idCarrera, idCurso, idCategoria);
+        if(productos.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la carrera con id: " + idCarrera + ",curso con id: " + idCurso + "y categoria con id: " + idCategoria);
+        }
+        return productos.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
 }

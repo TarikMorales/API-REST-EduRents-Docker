@@ -5,6 +5,7 @@ import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.StockDTO;
 import com.ingsoft.tf.api_edurents.service.AdminProductService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -80,6 +81,24 @@ public class AdminProductController {
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCategoria(@PathVariable Integer categoryId) {
         List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCategoria(categoryId);
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("/career/{idCareer}")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCarrera(@PathVariable Integer idCareer) {
+        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCarrera(idCareer);
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("/career/{idCourse}")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCurso(@PathVariable Integer idCourse) {
+        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCurso(idCourse);
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("career/{idCareer}/course/{idCourse}/category/{idCategory}")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCarreraCursoCategoria(@PathVariable Integer idCareer, @PathVariable Integer idCourse, @PathVariable Integer idCategory) {
+        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCarreraCursoCategoria(idCareer, idCourse, idCategory);
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
     }
 
