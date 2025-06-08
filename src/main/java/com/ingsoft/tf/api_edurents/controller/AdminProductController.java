@@ -89,4 +89,52 @@ public class AdminProductController {
         adminProductService.eliminarProducto(id);
         return new ResponseEntity<ShowProductDTO>(HttpStatus.NO_CONTENT);
     }
+
+    @PutMapping("/{idProduct}/views")
+    public ResponseEntity<ShowProductDTO> sumarViews(@PathVariable Integer idProduct){
+        adminProductService.sumarView(idProduct);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/recomendados/{idCareer}")
+    public ResponseEntity<List<ShowProductDTO>> recomendarProductos(@PathVariable Integer idCareer){
+        adminProductService.obtenerProductosRecomendados(idCareer);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/career/{idCareer}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCareerOrderByView(@PathVariable Integer idCareer){
+        adminProductService.obtenerProductosPorCarreraOrdenarPorVistas(idCareer);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/course/{idCourse}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCourseOrderByView(@PathVariable Integer idCourse){
+        adminProductService.obtenerProductosPorCursoOrdenarPorVistas(idCourse);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/course/{idCourse}/career/{idCareer}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCareerCourseOrderByView(@PathVariable Integer idCareer, @PathVariable Integer idCourse){
+        adminProductService.obtenerProductosPorCarreraPorCursoOrdenarPorVistas(idCareer, idCourse);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/category/{idCategory}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCategoryOrderByView(@PathVariable Integer idCategory){
+        adminProductService.obtenerProductosPorCategoriaOrdernarPorVistas(idCategory);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/career/{idCareer}/course/{idCourse}/category/{idCategory}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCareerCourseCategoryOrderByView(@PathVariable Integer idCareer, @PathVariable Integer idCourse, @PathVariable Integer idCategory){
+        adminProductService.obtenerProductosPorCarreraPorCursoPorCategoriaOrdenarPorVistas(idCareer, idCourse, idCategory);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/views/seller/{idSeller}")
+    public ResponseEntity<List<ShowProductDTO>> ProductSellerOrderByView(@PathVariable Integer idSeller){
+        adminProductService.obtenerProductosPorIdVendedorOrdenarPorVistas(idSeller);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
 }
