@@ -64,7 +64,7 @@ public class AdminProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-
+  
     @PutMapping("/{id}")
     public ResponseEntity<ShowProductDTO> editarProducto(@PathVariable Integer id, @Valid @RequestBody ProductDTO productoDTO){
         ShowProductDTO producto = adminProductService.editarProducto(id, productoDTO);

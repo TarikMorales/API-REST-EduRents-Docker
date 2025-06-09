@@ -29,6 +29,7 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    // Agregamos el mapper de Product
     @Autowired
     private ProductMapper productMapper;
 
@@ -76,7 +77,7 @@ public class AdminProductServiceImpl implements AdminProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + idProducto));
         return convertToProductStockDTO(producto);
     }
-
+    
     @Transactional
     @Override
     public ShowProductDTO actualizarCantidadDisponible(Integer idProducto, Integer nuevaCantidad) {
