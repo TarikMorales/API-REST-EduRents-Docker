@@ -18,21 +18,9 @@ public class AdminUserController {
 
     private final AdminUserService adminUserService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@Valid @RequestBody RegisterDTO datosRegistro) {
-        UserDTO userDTO = adminUserService.registerUsuario(datosRegistro);
-        return new ResponseEntity<UserDTO>(userDTO, HttpStatus.CREATED);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> cambioContrasena(@PathVariable("id") Integer id, @Valid @RequestBody RecoverPasswordDTO nuevosDatos) {
         UserDTO userDTO = adminUserService.cambioContrasenaUsuario(id, nuevosDatos);
-        return new ResponseEntity<UserDTO>(userDTO, HttpStatus.OK);
-    }
-
-    @GetMapping("/login")
-    public ResponseEntity<UserDTO> login(@Valid @RequestBody LoginDTO datosLogin) {
-        UserDTO userDTO = adminUserService.loginUsuario(datosLogin);
         return new ResponseEntity<UserDTO>(userDTO, HttpStatus.OK);
     }
 
