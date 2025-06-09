@@ -5,6 +5,7 @@ import com.ingsoft.tf.api_edurents.dto.exchanges.ShowExchangeOfferDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
+import com.ingsoft.tf.api_edurents.mapper.ProductMapper;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeStatus;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
@@ -35,7 +36,7 @@ public class AdminExchangeOfferServiceImpl implements AdminExchangeOfferService 
     private ExchangeOfferRepository exchangeOfferRepository;
 
     @Autowired
-    private AdminProductServiceImpl adminProductService;
+    private ProductMapper productMapper;
 
     private ShowExchangeOfferDTO convertToShowExchangeOfferDTO(ExchangeOffer intercambio) {
         ShowExchangeOfferDTO intercambioDTOMostrar = new ShowExchangeOfferDTO();
@@ -51,7 +52,7 @@ public class AdminExchangeOfferServiceImpl implements AdminExchangeOfferService 
         usuarioDTO.setCarrera(intercambio.getUsuario().getCarrera().getNombre());
         intercambioDTOMostrar.setUsuario(usuarioDTO);
 
-        ShowProductDTO productoDTO = adminProductService.convertToShowProductDTO(intercambio.getProducto());
+        ShowProductDTO productoDTO = productMapper.toResponse(intercambio.getProducto());
         intercambioDTOMostrar.setProducto(productoDTO);
 
         intercambioDTOMostrar.setMensaje_propuesta(intercambio.getMensaje_propuesta());

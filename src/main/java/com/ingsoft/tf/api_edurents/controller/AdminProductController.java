@@ -25,6 +25,12 @@ public class AdminProductController {
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ShowProductDTO> obtenerProductoPorId(@PathVariable Integer id){
+        ShowProductDTO producto = adminProductService.obtenerProductoPorId(id);
+        return new ResponseEntity<ShowProductDTO>(producto, HttpStatus.OK);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ResponseEntity<ShowProductDTO> crearProducto(@Valid @RequestBody ProductDTO productoDTO){
@@ -58,17 +64,11 @@ public class AdminProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-  
+
     @PutMapping("/{id}")
     public ResponseEntity<ShowProductDTO> editarProducto(@PathVariable Integer id, @Valid @RequestBody ProductDTO productoDTO){
         ShowProductDTO producto = adminProductService.editarProducto(id, productoDTO);
         return new ResponseEntity<ShowProductDTO>(producto, HttpStatus.OK);
-    }
-
-    @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorVendedor(@PathVariable Integer sellerId) {
-        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorVendedor(sellerId);
-        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
     }
 
     @GetMapping("/career/{carreraId}/course/{cursoId}")
