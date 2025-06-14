@@ -7,16 +7,13 @@ import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
 import java.util.List;
 
 public interface AdminTransactionService {
+
+    // HU13
     ShowTransactionDTO crearTransaccion(TransactionDTO transaccionDTO);
-
-    List<ShowTransactionDTO> obtenerTransacciones();
-
-    List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario);
-
-    List<ShowTransactionDTO> obtenerTransaccionesPorUsuarioPorEstado(Integer idUsuario, TransactionStatus estado);
-
-    ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion, TransactionStatus nuevoEstado);
-
     void cancelarTransaccion(Integer id);
+    ShowTransactionDTO obtenerTransaccionPorId(Integer id);
+    List<ShowTransactionDTO> obtenerTransacciones();
+    ShowTransactionDTO obtenerTransaccionPorIdPorUsuario(Integer idTransaction, Integer idUsuario);
+
 
 }

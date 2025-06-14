@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,33 +27,33 @@ public class AdminTransactionController {
         return adminTransactionService.crearTransaccion(transaccionDTO);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> cancelarTransaccion(@PathVariable Integer id){
+        adminTransactionService.cancelarTransaccion(id);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Transacción con ID " + id + " cancelada exitosamente.");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ShowTransactionDTO> getTransaction(@PathVariable Integer id) {
+        return ResponseEntity.ok(adminTransactionService.obtenerTransaccionPorId(id));
+    }
+
     @GetMapping
     public List<ShowTransactionDTO> obtenerTransacciones() {
         return adminTransactionService.obtenerTransacciones();
     }
 
-    @GetMapping("/usuario/{idUsuario}")
-    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(@PathVariable Integer idUsuario) {
-        return adminTransactionService.obtenerTransaccionesPorUsuario(idUsuario);
+    @GetMapping("/{idTransaction}/user/{idUser}")
+    public ResponseEntity<ShowTransactionDTO> obtenerPorIdPorUsuario(
+            @PathVariable Integer idTransaction,
+            @PathVariable Integer idUser) {
+        return ResponseEntity.ok(adminTransactionService.obtenerTransaccionPorIdPorUsuario(idTransaction, idUser));
     }
 
-    @GetMapping("/usuario/{idUsuario}/estado/{estado}")
-    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuarioPorEstado(
-            @PathVariable Integer idUsuario,
-            @PathVariable TransactionStatus estado) {
-        return adminTransactionService.obtenerTransaccionesPorUsuarioPorEstado(idUsuario, estado);
-    }
-
-    @PutMapping("/{id}/confirm")
-    public ResponseEntity<ShowTransactionDTO> confirmarEntregaPago(@PathVariable Integer id) {
-        ShowTransactionDTO updated = adminTransactionService.confirmarEntregaPago(id, TransactionStatus.PAGADO);
-        return ResponseEntity.ok(updated);
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
-    public void cancelarTransaccion(@PathVariable Integer id){
-        adminTransactionService.cancelarTransaccion(id);
-    }
 
 }
