@@ -1,5 +1,6 @@
 package com.ingsoft.tf.api_edurents.controller;
 
+import com.ingsoft.tf.api_edurents.dto.transfers.ClaimTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
@@ -10,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,39 +22,47 @@ public class AdminTransactionController {
 
     private final AdminTransactionService adminTransactionService;
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public ShowTransactionDTO crearTransaccion(@RequestBody @Valid TransactionDTO transaccionDTO) {
-        return adminTransactionService.crearTransaccion(transaccionDTO);
-    }
-
-    @GetMapping
-    public List<ShowTransactionDTO> obtenerTransacciones() {
-        return adminTransactionService.obtenerTransacciones();
-    }
-
-    @GetMapping("/usuario/{idUsuario}")
-    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(@PathVariable Integer idUsuario) {
-        return adminTransactionService.obtenerTransaccionesPorUsuario(idUsuario);
-    }
-
-    @GetMapping("/usuario/{idUsuario}/estado/{estado}")
-    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuarioPorEstado(
-            @PathVariable Integer idUsuario,
-            @PathVariable TransactionStatus estado) {
-        return adminTransactionService.obtenerTransaccionesPorUsuarioPorEstado(idUsuario, estado);
-    }
+    //HU 14
 
     @PutMapping("/{id}/confirm")
-    public ResponseEntity<ShowTransactionDTO> confirmarEntregaPago(@PathVariable Integer id) {
-        ShowTransactionDTO updated = adminTransactionService.confirmarEntregaPago(id, TransactionStatus.PAGADO);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Map<String, Object>> confirmarEntregaPago(@PathVariable Integer id) {
+        ShowTransactionDTO dto = adminTransactionService.confirmarEntregaPago(id); // ya no se pasa el estado desde aquí
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Entrega de la transacción " + dto.getId() + " confirmada exitosamente.");
+        response.put("transaccion", dto);
+
+        return ResponseEntity.ok(response);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
-    public void cancelarTransaccion(@PathVariable Integer id){
-        adminTransactionService.cancelarTransaccion(id);
+
+    @PutMapping("/{id}/claim")
+    public ResponseEntity<Map<String, Object>> reclamarTransaccion(
+            @PathVariable Integer id,
+            @Valid @RequestBody ClaimTransactionDTO dto
+    ) {
+        ShowTransactionDTO updated = adminTransactionService.reclamarTransaccion(id, dto);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Reclamo registrado exitosamente en la transacción " + updated.getId());
+        response.put("transaccion", updated);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user/{idUsuario}/product/{idProducto}")
+    public ResponseEntity<ShowTransactionDTO> obtenerPorProductoYUsuario(
+            @PathVariable Integer idUsuario,
+            @PathVariable Integer idProducto) {
+        ShowTransactionDTO dto = adminTransactionService.obtenerTransaccionPorProductoYUsuario(idProducto, idUsuario);
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/seller/{idVendedor}/product/{idProducto}")
+    public ResponseEntity<List<ShowTransactionDTO>> obtenerPorProductoYVendedor(
+            @PathVariable Integer idVendedor,
+            @PathVariable Integer idProducto) {
+        return ResponseEntity.ok(adminTransactionService.obtenerTransaccionesPorProductoYVendedor(idProducto, idVendedor));
     }
 
 }

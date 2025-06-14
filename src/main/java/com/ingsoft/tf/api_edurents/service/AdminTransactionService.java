@@ -1,5 +1,6 @@
 package com.ingsoft.tf.api_edurents.service;
 
+import com.ingsoft.tf.api_edurents.dto.transfers.ClaimTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
@@ -7,16 +8,12 @@ import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
 import java.util.List;
 
 public interface AdminTransactionService {
-    ShowTransactionDTO crearTransaccion(TransactionDTO transaccionDTO);
 
-    List<ShowTransactionDTO> obtenerTransacciones();
+    // hu14
+    ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion);
+    ShowTransactionDTO reclamarTransaccion(Integer id, ClaimTransactionDTO dto);
+    ShowTransactionDTO obtenerTransaccionPorProductoYUsuario(Integer idProducto, Integer idUsuario);
+    List<ShowTransactionDTO> obtenerTransaccionesPorProductoYVendedor(Integer idProducto, Integer idVendedor);
 
-    List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario);
-
-    List<ShowTransactionDTO> obtenerTransaccionesPorUsuarioPorEstado(Integer idUsuario, TransactionStatus estado);
-
-    ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion, TransactionStatus nuevoEstado);
-
-    void cancelarTransaccion(Integer id);
 
 }
