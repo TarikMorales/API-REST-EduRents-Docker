@@ -13,6 +13,8 @@ public interface AdminProductService {
 
     ShowProductDTO crearProducto(ProductDTO productoDTO);
 
+    ShowProductDTO obtenerProductoPorId(Integer id);
+
     StockDTO obtenerStockProductoPorId(Integer idProducto);
 
     ShowProductDTO actualizarCantidadDisponible(Integer id, Integer nuevaCantidad);
@@ -22,8 +24,6 @@ public interface AdminProductService {
     ShowProductDTO obtenerFechaExpiracion(Integer id);
   
     ShowProductDTO editarProducto(Integer id, ProductDTO productoDTO);
-
-    List<ShowProductDTO> obtenerProductosPorVendedor(Integer idVendedor);
 
     List<ShowProductDTO> obtenerProductosPorCursoYCarrera(Integer idCarrera, Integer idCurso);
 
