@@ -43,33 +43,61 @@ public class UserAuthUserServiceUnitTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // HU09
 
-    // ENDPOIINT CAMBIO CONTRASEÑA
-
-    @Test
-    @DisplayName("HU9 - CP01 - Cambio de contraseña exitoso")
-    void cambioContrasena_datosValidos_devuelveDTO() {
-        RecoverPasswordDTO dto = new RecoverPasswordDTO();
-        dto.setCorreo("test@mail.com");
-        dto.setContrasena("oldPass");
-        dto.setNuevaContrasena("newPass");
-
-        User user = new User();
-        user.setId(1);
-        user.setCorreo("test@mail.com");
-        user.setContrasena("oldPass");
-
-        User updated = new User();
-        updated.setContrasena("newPass");
-
-        UserDTO response = new UserDTO();
-        response.setId(1);
 
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(updated);
         when(userMapper.toResponse(any(User.class))).thenReturn(response);
 
+        UserDTO result = userAuthUserService.cambiarFotoUsuario(1, "https://imagen.com/perfil.jpg");
+
+        assertNotNull(result);
+        assertEquals("https://imagen.com/perfil.jpg", result.getFoto_url());
+    }
+
+
+    @Test
+    @DisplayName("HU8 - CP04 - Cambiar foto con URL vacía lanza excepción")
+    void cambiarFotoUsuario_urlInvalida_lanzaExcepcion() {
+        User user = new User(); user.setId(1);
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+
+        assertThrows(BadRequestException.class, () ->
+                userAuthUserService.cambiarFotoUsuario(1, ""));
+    }
+
+
+    // NEDPO9INT cambair carrera
+
+    @Test
+    @DisplayName("HU8 - CP05 - Cambiar carrera con datos válidos")
+    void cambiarCarreraUsuario_valido_devuelveDTO() {
+        User user = new User(); user.setId(1);
+        Career carrera = new Career(); carrera.setId(2);
+        User updated = new User(); updated.setCarrera(carrera);
+
+        UserDTO response = new UserDTO();
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(careerRepository.findById(2)).thenReturn(Optional.of(carrera));
+        when(userRepository.save(any(User.class))).thenReturn(updated);
+        when(userMapper.toResponse(any(User.class))).thenReturn(response);
+
+        UserDTO result = userAuthUserService.cambiarCarreraUsuario(1, 2);
+        assertNotNull(result);
+    }
+
+
+    @Test
+    @DisplayName("HU8 - CP06 - Cambiar carrera con carrera inexistente")
+    void cambiarCarreraUsuario_idCarreraInvalido_lanzaExcepcion() {
+        User user = new User(); user.setId(1);
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(careerRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                userAuthUserService.cambiarCarreraUsuario(1, 99));
+    }
         UserDTO result = userAuthUserService.cambioContrasenaUsuario(1, dto);
 
         assertNotNull(result);
