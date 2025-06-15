@@ -44,6 +44,17 @@ public class UserAuthUserServiceUnitTest {
     }
 
 
+    @Test
+    @DisplayName("HU7 - CP05 - Obtener usuario por ID válido")
+    void obtenerUsuarioPorId_existente_devuelveDTO() {
+        User user = new User(); user.setId(1);
+        UserDTO dto = new UserDTO(); dto.setId(1);
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(userMapper.toResponse(user)).thenReturn(dto);
+
+        UserDTO result = userAuthUserService.obtenerUsuarioPorId(1);
+
 
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(updated);
@@ -105,6 +116,14 @@ public class UserAuthUserServiceUnitTest {
     }
 
     @Test
+    @DisplayName("HU7 - CP06 - Obtener usuario inexistente lanza excepción")
+    void obtenerUsuarioPorId_noExiste_lanzaExcepcion() {
+        when(userRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> userAuthUserService.obtenerUsuarioPorId(99));
+    }
+
+
     @DisplayName("HU9 - CP02 - Cambio de contraseña con correo incorrecto")
     void cambioContrasena_correoIncorrecto_lanzaExcepcion() {
         RecoverPasswordDTO dto = new RecoverPasswordDTO();
@@ -121,10 +140,6 @@ public class UserAuthUserServiceUnitTest {
         assertThrows(BadRequestException.class, () ->
                 userAuthUserService.cambioContrasenaUsuario(1, dto));
     }
-
-
-
-
 
 
 }

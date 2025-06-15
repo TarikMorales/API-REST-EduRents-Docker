@@ -84,6 +84,88 @@ public class PublicUserServiceUnitTest {
         ReflectionTestUtils.setField(publicUserService, "passwordEncoder", passwordEncoder);
     }
 
+    // HU 07
+
+    // Endpoint Register
+
+    @Test
+    @DisplayName("HU7 - CP01 - Registrar usuario con datos válidos")
+    void registerUsuario_datosValidos_devuelveDTO() {
+        RegisterDTO dto = new RegisterDTO();
+        dto.setCorreo("test@mail.com");
+
+        User entity = new User();
+        UserDTO response = new UserDTO();
+
+        when(userRepository.existsUserByCorreo("test@mail.com")).thenReturn(false);
+        when(userMapper.toEntity(dto)).thenReturn(entity);
+        when(userRepository.save(entity)).thenReturn(entity);
+        when(userMapper.toResponse(entity)).thenReturn(response);
+
+        UserDTO result = publicUserService.registerUsuario(dto);
+
+        assertNotNull(result);
+        verify(userRepository).save(entity);
+    }
+
+    @Test
+    @DisplayName("HU7 - CP02 - Registro con correo ya registrado lanza excepción")
+    void registerUsuario_correoYaRegistrado_lanzaExcepcion() {
+        RegisterDTO dto = new RegisterDTO();
+        dto.setCorreo("test@mail.com");
+
+        when(userRepository.existsUserByCorreo("test@mail.com")).thenReturn(true);
+
+        assertThrows(BadRequestException.class, () -> publicUserService.registerUsuario(dto));
+    }
+
+    // Endpoint Login
+
+    @Test
+    @DisplayName("HU7 - CP03 - Login exitoso")
+    void loginUsuario_datosCorrectos_devuelveDTO() {
+
+        LoginDTO dto = new LoginDTO();
+        dto.setCorreo("test@mail.com");
+        dto.setContrasena("pass123");
+
+        User user = new User();
+        user.setCorreo("test@mail.com");
+
+        UserPrincipal userPrincipal = mock(UserPrincipal.class);
+        Authentication authentication = mock(Authentication.class);
+
+        String token = "fake-jwt-token";
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+        authResponseDTO.setToken(token);
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userPrincipal);
+        when(userPrincipal.getUser()).thenReturn(user);
+        when(tokenProvider.createAccessToken(authentication)).thenReturn(token);
+        when(userMapper.toAuthResponse(user, token)).thenReturn(authResponseDTO);
+
+        AuthResponseDTO result = publicUserService.loginUsuario(dto);
+
+        assertNotNull(result);
+        assertEquals(token, result.getToken());
+
+    }
+
+    @Test
+    @DisplayName("HU7 - CP04 - Login con contraseña incorrecta lanza excepción")
+    void loginUsuario_contrasenaIncorrecta_lanzaExcepcion() {
+        LoginDTO dto = new LoginDTO();
+        dto.setCorreo("test@mail.com");
+        dto.setContrasena("contraseñaIncorrecta");
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException("Credenciales inválidas"));
+
+        assertThrows(BadCredentialsException.class, () -> publicUserService.loginUsuario(dto));
+
+
     //HU9
 
     // ENDPOINT RECUPERAR CONTRA
