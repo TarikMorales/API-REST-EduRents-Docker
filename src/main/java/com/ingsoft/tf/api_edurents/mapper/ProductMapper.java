@@ -2,6 +2,7 @@ package com.ingsoft.tf.api_edurents.mapper;
 
 import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
+import org.springframework.stereotype.Component;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.product.*;
 import com.ingsoft.tf.api_edurents.model.entity.university.CoursesCareers;
@@ -9,7 +10,6 @@ import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
 import com.ingsoft.tf.api_edurents.repository.product.*;
 import com.ingsoft.tf.api_edurents.repository.university.CoursesCareersRepository;
 import com.ingsoft.tf.api_edurents.repository.user.SellerRepository;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,13 +35,23 @@ public class ProductMapper {
             SellerMapper sellerMapper,
             ImageMapper imageMapper,
             CourseCareerProductMapper coursesCareersProductMapper,
-            CategoriesProductsMapper categoriesProductsMapper,
-            SellerRepository sellerRepository, ImageRepository imageRepository, CategoryRepository categoryRepository, CategoriesProductsRepository categoriesProductsRepository, CoursesCareersRepository coursesCareersRepository, CoursesCareersProductRepository coursesCareersProductRepository, ProductRepository productRepository) {
         this.categoryMapper = categoryMapper;
         this.sellerMapper = sellerMapper;
         this.imageMapper = imageMapper;
         this.coursesCareersProductMapper = coursesCareersProductMapper;
         this.categoriesProductsMapper = categoriesProductsMapper;
+    }
+
+    public Product toEntity(ProductDTO request) {
+        Product product = new Product();
+        product.setNombre(request.getNombre());
+        product.setDescripcion(request.getDescripcion());
+        product.setPrecio(request.getPrecio());
+        product.setEstado(request.getEstado());
+        product.setCantidad_disponible(request.getCantidad_disponible());
+        product.setAcepta_intercambio(request.getAcepta_intercambio());
+        product.setFecha_expiracion(request.getFecha_expiracion());
+        return product;
         this.sellerRepository = sellerRepository;
         this.imageRepository = imageRepository;
         this.categoryRepository = categoryRepository;

@@ -44,7 +44,6 @@ public class Product {
 
     @Column(name = "acepta_intercambio", nullable = false)
     private Boolean acepta_intercambio;
-
     @Column(name = "vistas")
     private Integer vistas = 0;
 
