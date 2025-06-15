@@ -3,6 +3,7 @@ package com.ingsoft.tf.api_edurents.controller;
 import com.ingsoft.tf.api_edurents.dto.transfers.ClaimTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.PaymentMethod;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
 import com.ingsoft.tf.api_edurents.service.AdminTransactionService;
 import jakarta.validation.Valid;
@@ -22,47 +23,37 @@ public class AdminTransactionController {
 
     private final AdminTransactionService adminTransactionService;
 
+
     //HU 14
 
-    @PutMapping("/{id}/confirm")
-    public ResponseEntity<Map<String, Object>> confirmarEntregaPago(@PathVariable Integer id) {
-        ShowTransactionDTO dto = adminTransactionService.confirmarEntregaPago(id); // ya no se pasa el estado desde aquí
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Entrega de la transacción " + dto.getId() + " confirmada exitosamente.");
-        response.put("transaccion", dto);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> cancelarTransaccion(@PathVariable Integer id){
+        adminTransactionService.cancelarTransaccion(id);
 
-        return ResponseEntity.ok(response);
-    }
-
-
-    @PutMapping("/{id}/claim")
-    public ResponseEntity<Map<String, Object>> reclamarTransaccion(
-            @PathVariable Integer id,
-            @Valid @RequestBody ClaimTransactionDTO dto
-    ) {
-        ShowTransactionDTO updated = adminTransactionService.reclamarTransaccion(id, dto);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Reclamo registrado exitosamente en la transacción " + updated.getId());
-        response.put("transaccion", updated);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Transacción con ID " + id + " cancelada exitosamente.");
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/user/{idUsuario}/product/{idProducto}")
-    public ResponseEntity<ShowTransactionDTO> obtenerPorProductoYUsuario(
-            @PathVariable Integer idUsuario,
-            @PathVariable Integer idProducto) {
-        ShowTransactionDTO dto = adminTransactionService.obtenerTransaccionPorProductoYUsuario(idProducto, idUsuario);
-        return ResponseEntity.ok(dto);
+    @GetMapping("/{id}")
+    public ResponseEntity<ShowTransactionDTO> getTransaction(@PathVariable Integer id) {
+        return ResponseEntity.ok(adminTransactionService.obtenerTransaccionPorId(id));
     }
 
-    @GetMapping("/seller/{idVendedor}/product/{idProducto}")
-    public ResponseEntity<List<ShowTransactionDTO>> obtenerPorProductoYVendedor(
-            @PathVariable Integer idVendedor,
-            @PathVariable Integer idProducto) {
-        return ResponseEntity.ok(adminTransactionService.obtenerTransaccionesPorProductoYVendedor(idProducto, idVendedor));
+    @GetMapping
+    public List<ShowTransactionDTO> obtenerTransacciones() {
+        return adminTransactionService.obtenerTransacciones();
     }
+
+    @GetMapping("/{idTransaction}/user/{idUser}")
+    public ResponseEntity<ShowTransactionDTO> obtenerPorIdPorUsuario(
+            @PathVariable Integer idTransaction,
+            @PathVariable Integer idUser) {
+        return ResponseEntity.ok(adminTransactionService.obtenerTransaccionPorIdPorUsuario(idTransaction, idUser));
+    }
+
 
 }

@@ -64,4 +64,37 @@ public class SellerAuthTransactionServiceUnitTest {
     }
 
 
+    // HU15
+
+    // endpoint de transacciones vendedor por metodo pago
+
+    @Test
+    @DisplayName("CP05 - Obtener transacciones del vendedor por método de pago")
+    void obtenerTransaccionesVendedor_porMetodoPago_devuelveLista() {
+        Transaction t1 = new Transaction();
+        List<Transaction> transactions = List.of(t1);
+        ShowTransactionDTO dto1 = new ShowTransactionDTO();
+
+        when(transactionRepository.findByProducto_Vendedor_IdAndMetodoPago(3, PaymentMethod.EFECTIVO))
+                .thenReturn(transactions);
+        when(transactionsMapper.toResponse(t1)).thenReturn(dto1);
+
+        List<ShowTransactionDTO> result = sellerAuthTransactionServiceimpl
+                .obtenerTransaccionesPorVendedorPorMetodoPago(3, PaymentMethod.EFECTIVO);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @DisplayName("CP06 - Obtener transacciones del vendedor sin método de pago coincidente")
+    void obtenerTransaccionesVendedor_metodoSinCoincidencia_listaVacia() {
+        when(transactionRepository.findByProducto_Vendedor_IdAndMetodoPago(3, PaymentMethod.BANCA))
+                .thenReturn(Collections.emptyList());
+
+        List<ShowTransactionDTO> result = sellerAuthTransactionServiceimpl
+                .obtenerTransaccionesPorVendedorPorMetodoPago(3, PaymentMethod.BANCA);
+
+        assertTrue(result.isEmpty());
+    }
+
 }

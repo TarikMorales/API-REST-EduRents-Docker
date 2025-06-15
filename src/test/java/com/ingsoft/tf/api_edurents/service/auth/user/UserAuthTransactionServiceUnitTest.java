@@ -47,111 +47,66 @@ public class UserAuthTransactionServiceUnitTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // HU 14
 
-    // Endpoint confirmar entrega
+    // HU 15
+
+    //endpoint de obtener transacciones por ID usuario
 
     @Test
-    @DisplayName("CP01 - Confirmar entrega con ID válido")
-    void confirmarEntrega_transaccionExistente_devuelveActualizado() {
-        Transaction transaccion = new Transaction();
-        transaccion.setId(1);
-        transaccion.setEstado(TransactionStatus.PENDIENTE);
+    @DisplayName("CP01 - Obtener transacciones por ID de usuario con datos")
+    void obtenerTransaccionesUsuario_conDatos_devuelveLista() {
+        Transaction t1 = new Transaction();
+        Transaction t2 = new Transaction();
+        List<Transaction> transactions = List.of(t1, t2);
 
-        ShowTransactionDTO dto = new ShowTransactionDTO();
-        dto.setId(1);
-        dto.setEstado(TransactionStatus.PAGADO);
+        ShowTransactionDTO dto1 = new ShowTransactionDTO();
+        ShowTransactionDTO dto2 = new ShowTransactionDTO();
 
-        when(transactionRepository.findById(1)).thenReturn(Optional.of(transaccion));
-        when(transactionRepository.save(transaccion)).thenReturn(transaccion);
-        when(transactionsMapper.toResponse(transaccion)).thenReturn(dto);
+        when(transactionRepository.findByUsuarioId(1)).thenReturn(transactions);
+        when(transactionsMapper.toResponse(t1)).thenReturn(dto1);
+        when(transactionsMapper.toResponse(t2)).thenReturn(dto2);
 
-        ShowTransactionDTO result = userAuthTransactionServiceImpl.confirmarEntregaPago(1);
+        List<ShowTransactionDTO> result = userAuthTransactionServiceImpl.obtenerTransaccionesPorUsuario(1);
 
-        assertEquals(TransactionStatus.PAGADO, result.getEstado());
-        verify(transactionRepository).save(transaccion);
+        assertEquals(2, result.size());
     }
 
     @Test
-    @DisplayName("CP02 - Confirmar entrega con ID inválido")
-    void confirmarEntrega_transaccionNoExistente_lanzaExcepcion() {
-        when(transactionRepository.findById(99)).thenReturn(Optional.empty());
-        assertThrows(ResourceNotFoundException.class,
-                () -> userAuthTransactionServiceImpl.confirmarEntregaPago(99));
+    @DisplayName("CP02 - Obtener transacciones por ID de usuario sin datos")
+    void obtenerTransaccionesUsuario_sinDatos_devuelveListaVacia() {
+        when(transactionRepository.findByUsuarioId(1)).thenReturn(Collections.emptyList());
+        List<ShowTransactionDTO> result = userAuthTransactionServiceImpl.obtenerTransaccionesPorUsuario(1);
+        assertTrue(result.isEmpty());
+    }
+
+    //endpoint de filtrado de transacciones usuario por estado
+
+    @Test
+    @DisplayName("CP01 - Obtener transacciones por estado del usuario")
+    void obtenerTransaccionesUsuario_estadoFiltrado_devuelveLista() {
+        Transaction t1 = new Transaction();
+        List<Transaction> transactions = List.of(t1);
+        ShowTransactionDTO dto1 = new ShowTransactionDTO();
+
+        when(transactionRepository.findByUsuarioIdAndEstado(2, TransactionStatus.PAGADO)).thenReturn(transactions);
+        when(transactionsMapper.toResponse(t1)).thenReturn(dto1);
+
+        List<ShowTransactionDTO> result = userAuthTransactionServiceImpl
+                .obtenerTransaccionesPorUsuarioPorEstado(2, TransactionStatus.PAGADO);
+
+        assertEquals(1, result.size());
     }
 
     @Test
-    @DisplayName("CP03 - Confirmar entrega fallido si transacción está cancelada")
-    void confirmarEntrega_transaccionCancelada_lanzaExcepcion() {
-        Transaction transaccion = new Transaction();
-        transaccion.setId(2);
-        transaccion.setEstado(TransactionStatus.CANCELADO);
+    @DisplayName("CP02 - Obtener transacciones del usuario con estado sin coincidencias")
+    void obtenerTransaccionesUsuario_estadoSinCoincidencia_listaVacia() {
+        when(transactionRepository.findByUsuarioIdAndEstado(2, TransactionStatus.CANCELADO))
+                .thenReturn(Collections.emptyList());
 
-        when(transactionRepository.findById(2)).thenReturn(Optional.of(transaccion));
+        List<ShowTransactionDTO> result = userAuthTransactionServiceImpl
+                .obtenerTransaccionesPorUsuarioPorEstado(2, TransactionStatus.CANCELADO);
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () ->
-                userAuthTransactionServiceImpl.confirmarEntregaPago(2));
-
-        assertEquals("No se puede confirmar una transacción cancelada.", exception.getMessage());
+        assertTrue(result.isEmpty());
     }
 
-    // Endpoint mandar reclamo
-
-    @Test
-    @DisplayName("CP01 - Presentar reclamo con datos válidos")
-    void reclamarTransaccion_valido_devuelveActualizado() {
-        Transaction transaccion = new Transaction();
-        transaccion.setId(4);
-        transaccion.setEstado(TransactionStatus.PENDIENTE);
-
-        ClaimTransactionDTO dtoRequest = new ClaimTransactionDTO();
-        dtoRequest.setMotivo_reclamo("Producto en mal estado");
-
-        ShowTransactionDTO dtoResponse = new ShowTransactionDTO();
-        dtoResponse.setId(4);
-        dtoResponse.setMotivo_reclamo("Producto en mal estado");
-        dtoResponse.setEstado(TransactionStatus.RECLAMO_ENVIADO);
-
-        when(transactionRepository.findById(4)).thenReturn(Optional.of(transaccion));
-        when(transactionRepository.save(transaccion)).thenReturn(transaccion);
-        when(transactionsMapper.toResponse(transaccion)).thenReturn(dtoResponse);
-
-        ShowTransactionDTO result = userAuthTransactionServiceImpl.reclamarTransaccion(4, dtoRequest);
-
-        assertEquals(TransactionStatus.RECLAMO_ENVIADO, result.getEstado());
-        assertEquals("Producto en mal estado", result.getMotivo_reclamo());
-        verify(transactionRepository).save(transaccion);
-    }
-
-    @Test
-    @DisplayName("CP02 - Presentar reclamo para transacción inexistente")
-    void reclamarTransaccion_noExiste_lanzaExcepcion() {
-        ClaimTransactionDTO dto = new ClaimTransactionDTO();
-        dto.setMotivo_reclamo("Producto en mal estado");
-
-        when(transactionRepository.findById(3)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () ->
-                userAuthTransactionServiceImpl.reclamarTransaccion(3, dto));
-    }
-
-
-    @Test
-    @DisplayName("CP03 - Reclamo fallido si transacción ya fue confirmada")
-    void reclamarTransaccion_transaccionPagada_lanzaExcepcion() {
-        Transaction transaccion = new Transaction();
-        transaccion.setId(3);
-        transaccion.setEstado(TransactionStatus.PAGADO); // Ya confirmada
-
-        ClaimTransactionDTO dto = new ClaimTransactionDTO();
-        dto.setMotivo_reclamo("Producto dañado");
-
-
-        when(transactionRepository.findById(3)).thenReturn(Optional.of(transaccion));
-
-        BadRequestException exception = assertThrows(BadRequestException.class, () ->
-                userAuthTransactionServiceImpl.reclamarTransaccion(3, dto));
-
-        assertEquals("No se puede reclamar una transacción que ya fue confirmada como entregada.", exception.getMessage());
-    }
 }
