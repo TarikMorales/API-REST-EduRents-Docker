@@ -24,7 +24,7 @@ public class TransactionsMapper {
 
     public Transaction toEntity(TransactionDTO dto, Product product, User user) {
         Transaction transaction = new Transaction();
-        transaction.setMetodoPago(dto.getMetodo_pago());
+
         transaction.setProducto(product);
         transaction.setUsuario(user);
 
@@ -44,7 +44,7 @@ public class TransactionsMapper {
         ShowTransactionDTO dto = new ShowTransactionDTO();
 
         dto.setId(transaction.getId());
-        dto.setMetodo_pago(transaction.getMetodoPago());
+
         dto.setFecha_transaccion(transaction.getFecha_transaccion());
         dto.setEstado(transaction.getEstado());
         dto.setFecha_confirmacion_entrega(transaction.getFecha_confirmacion_entrega());

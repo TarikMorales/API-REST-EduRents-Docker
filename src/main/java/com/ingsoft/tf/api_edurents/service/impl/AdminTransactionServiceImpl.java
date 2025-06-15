@@ -6,7 +6,7 @@ import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 import com.ingsoft.tf.api_edurents.exception.BadRequestException;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
-import com.ingsoft.tf.api_edurents.mapper.TransactionsMapper;
+
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
@@ -39,10 +39,45 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
     private UserRepository userRepository;
 
     @Autowired
-    private AdminProductServiceImpl adminProductService;
+    private ProductMapper productMapper;
 
-    @Autowired
-    private final TransactionsMapper transactionsMapper;
+    private ShowTransactionDTO convertShowTransactionDTO(Transaction transaccion) {
+
+        ShowTransactionDTO transaccionDTOMostrar = new ShowTransactionDTO();
+
+        transaccionDTOMostrar.setId(transaccion.getId());
+        transaccionDTOMostrar.setFecha_transaccion(transaccion.getFecha_transaccion());
+        transaccionDTOMostrar.setEstado(transaccion.getEstado());
+        transaccionDTOMostrar.setMetodo_pago(transaccion.getMetodo_pago());
+
+        // Asignar Usuario
+        if (transaccion.getUsuario() != null) {
+            UserDTO usuarioDTO = new UserDTO();
+            usuarioDTO.setId(transaccion.getUsuario().getId());
+            usuarioDTO.setNombres(transaccion.getUsuario().getNombres());
+            usuarioDTO.setApellidos(transaccion.getUsuario().getApellidos());
+            usuarioDTO.setCorreo(transaccion.getUsuario().getCorreo());
+            usuarioDTO.setCodigo_universitario(transaccion.getUsuario().getCodigo_universitario());
+            usuarioDTO.setCiclo(transaccion.getUsuario().getCiclo());
+
+            transaccionDTOMostrar.setUsuario(usuarioDTO);
+        }
+
+        // Asignar Producto
+        if (transaccion.getProducto() != null) {
+            Product producto = transaccion.getProducto();
+            ShowProductDTO productoDTO = productMapper.toResponse(producto);
+
+            transaccionDTOMostrar.setProducto(productoDTO);
+        }
+
+        return transaccionDTOMostrar;
+
+    }
+
+    private Transaction convertToTransaction(Transaction transaction, TransactionDTO transaccionDTO, String tipo) {
+        transaction.setFecha_transaccion(LocalDate.now().atStartOfDay());
+
 
     @Transactional
     @Override

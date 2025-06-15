@@ -7,10 +7,16 @@ import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 
 public interface AdminUserService {
 
+    UserDTO obtenerUsuarioPorId(Integer id);
+
     UserDTO cambioContrasenaUsuario(Integer id, RecoverPasswordDTO nuevosDatos);
 
-    UserDTO loginUsuario(LoginDTO datosLogin);
+    UserDTO actualizarDatosUsuario(Integer id, UserDTO usuarioDTO);
 
-    UserDTO registerUsuario(RegisterDTO datosRegistro);
+    UserDTO cambiarFotoUsuario(Integer id, String urlFoto);
+
+    UserDTO cambiarCarreraUsuario(Integer id, Integer idCarrera);
+
+    UserDTO cambiarCicloUsuario(Integer id, Byte ciclo);
 
 }

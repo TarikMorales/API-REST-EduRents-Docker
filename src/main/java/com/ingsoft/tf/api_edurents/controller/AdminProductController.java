@@ -5,6 +5,7 @@ import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.StockDTO;
 import com.ingsoft.tf.api_edurents.service.AdminProductService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,12 @@ public class AdminProductController {
     public ResponseEntity<List<ShowProductDTO>> obtenerProductos(){
         List<ShowProductDTO> productos = adminProductService.obtenerTodosLosProductos();
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ShowProductDTO> obtenerProductoPorId(@PathVariable Integer id){
+        ShowProductDTO producto = adminProductService.obtenerProductoPorId(id);
+        return new ResponseEntity<ShowProductDTO>(producto, HttpStatus.OK);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -65,12 +72,6 @@ public class AdminProductController {
         return new ResponseEntity<ShowProductDTO>(producto, HttpStatus.OK);
     }
 
-    @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorVendedor(@PathVariable Integer sellerId) {
-        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorVendedor(sellerId);
-        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
-    }
-
     @GetMapping("/career/{carreraId}/course/{cursoId}")
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCursoYCarrera(@PathVariable Integer carreraId, @PathVariable Integer cursoId) {
         List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCursoYCarrera(carreraId, cursoId);
@@ -83,10 +84,96 @@ public class AdminProductController {
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
     }
 
+    @GetMapping("/career/{idCareer}")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCarrera(@PathVariable Integer idCareer) {
+        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCarrera(idCareer);
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("/career/{idCourse}")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCurso(@PathVariable Integer idCourse) {
+        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCurso(idCourse);
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("career/{idCareer}/course/{idCourse}/category/{idCategory}")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCarreraCursoCategoria(@PathVariable Integer idCareer, @PathVariable Integer idCourse, @PathVariable Integer idCategory) {
+        List<ShowProductDTO> productos = adminProductService.obtenerProductosPorCarreraCursoYCategoria(idCareer, idCourse, idCategory);
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public ResponseEntity<ShowProductDTO> eliminarProducto(@PathVariable Integer id){
         adminProductService.eliminarProducto(id);
         return new ResponseEntity<ShowProductDTO>(HttpStatus.NO_CONTENT);
     }
+
+
+    @GetMapping("/products/trendy")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosTrendy(){
+        List<ShowProductDTO> productos = adminProductService.obtenerTop10ProductosPorVistas();
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/top-exchanges")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosTopExchange(){
+        List<ShowProductDTO> productos = adminProductService.obtenerTop10ProductosPorCantidadDeIntercambios();
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/recents")
+    public ResponseEntity<List<ShowProductDTO>> obtenerProductosRecents(){
+        List<ShowProductDTO> productos = adminProductService.obtener10ProductosRecientes();
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @PutMapping("/{idProduct}/views")
+    public ResponseEntity<ShowProductDTO> sumarViews(@PathVariable Integer idProduct){
+        adminProductService.sumarView(idProduct);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/recomendados/{idCareer}")
+    public ResponseEntity<List<ShowProductDTO>> recomendarProductos(@PathVariable Integer idCareer){
+        adminProductService.obtenerProductosRecomendados(idCareer);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/career/{idCareer}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCareerOrderByView(@PathVariable Integer idCareer){
+        adminProductService.obtenerProductosPorCarreraOrdenarPorVistas(idCareer);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/course/{idCourse}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCourseOrderByView(@PathVariable Integer idCourse){
+        adminProductService.obtenerProductosPorCursoOrdenarPorVistas(idCourse);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/course/{idCourse}/career/{idCareer}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCareerCourseOrderByView(@PathVariable Integer idCareer, @PathVariable Integer idCourse){
+        adminProductService.obtenerProductosPorCarreraPorCursoOrdenarPorVistas(idCareer, idCourse);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/category/{idCategory}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCategoryOrderByView(@PathVariable Integer idCategory){
+        adminProductService.obtenerProductosPorCategoriaOrdernarPorVistas(idCategory);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/career/{idCareer}/course/{idCourse}/category/{idCategory}/views")
+    public ResponseEntity<List<ShowProductDTO>> ProductCareerCourseCategoryOrderByView(@PathVariable Integer idCareer, @PathVariable Integer idCourse, @PathVariable Integer idCategory){
+        adminProductService.obtenerProductosPorCarreraPorCursoPorCategoriaOrdenarPorVistas(idCareer, idCourse, idCategory);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/products/views/seller/{idSeller}")
+    public ResponseEntity<List<ShowProductDTO>> ProductSellerOrderByView(@PathVariable Integer idSeller){
+        adminProductService.obtenerProductosPorIdVendedorOrdenarPorVistas(idSeller);
+        return new ResponseEntity<List<ShowProductDTO>>(HttpStatus.NO_CONTENT);
+    }
+
 }
