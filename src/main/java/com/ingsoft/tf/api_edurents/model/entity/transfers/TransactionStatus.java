@@ -5,4 +5,4 @@ public enum TransactionStatus {
     PAGADO,
     CANCELADO,
     RECLAMO_ENVIADO
-}
+  }

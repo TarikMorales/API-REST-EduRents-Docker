@@ -1,5 +1,6 @@
 package com.ingsoft.tf.api_edurents.controller;
 
+import com.ingsoft.tf.api_edurents.dto.transfers.ClaimTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
@@ -21,11 +22,8 @@ public class AdminTransactionController {
 
     private final AdminTransactionService adminTransactionService;
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public ShowTransactionDTO crearTransaccion(@RequestBody @Valid TransactionDTO transaccionDTO) {
-        return adminTransactionService.crearTransaccion(transaccionDTO);
-    }
+    //HU 14
+
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
