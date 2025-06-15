@@ -10,6 +10,7 @@ import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class ExchangeOfferMapper {
     public ExchangeOffer toEntity(ExchangeOfferDTO dto, User user, Product product) {

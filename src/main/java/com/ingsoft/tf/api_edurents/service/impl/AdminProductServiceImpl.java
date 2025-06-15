@@ -4,6 +4,7 @@ import com.ingsoft.tf.api_edurents.dto.product.*;
 import com.ingsoft.tf.api_edurents.dto.user.SellerDTO;
 import com.ingsoft.tf.api_edurents.exception.BadRequestException;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
+import com.ingsoft.tf.api_edurents.mapper.ProductMapper;
 import com.ingsoft.tf.api_edurents.model.entity.product.*;
 import com.ingsoft.tf.api_edurents.model.entity.university.CoursesCareers;
 import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
@@ -11,12 +12,11 @@ import com.ingsoft.tf.api_edurents.repository.product.*;
 import com.ingsoft.tf.api_edurents.repository.university.CoursesCareersRepository;
 import com.ingsoft.tf.api_edurents.repository.user.SellerRepository;
 import com.ingsoft.tf.api_edurents.service.AdminProductService;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.codec.ServerSentEventHttpMessageWriter;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +48,10 @@ public class AdminProductServiceImpl implements AdminProductService {
 
     @Autowired
     private ImageRepository imageRepository;
+    @Autowired
+    private ConversionService conversionService;
+
+    private ProductMapper productMapper;
 
     private StockDTO convertToProductStockDTO(Product producto) {
         StockDTO dto = new StockDTO();
@@ -55,147 +59,13 @@ public class AdminProductServiceImpl implements AdminProductService {
         dto.setCantidad_disponible(producto.getCantidad_disponible());
         return dto;
     }
-    public ShowProductDTO convertToShowProductDTO(Product producto) {
-
-        ShowProductDTO productoDTOMostrar = new ShowProductDTO();
-
-        productoDTOMostrar.setId(producto.getId());
-        productoDTOMostrar.setNombre(producto.getNombre());
-        productoDTOMostrar.setDescripcion(producto.getDescripcion());
-        productoDTOMostrar.setPrecio(producto.getPrecio());
-        productoDTOMostrar.setEstado(producto.getEstado());
-        productoDTOMostrar.setFecha_creacion(producto.getFecha_creacion());
-        productoDTOMostrar.setFecha_modificacion(producto.getFecha_modificacion());
-        productoDTOMostrar.setFecha_expiracion(producto.getFecha_expiracion());
-        productoDTOMostrar.setCantidad_disponible(producto.getCantidad_disponible());
-        productoDTOMostrar.setAcepta_intercambio(producto.getAcepta_intercambio());
-
-        // Asignar vendedor
-        if (producto.getVendedor() != null) {
-            SellerDTO vendedorDTO = new SellerDTO();
-            vendedorDTO.setId(producto.getVendedor().getId());
-            vendedorDTO.setResena(producto.getVendedor().getResena());
-            vendedorDTO.setConfiabilidad(producto.getVendedor().getConfiabilidad());
-            vendedorDTO.setSin_demoras(producto.getVendedor().getSin_demoras());
-            vendedorDTO.setBuena_atencion(producto.getVendedor().getBuena_atencion());
-            productoDTOMostrar.setVendedor(vendedorDTO);
-        }
-
-        // Asignar imagenes
-        if (producto.getImagenes() != null) {
-            List<ImageDTO> imagenesDTO = producto.getImagenes().stream()
-                    .map(imagen -> {
-                        ImageDTO imagenDTO = new ImageDTO();
-                        imagenDTO.setId(imagen.getId());
-                        imagenDTO.setUrl(imagen.getUrl());
-                        return imagenDTO;
-                    }).collect(Collectors.toList());
-            productoDTOMostrar.setImagenes(imagenesDTO);
-        }
-
-        // Asignar categorias
-        if (producto.getCategorias() != null) {
-            List<CategoryDTO> categoriasDTO = producto.getCategorias().stream()
-                    .map(cat -> {
-                        CategoryDTO categoriaDTO = new CategoryDTO();
-                        categoriaDTO.setId(cat.getCategoria().getId());
-                        categoriaDTO.setNombre(cat.getCategoria().getNombre());
-                        return categoriaDTO;
-                    }).collect(Collectors.toList());
-            productoDTOMostrar.setCategorias(categoriasDTO);
-        }
-
-        // Asignar cursos y carreras
-        if (producto.getCursos_carreras() != null) {
-            List<CourseCareerDTO> cursosCarrerasDTO = producto.getCursos_carreras().stream()
-                    .map(cursoCarrera -> {
-                        CourseCareerDTO cursoCarreraDTO = new CourseCareerDTO();
-                        cursoCarreraDTO.setId_carrera(cursoCarrera.getCurso_carrera().getCarrera().getId());
-                        cursoCarreraDTO.setCarrera(cursoCarrera.getCurso_carrera().getCarrera().getNombre());
-                        cursoCarreraDTO.setId_curso(cursoCarrera.getCurso_carrera().getCurso().getId());
-                        cursoCarreraDTO.setCurso(cursoCarrera.getCurso_carrera().getCurso().getNombre());
-                        return cursoCarreraDTO;
-                    }).collect(Collectors.toList());
-            productoDTOMostrar.setCursos_carreras(cursosCarrerasDTO);
-        }
-
-        return productoDTOMostrar;
-    }
-
-    private Product convertToProduct(Product producto, ProductDTO productoDTO, String tipo) {
-        producto.setNombre(productoDTO.getNombre());
-        producto.setDescripcion(productoDTO.getDescripcion());
-        producto.setPrecio(productoDTO.getPrecio());
-        producto.setEstado(productoDTO.getEstado());
-        producto.setFecha_creacion(LocalDate.now());
-        if (tipo.equals("editar")) {
-            producto.setFecha_modificacion(LocalDate.now());
-        }
-        producto.setCantidad_disponible(productoDTO.getCantidad_disponible());
-        producto.setAcepta_intercambio(productoDTO.getAcepta_intercambio());
-
-        Seller vendedor = sellerRepository.findById(productoDTO.getId_vendedor())
-                .orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado"));
-        producto.setVendedor(vendedor);
-
-        // Guardamos el producto
-        productRepository.save(producto);
-
-        // Asignamos las imagenes al producto
-        producto.getImagenes().clear();
-        if (productoDTO.getUrls_imagenes() != null) {
-            List<Image> imagenes = productoDTO.getUrls_imagenes().stream()
-                    .map(url -> {
-                        Image imagen = new Image();
-                        imagen.setUrl(url);
-                        imagen.setProducto(producto);
-                        imageRepository.save(imagen);
-                        return imagen;
-                    }).toList();
-            producto.getImagenes().addAll(imagenes);
-        }
-
-        // Categorias del producto
-        producto.getCategorias().clear();
-        if (productoDTO.getCategorias() != null) {
-            List<CategoriesProducts> categorias = productoDTO.getCategorias().stream()
-                    .map(catId -> {
-                        Category categoria = categoryRepository.findById(catId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + catId));
-                        CategoriesProducts rel = new CategoriesProducts();
-                        rel.setProducto(producto);
-                        rel.setCategoria(categoria);
-                        categoriesProductsRepository.save(rel);
-                        return rel;
-                    }).toList();
-            producto.getCategorias().addAll(categorias);
-        }
-
-        // Cursos y carreras del producto
-        producto.getCursos_carreras().clear();
-        if (productoDTO.getCursos_carreras() != null) {
-            List<CoursesCareersProduct> cursosCarreras = productoDTO.getCursos_carreras().stream()
-                    .map(id -> {
-                        CoursesCareers cursoCarrera = coursesCareersRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException("Curso/Carrera no encontrado con id: " + id));
-                        CoursesCareersProduct rel = new CoursesCareersProduct();
-                        rel.setProducto(producto);
-                        rel.setCurso_carrera(cursoCarrera);
-                        coursesCareersProductRepository.save(rel);
-                        return rel;
-                    }).toList();
-            producto.getCursos_carreras().addAll(cursosCarreras);
-        }
-
-        return producto;
-    }
 
     @Transactional(readOnly = true)
     @Override
     public List<ShowProductDTO> obtenerTodosLosProductos() {
         List<Product> productos = productRepository.findAll();
         return productos.stream()
-                .map(this::convertToShowProductDTO)
+                .map(producto -> productMapper.toResponse(producto))
                 .collect(Collectors.toList());
     }
 
@@ -205,11 +75,19 @@ public class AdminProductServiceImpl implements AdminProductService {
 
         Product producto = new Product();
         // Convertimos el DTO a entidad
-        producto = convertToProduct(producto, productoDTO, "crear");
+        producto = productMapper.toEntity(producto, productoDTO, "crear");
 
         // Convertimos a DTO para devolver
-        ShowProductDTO productoDTOMostrar = convertToShowProductDTO(producto);
+        ShowProductDTO productoDTOMostrar = productMapper.toResponse(producto);
         return productoDTOMostrar;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ShowProductDTO obtenerProductoPorId(Integer id) {
+        Product producto = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
+        return productMapper.toResponse(producto);
     }
 
     @Transactional(readOnly = true)
@@ -219,7 +97,7 @@ public class AdminProductServiceImpl implements AdminProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + idProducto));
         return convertToProductStockDTO(producto);
     }
-    
+
     @Transactional
     @Override
     public ShowProductDTO actualizarCantidadDisponible(Integer idProducto, Integer nuevaCantidad) {
@@ -231,7 +109,7 @@ public class AdminProductServiceImpl implements AdminProductService {
 
         producto.setCantidad_disponible(nuevaCantidad);
         productRepository.save(producto);
-        ShowProductDTO productoDTOMostrar = convertToShowProductDTO(producto);
+        ShowProductDTO productoDTOMostrar = productMapper.toResponse(producto);
         return productoDTOMostrar;
     }
 
@@ -267,8 +145,6 @@ public class AdminProductServiceImpl implements AdminProductService {
         return dto;
     }
 
-
-
     @Transactional
     @Override
     public ShowProductDTO editarProducto(Integer id, ProductDTO productoDTO) {
@@ -276,22 +152,10 @@ public class AdminProductServiceImpl implements AdminProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
 
         // Convertimos el DTO a entidad
-        producto = convertToProduct(producto, productoDTO, "editar");
+        producto = productMapper.toEntity(producto, productoDTO, "editar");
         // Convertimos a DTO para devolver
-        ShowProductDTO productoDTOMostrar = convertToShowProductDTO(producto);
+        ShowProductDTO productoDTOMostrar = productMapper.toResponse(producto);
         return productoDTOMostrar;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<ShowProductDTO> obtenerProductosPorVendedor(Integer idVendedor) {
-        List<Product> productos = productRepository.findByVendedor(idVendedor);
-        if (productos.isEmpty()) {
-            throw new ResourceNotFoundException("No se encontraron productos para el vendedor con id: " + idVendedor);
-        }
-        return productos.stream()
-                .map(this::convertToShowProductDTO)
-                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -302,7 +166,7 @@ public class AdminProductServiceImpl implements AdminProductService {
             throw new ResourceNotFoundException("No se encontraron productos para la carrera con id: " + idCarrera + " y curso con id: " + idCurso);
         }
         return productos.stream()
-                .map(this::convertToShowProductDTO)
+                .map(product -> productMapper.toResponse(product))
                 .collect(Collectors.toList());
     }
 
@@ -314,7 +178,7 @@ public class AdminProductServiceImpl implements AdminProductService {
             throw new ResourceNotFoundException("No se encontraron productos para la categoría con id: " + idCategoria);
         }
         return productos.stream()
-                .map(this::convertToShowProductDTO)
+                .map(product -> productMapper.toResponse(product))
                 .collect(Collectors.toList());
     }
 
@@ -333,6 +197,19 @@ public class AdminProductServiceImpl implements AdminProductService {
         List<Product> products = productRepository.findAllByOrderByVistasDesc(top10);
         if (products.isEmpty()) {
             throw new ResourceNotFoundException("No se encontraron productos para el top 10 en base a vistas");
+    public void sumarView(Integer id){
+        Product producto = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
+        producto.setVistas(producto.getVistas() + 1);
+        productRepository.save(producto);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosRecomendados(Integer idCareer){
+        List<Product> products = productRepository.findByCareerOrderByViews(idCareer);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraro productos recomendados para la carrera: " + idCareer);
         }
         return products.stream()
                 .map(this::convertToShowProductDTO)
@@ -346,6 +223,12 @@ public class AdminProductServiceImpl implements AdminProductService {
         List<Product> products = productRepository.findTopProductsByExchangeOfferCount(top10);
         if (products.isEmpty()) {
             throw new ResourceNotFoundException("No se encontraron productos para el top 10 em base a cantidad de intercambios");
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCarreraOrdenarPorVistas(Integer idCareer){
+        List<Product> products = productRepository.findByCareerOrderByViews(idCareer);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la carrera con id: " + idCareer);
         }
         return products.stream()
                 .map(this::convertToShowProductDTO)
@@ -361,6 +244,86 @@ public class AdminProductServiceImpl implements AdminProductService {
             throw new ResourceNotFoundException("No se encontraron productos recientes");
         }
         return products.stream()
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCursoOrdenarPorVistas(Integer idCourse){
+        List<Product> products = productRepository.findByCourseOrderByViews(idCourse);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para el curso con id: " + idCourse);
+        }
+        return products.stream()
+    public List<ShowProductDTO> obtenerProductosPorCarrera(Integer idCarrera) {
+        List<Product> productos = productRepository.findByCareer(idCarrera);
+        if(productos.isEmpty()) {
+            throw new ResourceNotFoundException(("No se encontraron productos para la carrera con id: " + idCarrera));
+        }
+        return productos.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCarreraPorCursoOrdenarPorVistas(Integer idCareer, Integer idCourse){
+        List<Product> products = productRepository.findByCourseCareerOrderByViews(idCareer, idCourse);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la carera con id: " + idCareer + " y curso con id: " + idCourse);
+        }
+        return products.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCategoriaOrdernarPorVistas(Integer idCategory){
+        List<Product> products = productRepository.findByCategoryOrderByViews(idCategory);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la categoria con id: " + idCategory);
+        }
+        return products.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCarreraPorCursoPorCategoriaOrdenarPorVistas(Integer idCareer, Integer idCourse, Integer idCategory){
+        List<Product> products = productRepository.findByCareerCourseCategoryOrderByViews(idCareer, idCourse, idCategory);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la carrera con id: " + idCareer + " , curso con id: " + idCourse + " y categoria con id: " + idCategory);
+        }
+        return products.stream()
+
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCurso(Integer idCurso) {
+        List<Product> productos = productRepository.findByCourse(idCurso);
+        if(productos.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para el curso con id: " + idCurso);
+        }
+        return productos.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorIdVendedorOrdenarPorVistas(Integer idSeller){
+        List<Product> products = productRepository.findBySellerIdOrderByViews(idSeller);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos del vendedor con id: " + idSeller);
+        }
+       return products.stream()
+
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCarreraCursoYCategoria(Integer idCarrera, Integer idCurso, Integer idCategoria) {
+        List<Product> productos = productRepository.findByCareerAndCourseAndCategorias(idCarrera, idCurso, idCategoria);
+        if(productos.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la carrera con id: " + idCarrera + ",curso con id: " + idCurso + "y categoria con id: " + idCategoria);
+        }
+        return productos.stream()
                 .map(this::convertToShowProductDTO)
                 .collect(Collectors.toList());
     }

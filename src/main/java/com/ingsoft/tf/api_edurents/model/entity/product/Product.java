@@ -33,10 +33,7 @@ public class Product {
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDate fecha_creacion;
 
-    @Column(name = "fecha_modificacion", nullable = false)
-    private LocalDate fecha_modificacion;
 
-    @Column(name = "fecha_expiracion", nullable = false)
     private LocalDate fecha_expiracion;
 
     @Column(name = "cantidad_disponible", nullable = false)
@@ -44,6 +41,11 @@ public class Product {
 
     @Column(name = "acepta_intercambio", nullable = false)
     private Boolean acepta_intercambio;
+    @Column(name = "vistas")
+    private Integer vistas = 0;
+
+    @Column(name = "vistas", nullable = false)
+    private Integer vistas = 0;
 
     @Column(name = "vistas", nullable = false)
     private Integer vistas = 0;
