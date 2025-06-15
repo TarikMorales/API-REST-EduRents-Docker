@@ -7,6 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SellerMapper {
 
+    public Seller toEntity(Integer id) {
+        Seller seller = new Seller();
+        seller.setId(id);
+        return seller;
+    }
+
     public SellerDTO toSellerDTO(Seller seller) {
         SellerDTO dto = new SellerDTO();
 

@@ -1,5 +1,6 @@
 package com.ingsoft.tf.api_edurents.controller;
 
+import com.ingsoft.tf.api_edurents.dto.auth.RecoverProcessDTO;
 import com.ingsoft.tf.api_edurents.dto.user.LoginDTO;
 import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
@@ -27,5 +28,24 @@ public class PublicUserController {
     public ResponseEntity<UserDTO> login(@Valid @RequestBody LoginDTO datosLogin) {
         UserDTO userDTO = publicUserService.loginUsuario(datosLogin);
         return new ResponseEntity<UserDTO>(userDTO, HttpStatus.OK);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<RecoverProcessDTO> forgotPassword(@RequestParam String correo) {
+        RecoverProcessDTO response = publicUserService.forgotPassword(correo);
+        return new ResponseEntity<RecoverProcessDTO>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/verify-token/{id}")
+    public ResponseEntity<String> verifyToken(@PathVariable Integer id, @RequestParam String token) {
+        String response = publicUserService.verifyToken(id, token);
+        return new ResponseEntity<String>(response, HttpStatus.OK);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/reset-password/{id}")
+    public ResponseEntity<Void> resetPassword(@PathVariable Integer id, @RequestParam String token, @RequestParam String newPassword) {
+        publicUserService.resetPassword(id, token, newPassword);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 }

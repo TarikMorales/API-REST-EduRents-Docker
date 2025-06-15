@@ -43,52 +43,7 @@ public class UserAuthUserServiceUnitTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // HU08
 
-    // ENDPOINT actualizar datos usuario
-
-    @Test
-    @DisplayName("HU8 - CP01 - Actualizar datos del usuario exitosamente")
-    void actualizarDatosUsuario_datosValidos_devuelveDTO() {
-        UserDTO dto = new UserDTO();
-        dto.setNombres("NuevoNombre");
-
-        User user = new User(); user.setId(1);
-        User updated = new User(); updated.setNombres("NuevoNombre");
-        UserDTO response = new UserDTO(); response.setNombres("NuevoNombre");
-
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(updated);
-        when(userMapper.toResponse(any(User.class))).thenReturn(response);
-
-        UserDTO result = userAuthUserService.actualizarDatosUsuario(1, dto);
-
-        assertNotNull(result);
-        assertEquals("NuevoNombre", result.getNombres());
-    }
-
-
-    @Test
-    @DisplayName("HU8 - CP02 - Usuario no encontrado al actualizar datos")
-    void actualizarDatosUsuario_noExiste_lanzaExcepcion() {
-        UserDTO dto = new UserDTO();
-        when(userRepository.findById(100)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () ->
-                userAuthUserService.actualizarDatosUsuario(100, dto));
-    }
-
-    // ENDPOINT cambiar foto
-
-    @Test
-    @DisplayName("HU8 - CP03 - Cambiar foto con URL válida")
-    void cambiarFotoUsuario_urlValida_devuelveDTO() {
-        User user = new User(); user.setId(1);
-        user.setFoto_url(null);
-
-        User updated = new User(); updated.setFoto_url("https://imagen.com/perfil.jpg");
-
-        UserDTO response = new UserDTO(); response.setFoto_url("https://imagen.com/perfil.jpg");
 
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(updated);
@@ -143,5 +98,33 @@ public class UserAuthUserServiceUnitTest {
         assertThrows(ResourceNotFoundException.class, () ->
                 userAuthUserService.cambiarCarreraUsuario(1, 99));
     }
+        UserDTO result = userAuthUserService.cambioContrasenaUsuario(1, dto);
+
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+    }
+
+    @Test
+    @DisplayName("HU9 - CP02 - Cambio de contraseña con correo incorrecto")
+    void cambioContrasena_correoIncorrecto_lanzaExcepcion() {
+        RecoverPasswordDTO dto = new RecoverPasswordDTO();
+        dto.setCorreo("otro@mail.com");
+        dto.setContrasena("oldPass");
+        dto.setNuevaContrasena("newPass");
+
+        User user = new User(); user.setId(1);
+        user.setCorreo("test@mail.com");
+        user.setContrasena("oldPass");
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+
+        assertThrows(BadRequestException.class, () ->
+                userAuthUserService.cambioContrasenaUsuario(1, dto));
+    }
+
+
+
+
+
 
 }

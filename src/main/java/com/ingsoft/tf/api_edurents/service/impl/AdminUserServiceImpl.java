@@ -11,6 +11,7 @@ import com.ingsoft.tf.api_edurents.repository.university.CareerRepository;
 import com.ingsoft.tf.api_edurents.repository.user.UserRepository;
 import com.ingsoft.tf.api_edurents.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                 .orElseThrow(() -> new ResourceNotFoundException("El usuario no existe"));
         return userMapper.toResponse(usuario);
     }
-
+      
     @Transactional
     @Override
     public UserDTO cambioContrasenaUsuario(Integer id, RecoverPasswordDTO nuevosDatos) {
