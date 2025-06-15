@@ -47,6 +47,9 @@ public class Product {
     @Column(name = "vistas")
     private Integer vistas = 0;
 
+    @Column(name = "vistas", nullable = false)
+    private Integer vistas = 0;
+
     @ManyToOne
     @JoinColumn(name = "id_vendedor",
             referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_producto_categoria"), nullable = false)

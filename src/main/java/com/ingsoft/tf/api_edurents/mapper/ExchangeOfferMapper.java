@@ -8,6 +8,7 @@ import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeStatus;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
+import org.springframework.stereotype.Component;
 import com.ingsoft.tf.api_edurents.repository.exchanges.ExchangeOfferRepository;
 import com.ingsoft.tf.api_edurents.repository.product.ProductRepository;
 import com.ingsoft.tf.api_edurents.repository.user.UserRepository;

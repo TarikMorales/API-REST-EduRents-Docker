@@ -2,6 +2,7 @@ package com.ingsoft.tf.api_edurents.mapper;
 
 import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
+import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import org.springframework.stereotype.Component;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.product.*;
@@ -35,6 +36,9 @@ public class ProductMapper {
             SellerMapper sellerMapper,
             ImageMapper imageMapper,
             CourseCareerProductMapper coursesCareersProductMapper,
+            CategoriesProductsMapper categoriesProductsMapper
+    ) {
+
         this.categoryMapper = categoryMapper;
         this.sellerMapper = sellerMapper;
         this.imageMapper = imageMapper;

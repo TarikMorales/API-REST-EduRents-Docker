@@ -12,9 +12,11 @@ import com.ingsoft.tf.api_edurents.repository.product.*;
 import com.ingsoft.tf.api_edurents.repository.university.CoursesCareersRepository;
 import com.ingsoft.tf.api_edurents.repository.user.SellerRepository;
 import com.ingsoft.tf.api_edurents.service.AdminProductService;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,25 @@ public class AdminProductServiceImpl implements AdminProductService {
     private ProductRepository productRepository;
 
     @Autowired
+    private SellerRepository sellerRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CoursesCareersRepository coursesCareersRepository;
+
+    @Autowired
+    private CategoriesProductsRepository categoriesProductsRepository;
+
+    @Autowired
+    private CoursesCareersProductRepository coursesCareersProductRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
+    @Autowired
+    private ConversionService conversionService;
+
     private ProductMapper productMapper;
 
     private StockDTO convertToProductStockDTO(Product producto) {
@@ -171,6 +192,45 @@ public class AdminProductServiceImpl implements AdminProductService {
 
     @Transactional
     @Override
+    public void sumarView(Integer id){
+        Product producto = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
+        producto.setVistas(producto.getVistas() + 1);
+        productRepository.save(producto);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosRecomendados(Integer idCareer){
+        List<Product> products = productRepository.findByCareerOrderByViews(idCareer);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraro productos recomendados para la carrera: " + idCareer);
+        }
+        return products.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCarreraOrdenarPorVistas(Integer idCareer){
+        List<Product> products = productRepository.findByCareerOrderByViews(idCareer);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la carrera con id: " + idCareer);
+        }
+        return products.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCursoOrdenarPorVistas(Integer idCourse){
+        List<Product> products = productRepository.findByCourseOrderByViews(idCourse);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para el curso con id: " + idCourse);
+        }
+        return products.stream()
     public List<ShowProductDTO> obtenerProductosPorCarrera(Integer idCarrera) {
         List<Product> productos = productRepository.findByCareer(idCarrera);
         if(productos.isEmpty()) {
@@ -180,6 +240,39 @@ public class AdminProductServiceImpl implements AdminProductService {
                 .map(this::convertToShowProductDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCarreraPorCursoOrdenarPorVistas(Integer idCareer, Integer idCourse){
+        List<Product> products = productRepository.findByCourseCareerOrderByViews(idCareer, idCourse);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la carera con id: " + idCareer + " y curso con id: " + idCourse);
+        }
+        return products.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCategoriaOrdernarPorVistas(Integer idCategory){
+        List<Product> products = productRepository.findByCategoryOrderByViews(idCategory);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la categoria con id: " + idCategory);
+        }
+        return products.stream()
+                .map(this::convertToShowProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorCarreraPorCursoPorCategoriaOrdenarPorVistas(Integer idCareer, Integer idCourse, Integer idCategory){
+        List<Product> products = productRepository.findByCareerCourseCategoryOrderByViews(idCareer, idCourse, idCategory);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para la carrera con id: " + idCareer + " , curso con id: " + idCourse + " y categoria con id: " + idCategory);
+        }
+        return products.stream()
 
     @Transactional
     @Override
@@ -192,6 +285,15 @@ public class AdminProductServiceImpl implements AdminProductService {
                 .map(this::convertToShowProductDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ShowProductDTO> obtenerProductosPorIdVendedorOrdenarPorVistas(Integer idSeller){
+        List<Product> products = productRepository.findBySellerIdOrderByViews(idSeller);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos del vendedor con id: " + idSeller);
+        }
+       return products.stream()
 
     @Transactional
     @Override
