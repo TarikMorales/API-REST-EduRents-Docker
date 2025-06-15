@@ -4,6 +4,16 @@ import com.ingsoft.tf.api_edurents.dto.product.ProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import org.springframework.stereotype.Component;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
+import com.ingsoft.tf.api_edurents.model.entity.product.*;
+import com.ingsoft.tf.api_edurents.model.entity.university.CoursesCareers;
+import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
+import com.ingsoft.tf.api_edurents.repository.product.*;
+import com.ingsoft.tf.api_edurents.repository.university.CoursesCareersRepository;
+import com.ingsoft.tf.api_edurents.repository.user.SellerRepository;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Component
 public class ProductMapper {
@@ -13,6 +23,13 @@ public class ProductMapper {
     private final ImageMapper imageMapper;
     private final CourseCareerProductMapper coursesCareersProductMapper;
     private final CategoriesProductsMapper categoriesProductsMapper;
+    private final SellerRepository sellerRepository;
+    private final ImageRepository imageRepository;
+    private final CategoryRepository categoryRepository;
+    private final CategoriesProductsRepository categoriesProductsRepository;
+    private final CoursesCareersRepository coursesCareersRepository;
+    private final CoursesCareersProductRepository coursesCareersProductRepository;
+    private final ProductRepository productRepository;
 
     public ProductMapper(
             CategoryMapper categoryMapper,
@@ -21,6 +38,7 @@ public class ProductMapper {
             CourseCareerProductMapper coursesCareersProductMapper,
             CategoriesProductsMapper categoriesProductsMapper
     ) {
+
         this.categoryMapper = categoryMapper;
         this.sellerMapper = sellerMapper;
         this.imageMapper = imageMapper;
@@ -38,6 +56,82 @@ public class ProductMapper {
         product.setAcepta_intercambio(request.getAcepta_intercambio());
         product.setFecha_expiracion(request.getFecha_expiracion());
         return product;
+        this.sellerRepository = sellerRepository;
+        this.imageRepository = imageRepository;
+        this.categoryRepository = categoryRepository;
+        this.categoriesProductsRepository = categoriesProductsRepository;
+        this.coursesCareersRepository = coursesCareersRepository;
+        this.coursesCareersProductRepository = coursesCareersProductRepository;
+        this.productRepository = productRepository;
+    }
+
+    public Product toEntity(Product base, ProductDTO request, String tipoRequest) {
+        base.setNombre(request.getNombre());
+        base.setDescripcion(request.getDescripcion());
+        base.setPrecio(request.getPrecio());
+        base.setEstado(request.getEstado());
+        base.setCantidad_disponible(request.getCantidad_disponible());
+        base.setAcepta_intercambio(request.getAcepta_intercambio());
+        base.setFecha_creacion(LocalDate.now());
+        base.setFecha_expiracion(request.getFecha_expiracion());
+
+        if (tipoRequest.equals("editar")) {
+            base.setFecha_modificacion(LocalDate.now());
+        }
+
+        Seller vendedor = sellerRepository.findById(request.getId_vendedor())
+                .orElseThrow(() -> new ResourceNotFoundException("Vendedor no encontrado"));
+        base.setVendedor(vendedor);
+
+        productRepository.save(base);
+
+        // Imagenes
+        base.getImagenes().clear();
+        if (request.getUrls_imagenes() != null) {
+            List<Image> imagenes = request.getUrls_imagenes().stream()
+                    .map(url -> {
+                        Image imagen = new Image();
+                        imagen.setUrl(url);
+                        imagen.setProducto(base);
+                        imageRepository.save(imagen);
+                        return imagen;
+                    }).toList();
+            base.getImagenes().addAll(imagenes);
+        }
+
+        // Categorias
+        base.getCategorias().clear();
+        if (request.getCategorias() != null) {
+            List<CategoriesProducts> categorias = request.getCategorias().stream()
+                    .map(catId -> {
+                        Category categoria = categoryRepository.findById(catId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + catId));
+                        CategoriesProducts rel = new CategoriesProducts();
+                        rel.setProducto(base);
+                        rel.setCategoria(categoria);
+                        categoriesProductsRepository.save(rel);
+                        return rel;
+                    }).toList();
+            base.getCategorias().addAll(categorias);
+        }
+
+        // Cursos y Carreras
+        base.getCursos_carreras().clear();
+        if (request.getCursos_carreras() != null) {
+            List<CoursesCareersProduct> cursosCarreras = request.getCursos_carreras().stream()
+                    .map(id -> {
+                        CoursesCareers cursoCarrera = coursesCareersRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("Curso/Carrera no encontrado con id: " + id));
+                        CoursesCareersProduct rel = new CoursesCareersProduct();
+                        rel.setProducto(base);
+                        rel.setCurso_carrera(cursoCarrera);
+                        coursesCareersProductRepository.save(rel);
+                        return rel;
+                    }).toList();
+            base.getCursos_carreras().addAll(cursosCarreras);
+        }
+
+        return base;
     }
 
     public ShowProductDTO toResponse(Product product) {
