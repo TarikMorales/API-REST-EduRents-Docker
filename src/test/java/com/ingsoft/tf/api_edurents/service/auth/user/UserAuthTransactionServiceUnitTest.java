@@ -184,6 +184,67 @@ public class UserAuthTransactionServiceUnitTest {
         assertThrows(ResourceNotFoundException.class, () -> {
             userAuthTransactionServiceImpl.obtenerTransaccionPorIdPorUsuario(8, 1);
         });
+
+
+    // HU 15
+
+    //endpoint de obtener transacciones por ID usuario
+
+    @Test
+    @DisplayName("CP01 - Obtener transacciones por ID de usuario con datos")
+    void obtenerTransaccionesUsuario_conDatos_devuelveLista() {
+        Transaction t1 = new Transaction();
+        Transaction t2 = new Transaction();
+        List<Transaction> transactions = List.of(t1, t2);
+
+        ShowTransactionDTO dto1 = new ShowTransactionDTO();
+        ShowTransactionDTO dto2 = new ShowTransactionDTO();
+
+        when(transactionRepository.findByUsuarioId(1)).thenReturn(transactions);
+        when(transactionsMapper.toResponse(t1)).thenReturn(dto1);
+        when(transactionsMapper.toResponse(t2)).thenReturn(dto2);
+
+        List<ShowTransactionDTO> result = userAuthTransactionServiceImpl.obtenerTransaccionesPorUsuario(1);
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    @DisplayName("CP02 - Obtener transacciones por ID de usuario sin datos")
+    void obtenerTransaccionesUsuario_sinDatos_devuelveListaVacia() {
+        when(transactionRepository.findByUsuarioId(1)).thenReturn(Collections.emptyList());
+        List<ShowTransactionDTO> result = userAuthTransactionServiceImpl.obtenerTransaccionesPorUsuario(1);
+        assertTrue(result.isEmpty());
+    }
+
+    //endpoint de filtrado de transacciones usuario por estado
+
+    @Test
+    @DisplayName("CP01 - Obtener transacciones por estado del usuario")
+    void obtenerTransaccionesUsuario_estadoFiltrado_devuelveLista() {
+        Transaction t1 = new Transaction();
+        List<Transaction> transactions = List.of(t1);
+        ShowTransactionDTO dto1 = new ShowTransactionDTO();
+
+        when(transactionRepository.findByUsuarioIdAndEstado(2, TransactionStatus.PAGADO)).thenReturn(transactions);
+        when(transactionsMapper.toResponse(t1)).thenReturn(dto1);
+
+        List<ShowTransactionDTO> result = userAuthTransactionServiceImpl
+                .obtenerTransaccionesPorUsuarioPorEstado(2, TransactionStatus.PAGADO);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @DisplayName("CP02 - Obtener transacciones del usuario con estado sin coincidencias")
+    void obtenerTransaccionesUsuario_estadoSinCoincidencia_listaVacia() {
+        when(transactionRepository.findByUsuarioIdAndEstado(2, TransactionStatus.CANCELADO))
+                .thenReturn(Collections.emptyList());
+
+        List<ShowTransactionDTO> result = userAuthTransactionServiceImpl
+                .obtenerTransaccionesPorUsuarioPorEstado(2, TransactionStatus.CANCELADO);
+
+        assertTrue(result.isEmpty());
     }
 
 }

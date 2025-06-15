@@ -17,7 +17,6 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "metodo_pago", nullable = false)
-    private PaymentMethod metodoPago;
 
     @Column(name = "fecha_transaccion", nullable = false)
     private LocalDateTime fecha_transaccion;
@@ -31,6 +30,7 @@ public class Transaction {
 
     @Column(name = "motivo_reclamo", length = 500)
     private String motivo_reclamo;
+
 
     @ManyToOne
     @JoinColumn(name = "id_producto",
