@@ -165,6 +165,85 @@ public class PublicUserServiceUnitTest {
 
         assertThrows(BadCredentialsException.class, () -> publicUserService.loginUsuario(dto));
 
+
+    //HU9
+
+    // ENDPOINT RECUPERAR CONTRA
+
+    @Test
+    @DisplayName("HU9 - CP03 - Proceso de recuperación exitoso")
+    void forgotPassword_usuarioExiste_devuelveProceso() {
+        String correo = "test@mail.com";
+
+        RecoverProcess proceso = new RecoverProcess();
+        proceso.setCorreo(correo);
+
+        RecoverProcessDTO dto = new RecoverProcessDTO();
+        dto.setCorreo(correo);
+
+        when(userRepository.existsUserByCorreo(correo)).thenReturn(true);
+        when(recoverProcessMapper.toEntity(correo)).thenReturn(proceso);
+        when(recoverProcessMapper.toResponse(proceso)).thenReturn(dto);
+
+        RecoverProcessDTO result = publicUserService.forgotPassword(correo);
+        assertEquals(correo, result.getCorreo());
+    }
+
+    @Test
+    @DisplayName("HU9 - CP04 - Proceso de recuperación con correo no registrado")
+    void forgotPassword_usuarioNoExiste_lanzaExcepcion() {
+        String correo = "noexiste@mail.com";
+        when(userRepository.existsUserByCorreo(correo)).thenReturn(false);
+
+        assertThrows(BadRequestException.class, () ->
+                publicUserService.forgotPassword(correo));
+    }
+
+
+    // ENDPOINT RESET PASS
+
+    @Test
+    @DisplayName("HU9 - CP05 - Restablecer contraseña con token válido")
+    void resetPassword_tokenValido_realizaCambio() {
+        String correo = "test@mail.com";
+        String tokenPlano = "123456";
+        String tokenHash = BCrypt.hashpw(tokenPlano, BCrypt.gensalt());
+
+        RecoverProcess proceso = new RecoverProcess();
+        proceso.setId(1);
+        proceso.setCorreo(correo);
+        proceso.setValido(true);
+        proceso.setActivado(true);
+        proceso.setFechaExpiracion(LocalDateTime.now().plusMinutes(10));
+        proceso.setToken_hasheado(tokenHash);
+
+        User user = new User(); user.setCorreo(correo);
+
+        when(recoverProcessRepository.findById(1)).thenReturn(Optional.of(proceso));
+        when(userRepository.findByCorreo(correo)).thenReturn(user);
+        when(passwordEncoder.encode(anyString())).thenReturn(tokenHash);
+
+        publicUserService.resetPassword(1, tokenPlano, "newPass");
+
+        verify(userRepository).save(user);
+        verify(recoverProcessRepository).save(proceso);
+    }
+
+    @Test
+    @DisplayName("HU9 - CP06 - Restablecer contraseña con token inválido")
+    void resetPassword_tokenInvalido_lanzaExcepcion() {
+        RecoverProcess proceso = new RecoverProcess();
+        proceso.setId(1);
+        proceso.setCorreo("test@mail.com");
+        proceso.setValido(true);
+        proceso.setActivado(true);
+        proceso.setFechaExpiracion(LocalDateTime.now().plusMinutes(10));
+        proceso.setToken_hasheado(BCrypt.hashpw("otroToken", BCrypt.gensalt()));
+
+        when(recoverProcessRepository.findById(1)).thenReturn(Optional.of(proceso));
+
+        assertThrows(BadRequestException.class, () ->
+                publicUserService.resetPassword(1, "tokenIncorrecto", "newPass"));
     }
 
 }

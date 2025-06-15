@@ -1,6 +1,7 @@
 package com.ingsoft.tf.api_edurents.controller;
 
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
+import com.ingsoft.tf.api_edurents.service.AdminProductService;
 import com.ingsoft.tf.api_edurents.service.AuthProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
