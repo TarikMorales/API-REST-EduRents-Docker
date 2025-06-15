@@ -165,6 +165,7 @@ public class PublicUserServiceUnitTest {
 
         assertThrows(BadCredentialsException.class, () -> publicUserService.loginUsuario(dto));
 
+    }
 
     //HU9
 

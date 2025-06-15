@@ -63,7 +63,6 @@ public class SellerAuthTransactionServiceUnitTest {
         assertTrue(result.isEmpty());
     }
 
-
     // HU15
 
     // endpoint de transacciones vendedor por metodo pago
