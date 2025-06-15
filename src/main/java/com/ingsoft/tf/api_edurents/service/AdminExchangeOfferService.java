@@ -10,4 +10,7 @@ public interface AdminExchangeOfferService {
     ShowExchangeOfferDTO crearIntercambio(ExchangeOfferDTO intercambioDTO);
     List<ShowExchangeOfferDTO> obtenerIntercambiosPorUsuario(Integer id);
     List<ShowExchangeOfferDTO> obtenerIntercambiosPorVendedor(Integer id);
+    ShowExchangeOfferDTO obtenerIntercambioPorId(Integer id);
+    ShowExchangeOfferDTO actualizarIntercambio(Integer id, ExchangeOfferDTO intercambioDTO);
+    void eliminarIntercambio(Integer id);
 }
