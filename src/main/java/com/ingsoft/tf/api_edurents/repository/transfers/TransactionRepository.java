@@ -16,4 +16,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     boolean existsByProductoIdAndUsuarioId(Integer idProducto, Integer idUsuario);
     List<Transaction> findByProductoIdAndProductoVendedorId(Integer idProduct, Integer idSeller);
 
+
 }

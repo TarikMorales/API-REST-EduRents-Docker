@@ -11,4 +11,5 @@ public class ClaimTransactionDTO {
     @Size(min = 10, max = 500, message = "El motivo debe tener entre 10 y 500 caracteres")
     private String motivo_reclamo;
 
+
 }

@@ -9,11 +9,13 @@ import java.util.List;
 
 public interface AdminTransactionService {
 
-    // hu14
-    ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion);
-    ShowTransactionDTO reclamarTransaccion(Integer id, ClaimTransactionDTO dto);
-    ShowTransactionDTO obtenerTransaccionPorProductoYUsuario(Integer idProducto, Integer idUsuario);
-    List<ShowTransactionDTO> obtenerTransaccionesPorProductoYVendedor(Integer idProducto, Integer idVendedor);
+
+    // HU13
+    ShowTransactionDTO crearTransaccion(TransactionDTO transaccionDTO);
+    void cancelarTransaccion(Integer id);
+    ShowTransactionDTO obtenerTransaccionPorId(Integer id);
+    List<ShowTransactionDTO> obtenerTransacciones();
+    ShowTransactionDTO obtenerTransaccionPorIdPorUsuario(Integer idTransaction, Integer idUsuario);
 
 
 }
