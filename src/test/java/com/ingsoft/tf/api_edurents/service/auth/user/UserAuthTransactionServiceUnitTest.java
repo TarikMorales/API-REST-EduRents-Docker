@@ -47,6 +47,7 @@ public class UserAuthTransactionServiceUnitTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
     // HU 15
 
     //endpoint de obtener transacciones por ID usuario

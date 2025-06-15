@@ -33,6 +33,37 @@ public class SellerAuthTransactionServiceUnitTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    // HU 14
+
+    // endpoint de transacciones por producto del vendedor
+
+    @Test
+    @DisplayName("CP05 - Obtener transacciones por vendedor y producto con resultados")
+    void obtenerTransaccionesPorVendedorYProducto_conDatos_devuelveLista() {
+        Transaction t1 = new Transaction(); t1.setId(1);
+        Transaction t2 = new Transaction(); t2.setId(2);
+        List<Transaction> lista = List.of(t1, t2);
+
+        ShowTransactionDTO dto1 = new ShowTransactionDTO(); dto1.setId(1);
+        ShowTransactionDTO dto2 = new ShowTransactionDTO(); dto2.setId(2);
+
+        when(transactionRepository.findByProductoIdAndProductoVendedorId(10, 20)).thenReturn(lista);
+        when(transactionsMapper.toResponse(t1)).thenReturn(dto1);
+        when(transactionsMapper.toResponse(t2)).thenReturn(dto2);
+
+        List<ShowTransactionDTO> result = sellerAuthTransactionServiceimpl.obtenerTransaccionesPorProductoYVendedor(10, 20);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    @DisplayName("CP06 - Obtener transacciones por vendedor y producto sin resultados")
+    void obtenerTransaccionesPorVendedorYProducto_sinDatos_listaVacia() {
+        when(transactionRepository.findByProductoIdAndProductoVendedorId(10, 20)).thenReturn(Collections.emptyList());
+        List<ShowTransactionDTO> result = sellerAuthTransactionServiceimpl.obtenerTransaccionesPorProductoYVendedor(10, 20);
+        assertTrue(result.isEmpty());
+    }
+
+
     // HU15
 
     // endpoint de transacciones vendedor por metodo pago
