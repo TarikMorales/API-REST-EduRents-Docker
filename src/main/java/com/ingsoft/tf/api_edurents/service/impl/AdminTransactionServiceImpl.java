@@ -37,9 +37,6 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
     private UserRepository userRepository;
 
     @Autowired
-    private AdminProductServiceImpl adminProductService;
-
-    @Autowired
     private ProductMapper productMapper;
 
     private ShowTransactionDTO convertShowTransactionDTO(Transaction transaccion) {

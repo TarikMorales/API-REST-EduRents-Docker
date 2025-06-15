@@ -65,7 +65,7 @@ public class AdminProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-
+  
     @PutMapping("/{id}")
     public ResponseEntity<ShowProductDTO> editarProducto(@PathVariable Integer id, @Valid @RequestBody ProductDTO productoDTO){
         ShowProductDTO producto = adminProductService.editarProducto(id, productoDTO);
@@ -108,6 +108,7 @@ public class AdminProductController {
         adminProductService.eliminarProducto(id);
         return new ResponseEntity<ShowProductDTO>(HttpStatus.NO_CONTENT);
     }
+
 
     @GetMapping("/products/trendy")
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosTrendy(){
