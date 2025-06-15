@@ -4,8 +4,9 @@ import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
+import com.ingsoft.tf.api_edurents.exception.BadRequestException;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
-import com.ingsoft.tf.api_edurents.mapper.ProductMapper;
+
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,96 +77,69 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
 
     private Transaction convertToTransaction(Transaction transaction, TransactionDTO transaccionDTO, String tipo) {
         transaction.setFecha_transaccion(LocalDate.now().atStartOfDay());
-        transaction.setMetodo_pago(transaccionDTO.getMetodo_pago());
-
-        if (tipo.equals("crear")) {
-            transaction.setEstado(TransactionStatus.PENDIENTE);
-        } else {
-            transaction.setEstado(TransactionStatus.PAGADO);
-        }
-
-        // Asignación Usuario
-        User usuario = userRepository.findById(transaccionDTO.getId_usuario())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-        transaction.setUsuario(usuario);
-
-        // Asignación Producto
-        Product product = productRepository.findById(transaccionDTO.getId_producto())
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
-        transaction.setProducto(product);
-
-        // Guardamos y retornamos
-        return transactionRepository.save(transaction);
-    }
 
 
     @Transactional
     @Override
     public ShowTransactionDTO crearTransaccion(TransactionDTO transaccionDTO) {
 
-        Transaction transaccion = new Transaction();
+        User user = userRepository.findById(transaccionDTO.getId_usuario())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
-        // Convertimos DTO a entidad
-        transaccion = convertToTransaction(transaccion, transaccionDTO, "crear");
-      
-        // Convertimos a DTO para devolver
-        return convertShowTransactionDTO(transaccion);
+        Product product = productRepository.findById(transaccionDTO.getId_producto())
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+
+        if (product.getVendedor().getUsuario().getId().equals(user.getId())) {
+            throw new BadRequestException("No puedes realizar una transacción con tu propio producto.");
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setUsuario(user);
+        transaction.setProducto(product);
+        transaction.setMetodoPago(transaccionDTO.getMetodo_pago());
+        transaction.setEstado(TransactionStatus.PENDIENTE);
+        transaction.setFecha_transaccion(LocalDateTime.now());
+
+        transaction = transactionRepository.save(transaction);
+
+        return transactionsMapper.toResponse(transaction);
+    }
+
+
+    @Transactional()
+    @Override
+    public void cancelarTransaccion(Integer id){
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaccion no encontrada con id: " + id));
+
+        transaction.setEstado(TransactionStatus.CANCELADO);
+        transactionRepository.save(transaction);
+    }
+
+    @Transactional()
+    @Override
+    public ShowTransactionDTO obtenerTransaccionPorId(Integer id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Transacción no encontrada"));
+
+        return transactionsMapper.toResponse(transaction);
     }
 
     @Transactional()
     @Override
     public List<ShowTransactionDTO> obtenerTransacciones() {
-        List<Transaction> transacciones = transactionRepository.findAll();
-        return transacciones.stream()
-                .map(this::convertShowTransactionDTO)
+        return transactionRepository.findAll()
+                .stream()
+                .map(transactionsMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    @Transactional()
     @Override
-    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuario(Integer idUsuario) {
-        User usuario = userRepository.findById(idUsuario)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-
-        List<Transaction> transacciones = transactionRepository.findByUsuario(usuario);
-
-        return transacciones.stream()
-                .map(this::convertShowTransactionDTO)
-                .collect(Collectors.toList());
+    public ShowTransactionDTO obtenerTransaccionPorIdPorUsuario(Integer idTransaction, Integer idUsuario) {
+        Transaction transaction = transactionRepository.findByIdAndUsuarioId(idTransaction, idUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la transacción con ese usuario"));
+        return transactionsMapper.toResponse(transaction);
     }
 
-    @Transactional()
-    @Override
-    public List<ShowTransactionDTO> obtenerTransaccionesPorUsuarioPorEstado(Integer idUsuario, TransactionStatus estado) {
-        User usuario = userRepository.findById(idUsuario)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-
-        List<Transaction> transacciones = transactionRepository.findByUsuarioAndEstado(usuario, estado);
-
-        return transacciones.stream()
-                .map(this::convertShowTransactionDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional()
-    @Override
-    public ShowTransactionDTO confirmarEntregaPago(Integer idTransaccion, TransactionStatus nuevoEstado) {
-        Transaction transaccion = transactionRepository.findById(idTransaccion)
-                .orElseThrow(() -> new ResourceNotFoundException("Transacción no encontrada con id: " + idTransaccion));
-
-        transaccion.setEstado(nuevoEstado);
-        transactionRepository.save(transaccion);
-
-        // Retornar DTO completo
-        return convertShowTransactionDTO(transaccion);
-    }
-  
-    @Transactional()
-    @Override
-    public void cancelarTransaccion(Integer id){
-        Transaction transaccion = transactionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Transaccion no encontrada con id: " + id));
-        transactionRepository.delete(transaccion);
-    }
 
 }
