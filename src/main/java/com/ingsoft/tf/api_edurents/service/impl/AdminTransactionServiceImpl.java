@@ -5,6 +5,7 @@ import com.ingsoft.tf.api_edurents.dto.transfers.ShowTransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.transfers.TransactionDTO;
 import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
+import com.ingsoft.tf.api_edurents.mapper.ProductMapper;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
@@ -38,6 +39,9 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
     @Autowired
     private AdminProductServiceImpl adminProductService;
 
+    @Autowired
+    private ProductMapper productMapper;
+
     private ShowTransactionDTO convertShowTransactionDTO(Transaction transaccion) {
 
         ShowTransactionDTO transaccionDTOMostrar = new ShowTransactionDTO();
@@ -63,7 +67,7 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
         // Asignar Producto
         if (transaccion.getProducto() != null) {
             Product producto = transaccion.getProducto();
-            ShowProductDTO productoDTO = adminProductService.convertToShowProductDTO(producto);
+            ShowProductDTO productoDTO = productMapper.toResponse(producto);
 
             transaccionDTOMostrar.setProducto(productoDTO);
         }
