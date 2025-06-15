@@ -16,7 +16,7 @@ import io.micrometer.observation.annotation.Observed;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -192,6 +192,11 @@ public class AdminProductServiceImpl implements AdminProductService {
 
     @Transactional
     @Override
+    public List<ShowProductDTO> obtenerTop10ProductosPorVistas() {
+        Pageable top10 = PageRequest.of(0, 10);
+        List<Product> products = productRepository.findAllByOrderByVistasDesc(top10);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para el top 10 en base a vistas");
     public void sumarView(Integer id){
         Product producto = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
@@ -211,6 +216,13 @@ public class AdminProductServiceImpl implements AdminProductService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtenerTop10ProductosPorCantidadDeIntercambios() {
+        Pageable top10 = PageRequest.of(0, 10);
+        List<Product> products = productRepository.findTopProductsByExchangeOfferCount(top10);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos para el top 10 em base a cantidad de intercambios");
     @Transactional(readOnly = true)
     @Override
     public List<ShowProductDTO> obtenerProductosPorCarreraOrdenarPorVistas(Integer idCareer){
@@ -223,6 +235,15 @@ public class AdminProductServiceImpl implements AdminProductService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    @Override
+    public List<ShowProductDTO> obtener10ProductosRecientes(){
+        Pageable top10 = PageRequest.of(0, 10);
+        List<Product> products = productRepository.findAllByOrderByFecha_creacionDesc(top10);
+        if(products.isEmpty()) {
+            throw new ResourceNotFoundException("No se encontraron productos recientes");
+        }
+        return products.stream()
     @Transactional(readOnly = true)
     @Override
     public List<ShowProductDTO> obtenerProductosPorCursoOrdenarPorVistas(Integer idCourse){
