@@ -8,7 +8,9 @@ import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
 import com.ingsoft.tf.api_edurents.exception.BadRequestException;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 
+
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
+import com.ingsoft.tf.api_edurents.model.entity.transfers.PaymentMethod;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.Transaction;
 import com.ingsoft.tf.api_edurents.model.entity.transfers.TransactionStatus;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
@@ -40,6 +42,7 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
     private UserRepository userRepository;
 
     @Autowired
+
     private ProductMapper productMapper;
 
     @Autowired
@@ -135,43 +138,21 @@ public class AdminTransactionServiceImpl implements AdminTransactionService {
                 .collect(Collectors.toList());
     }
 
-
-    // Fin HU14
-
-
-
-    public void cancelarTransaccion(Integer id){
-        Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Transaccion no encontrada con id: " + id));
-
-        transaction.setEstado(TransactionStatus.CANCELADO);
-        transactionRepository.save(transaction);
-    }
-
-    @Transactional()
+    // Como vendedor
     @Override
-    public ShowTransactionDTO obtenerTransaccionPorId(Integer id) {
-        Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Transacción no encontrada"));
-
-        return transactionsMapper.toResponse(transaction);
-    }
-
-    @Transactional()
-    @Override
-    public List<ShowTransactionDTO> obtenerTransacciones() {
-        return transactionRepository.findAll()
+    public List<ShowTransactionDTO> obtenerTransaccionesPorVendedor(Integer idSeller) {
+        return transactionRepository.findByProducto_Vendedor_Id(idSeller)
                 .stream()
                 .map(transactionsMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ShowTransactionDTO obtenerTransaccionPorIdPorUsuario(Integer idTransaction, Integer idUsuario) {
-        Transaction transaction = transactionRepository.findByIdAndUsuarioId(idTransaction, idUsuario)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la transacción con ese usuario"));
-        return transactionsMapper.toResponse(transaction);
-    }
+    public List<ShowTransactionDTO> obtenerTransaccionesPorVendedorPorEstado(Integer idSeller, TransactionStatus estado) {
+        return transactionRepository.findByProducto_Vendedor_IdAndEstado(idSeller, estado)
+                .stream()
+                .map(transactionsMapper::toResponse)
+                .collect(Collectors.toList());
 
 
 }
