@@ -10,8 +10,11 @@ import com.ingsoft.tf.api_edurents.mapper.ExchangeOfferMapper;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeStatus;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
+import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
 import com.ingsoft.tf.api_edurents.repository.exchanges.ExchangeOfferRepository;
+import com.ingsoft.tf.api_edurents.repository.product.ProductRepository;
+import com.ingsoft.tf.api_edurents.repository.user.UserRepository;
 import com.ingsoft.tf.api_edurents.service.impl.auth.user.UserAuthExchangeOfferServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +28,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class UserAuthExchangeOfferServiceUnitTest {
@@ -34,6 +40,13 @@ public class UserAuthExchangeOfferServiceUnitTest {
 
     @Mock
     private ExchangeOfferMapper exchangeOfferMapper;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private ProductRepository productRepository;
+
 
     @InjectMocks
     private UserAuthExchangeOfferServiceImpl userAuthExchangeOfferService;
@@ -48,6 +61,7 @@ public class UserAuthExchangeOfferServiceUnitTest {
     @Test
     @DisplayName("HU2 - CP01 - Crear intercambio con datos válidos")
     public void crearIntercambio_validData_returnsCreated() {
+
         ExchangeOfferDTO exchangeOfferDTO = new ExchangeOfferDTO();
         exchangeOfferDTO.setId_usuario(1);
         exchangeOfferDTO.setId_producto(1);
@@ -57,19 +71,16 @@ public class UserAuthExchangeOfferServiceUnitTest {
         user.setId(1);
         user.setNombres("testuser");
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(1);
-        userDTO.setNombres("testuser");
+        User vendedorUser = new User();
+        vendedorUser.setId(2);
+
+        Seller vendedor = new Seller();
+        vendedor.setUsuario(vendedorUser);
 
         Product product = new Product();
         product.setId(1);
         product.setNombre("testproduct");
-
-        ShowProductDTO showProductDTO = new ShowProductDTO();
-        showProductDTO.setId(1);
-        showProductDTO.setNombre("testproduct");
-
-        ExchangeOffer exchangeOfferAux = new ExchangeOffer();
+        product.setVendedor(vendedor);
 
         ExchangeOffer exchangeOffer = new ExchangeOffer();
         exchangeOffer.setId(1);
@@ -78,6 +89,14 @@ public class UserAuthExchangeOfferServiceUnitTest {
         exchangeOffer.setMensaje_propuesta("Propuesta de intercambio");
         exchangeOffer.setEstado(ExchangeStatus.PENDIENTE);
 
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(1);
+        userDTO.setNombres("testuser");
+
+        ShowProductDTO showProductDTO = new ShowProductDTO();
+        showProductDTO.setId(1);
+        showProductDTO.setNombre("testproduct");
+
         ShowExchangeOfferDTO showExchangeOfferDTO = new ShowExchangeOfferDTO();
         showExchangeOfferDTO.setId(1);
         showExchangeOfferDTO.setUsuario(userDTO);
@@ -85,7 +104,10 @@ public class UserAuthExchangeOfferServiceUnitTest {
         showExchangeOfferDTO.setMensaje_propuesta("Propuesta de intercambio");
         showExchangeOfferDTO.setEstado(ExchangeStatus.PENDIENTE);
 
-        when(exchangeOfferMapper.toEntity(exchangeOfferAux, exchangeOfferDTO,  "crear"))
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(productRepository.findById(1)).thenReturn(Optional.of(product));
+        when(exchangeOfferRepository.existsByUsuarioIdAndProductoId(1, 1)).thenReturn(false);
+        when(exchangeOfferMapper.toEntity(any(ExchangeOffer.class), eq(exchangeOfferDTO), eq("crear")))
                 .thenReturn(exchangeOffer);
         when(exchangeOfferRepository.save(exchangeOffer)).thenReturn(exchangeOffer);
         when(exchangeOfferMapper.toResponse(exchangeOffer)).thenReturn(showExchangeOfferDTO);
@@ -93,7 +115,13 @@ public class UserAuthExchangeOfferServiceUnitTest {
         ShowExchangeOfferDTO result = userAuthExchangeOfferService.crearIntercambio(exchangeOfferDTO);
 
         assertNotNull(result);
+        assertEquals(1, result.getId());
         assertEquals(ExchangeStatus.PENDIENTE, result.getEstado());
+        assertEquals("testproduct", result.getProducto().getNombre());
+        assertEquals("testuser", result.getUsuario().getNombres());
+
+        verify(exchangeOfferRepository).save(exchangeOffer);
+        verify(exchangeOfferMapper).toResponse(exchangeOffer);
 
     }
 

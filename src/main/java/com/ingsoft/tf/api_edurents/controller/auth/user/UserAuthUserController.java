@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Usuario_GestionUsuario", description = "API de gestion del usuario como usuario ya registrado")
 @RestController
 @RequestMapping("/user/auth/users")
-@PreAuthorize("hasAnyRole('USER', 'SELLER')")
+@PreAuthorize("hasAnyRole('USER', 'SELLER','ADMIN')")
 public class UserAuthUserController {
 
     private final UserAuthUserService userAuthUserService;
@@ -28,7 +28,7 @@ public class UserAuthUserController {
     @Operation(summary = "Obtener datos del usuario por su ID",
             description = "Permite al usuario obtener sus datos al ingresar su ID." +
                     "Se devuelve los datos públicos del usuario como su ID, nombre, apellidos, correo, codigo, carrera, ciclo y foto_url",
-            tags = {"usuario","id","get"}
+            tags = {"usuarios", "datos", "id", "auth_usuario","get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -54,7 +54,7 @@ public class UserAuthUserController {
     @Operation(summary = "Cambiar contraseña desde el usuario ya logeado",
             description = "Permite al usuario ya registrado hacer un cambio de contraseña." +
                     "Se devuelve un mensaje de confirmacion validando el cambio de contraseña",
-            tags = {"constraseña", "usuario", "id", "put"})
+            tags = {"usuarios", "constraseña", "id", "auth_usuario", "put"})
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -79,7 +79,7 @@ public class UserAuthUserController {
     @Operation(summary = "Actualizar datos del usuario ya logeado",
             description = "Permite al usuario ya logeado actualizar sus datos publicos." +
                     "Se devuelve los datos publicos del usuario ya actualizados",
-            tags = {"datos", "usuario", "id", "put"})
+            tags = {"usuarios", "datos", "id", "auth_usuario", "put"})
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -103,7 +103,7 @@ public class UserAuthUserController {
     @Operation(summary = "Actualizar foto url de perfil del usuario",
             description = "Permite al usuario ya logeado cambiar su foto de perfil via URL." +
                     "Se devuelve la validacion de la foto actualizada",
-            tags = {"foto", "usuario", "id", "put"})
+            tags = {"usuarios", "datos", "foto", "id", "auth_usuario", "patch"})
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -127,7 +127,7 @@ public class UserAuthUserController {
     @Operation(summary = "Actualizar la carrera del usuario",
             description = "Permite al usuario ya logeado cambiar su carrera." +
                     "Se devuelve la validacion de la carrera actualizada",
-            tags = {"carrera", "usuario", "id", "put"})
+            tags = {"usuarios", "datos", "carrera", "id", "auth_usuario", "patch"})
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -151,7 +151,7 @@ public class UserAuthUserController {
     @Operation(summary = "Actualizar ciclo del usuario",
             description = "Permite al usuario ya logeado cambiar su ciclo actual." +
                     "Se devuelve la validacion del ciclo actualizado",
-            tags = {"foto", "usuario", "id", "put"})
+            tags = {"usuarios", "datos", "ciclo", "id", "auth_usuario", "patch"})
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",

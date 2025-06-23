@@ -25,7 +25,7 @@ import java.util.Map;
 @Tag(name = "Transaccion_Usuario", description = "API de Gestion de Transacciones desde el usuario registrado")
 @RestController
 @RequestMapping("/user/auth/transactions")
-@PreAuthorize("hasAnyRole('USER', 'SELLER')")
+@PreAuthorize("hasAnyRole('USER', 'SELLER','ADMIN')")
 public class UserAuthTransactionController {
 
     private final UserAuthTransactionService userAuthTransactionService;
@@ -37,7 +37,7 @@ public class UserAuthTransactionController {
             description = "Creas una transaccion a partir de un producto elegido, registrando tu ID de usuario. " +
                     "En la entrada, además de ingresar la ID del producto y usuario, eliges el metodo de pago y se guarda el monto en la transacción hasta confirmar la entrega. " +
                     "La respuesta es un objeto de transacción con una ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y su estado actual.",
-            tags = {"transacciones", "usuario", "post"})
+            tags = {"transacciones", "usuario", "auth_usuario", "post"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ShowTransactionDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -54,7 +54,7 @@ public class UserAuthTransactionController {
             summary = "Cancelar una transaccion por ID",
             description = "Eliges la transaccion que deseas cancelar en base a su ID, y el monto volverá a la cuenta del usuario. " +
                     "La respuesta es un mensaje confirmando que la transaccion fue cancelada exitosamente",
-            tags = {"transacciones", "usuario", "delete"})
+            tags = {"transacciones", "usuario", "id", "auth_usuario", "delete"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ShowTransactionDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -78,7 +78,7 @@ public class UserAuthTransactionController {
             summary = "Buscar tu transaccion creada como usuario",
             description = "Buscas una transaccion creada en base a su ID y tu ID de usuario." +
                     "La respuesta es un objeto de transacción con una ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y su estado actual.",
-            tags = {"transacciones", "usuario", "vendedor", "id", "get"})
+            tags = {"transacciones", "usuario", "id", "auth_usuario", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ShowTransactionDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -97,7 +97,7 @@ public class UserAuthTransactionController {
             summary = "Confirmar entrega de producto en la transaccion por ID",
             description = "Eliges la transaccion en la que deseas confirmar la entrega del producto, en base a su ID, y el monto será enviado a la cuenta del vendedor. " +
                     "La respuesta es un mensaje confirmando que la entrega fue confirmada exitosamente",
-            tags = {"transacciones", "usuario", "put"})
+            tags = {"transacciones", "usuario", "id", "auth_usuario", "put"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ShowTransactionDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -118,7 +118,7 @@ public class UserAuthTransactionController {
             summary = "Reclamar una transaccion por ID",
             description = "Eliges la transaccion en la que deseas hacer el reclamo en base a su ID. " +
                     "La entrada es el motivo del reclamo. La respuesta es un mensaje confirmando que la transaccion fue reclamada",
-            tags = {"transacciones", "usuario", "put"})
+            tags = {"transacciones", "usuario", "id", "auth_usuario", "put"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ShowTransactionDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -142,7 +142,7 @@ public class UserAuthTransactionController {
             summary = "Obtener transaccion como usuario en base a la ID del producto",
             description = "Buscas tu transaccion creada en base a un producto (ID producto) con tu usuario registrado (ID usuario)" +
                     "La respuesta es un objeto de transacción con una ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y su estado actual.",
-            tags = {"transacciones", "usuario", "vendedor", "producto", "get"})
+            tags = {"transacciones", "usuario", "producto", "id", "auth_usuario", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ShowTransactionDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -165,7 +165,7 @@ public class UserAuthTransactionController {
             summary = "Observar historial de tus transacciones como usuario",
             description = "Observas todo tu historial de transacciones creadas, con tu ID de usuario" +
                     "La respuesta es una lista de transacciones con ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y estado actual. ",
-            tags = {"transacciones", "usuario", "todos", "get"})
+            tags = {"transacciones", "usuario", "varios", "todos", "auth_usuario", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -180,7 +180,7 @@ public class UserAuthTransactionController {
             summary = "Filtrar por estado el historial de tus transacciones como usuario",
             description = "Observas todo tu historial de transacciones creadas, con tu ID de usuario, con filtro por estado" +
                     "La respuesta es una lista de transacciones con ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y estado actual. ",
-            tags = {"transacciones", "usuario", "estado", "todos", "get"})
+            tags = {"transacciones", "usuario", "estado", "varios", "filtro", "auth_usuario", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -197,7 +197,7 @@ public class UserAuthTransactionController {
             summary = "Filtrar por metodo de pago el historial de tus transacciones como usuario",
             description = "Observas todo tu historial de transacciones creadas, con tu ID de usuario, con filtro por metodo de pago" +
                     "La respuesta es una lista de transacciones con ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y estado actual. ",
-            tags = {"transacciones", "usuario", "metodo", "get"})
+            tags = {"transacciones", "usuario", "metodo", "varios", "filtro", "auth_usuario", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -214,7 +214,7 @@ public class UserAuthTransactionController {
             summary = "Filtrar por metodo de pago y estado el historial de tus transacciones como usuario",
             description = "Observas todo tu historial de transacciones creadas, con tu ID de usuario, con filtro por metodo de pago y estado" +
                     "La respuesta es una lista de transacciones con ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y estado actual. ",
-            tags = {"transacciones", "usuario", "metodo", "estado", "get"})
+            tags = {"transacciones", "usuario", "metodo", "estado", "varios", "filtro", "auth_usuario", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),

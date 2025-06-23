@@ -30,7 +30,7 @@ public class AdminExchangeOfferController {
             summary = "Obtener todos los intercambios",
             description = "Permite a la administración obtener una lista de todas las ofertas de intercambio" +
                     "Se devuelve una lista de objetos ShowExchangeOfferDTO con los detalles de cada intercambio.",
-            tags = {"intercambios", "todos", "get"}
+            tags = {"intercambios", "todos", "admin", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -59,7 +59,7 @@ public class AdminExchangeOfferController {
             summary = "Obtener un intercambio por su ID",
             description = "Permite a un usuario obtener los detalles de un intercambio específico por el ID de la oferta. " +
                     "Se devuelve un objeto ShowExchangeOfferDTO con los detalles del intercambio.",
-            tags = {"intercambios", "id", "get"}
+            tags = {"intercambios", "id", "admin", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(

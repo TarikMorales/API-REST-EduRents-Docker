@@ -1,6 +1,8 @@
 package com.ingsoft.tf.api_edurents.service.impl.auth.user;
 
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
+import com.ingsoft.tf.api_edurents.exception.BadRequestException;
+import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.model.entity.product.FollowedProduct;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
@@ -12,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,27 +33,33 @@ public class UserAuthFollowedProductServiceImpl implements UserAuthFollowedProdu
         Product product = productRepository.findById(idProduct)
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con id " + idProduct));
 
-        boolean alreadyFollowing = followedProductRepository.existsByUsuarioIdAndProductoId(idUser, idProduct);
-        if (!alreadyFollowing) {
-            FollowedProduct followedProduct = new FollowedProduct();
-            followedProduct.setUsuario(user);
-            followedProduct.setProducto(product);
-            followedProduct.setFecha_inicio_seguimiento(LocalDateTime.now().toLocalDate());
-            if (followedProduct.getFecha_inicio_seguimiento() == null) {
-                throw new RuntimeException("La fecha de inicio de seguimiento no puede ser nula");
-            }
-            followedProductRepository.save(followedProduct);
+        // Validar que el usuario no sea el vendedor del producto
+        if (product.getVendedor().getUsuario().getId().equals(idUser)) {
+            throw new BadRequestException("Un usuario no puede seguir su propio producto");
         }
+
+        // Verificar si ya sigue el producto
+        boolean alreadyFollowing = followedProductRepository.existsByUsuarioIdAndProductoId(idUser, idProduct);
+        if (alreadyFollowing) {
+            throw new BadRequestException("Ya estás siguiendo este producto");
+        }
+
+        FollowedProduct followedProduct = new FollowedProduct();
+        followedProduct.setUsuario(user);
+        followedProduct.setProducto(product);
+        followedProduct.setFecha_inicio_seguimiento(LocalDate.now());
+        followedProductRepository.save(followedProduct);
     }
 
     @Override
     public void unfollowProduct(Integer idUser, Integer idProduct) {
         FollowedProduct followedProduct = followedProductRepository
                 .findByUsuarioIdAndProductoId(idUser, idProduct)
-                .orElseThrow(() -> new EntityNotFoundException("No se sigue este producto"));
+                .orElseThrow(() -> new ResourceNotFoundException("No se sigue este producto"));
 
         followedProductRepository.delete(followedProduct);
     }
+
     @Override
     public List<ShowProductDTO> getFollowedProductsByUser(Integer idUser) {
         List<FollowedProduct> followed = followedProductRepository.findByUsuarioId(idUser);

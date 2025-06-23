@@ -26,7 +26,7 @@ public class PublicCategoryController {
     @Operation(
             summary = "Obtener todas las categorias",
             description = "Devuelve una lista con todas las categorias disponibles.",
-            tags = {"Categorias", "publico", "get"}
+            tags = {"categorias", "varios", "todos", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(

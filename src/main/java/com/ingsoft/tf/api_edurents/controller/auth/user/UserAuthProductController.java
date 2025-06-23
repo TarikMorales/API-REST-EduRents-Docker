@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/user/auth/products")
-@PreAuthorize("hasAnyRole('USER', 'SELLER')")
+@PreAuthorize("hasAnyRole('USER', 'SELLER','ADMIN')")
 public class UserAuthProductController {
     private final UserAuthProductService userAuthProductService;
 
@@ -28,7 +28,7 @@ public class UserAuthProductController {
             summary = "Obtener productos por la ID de un vendedor",
             description = "Permite a un usuario registrado obtener una lista de productos ofrecidos por un vendedor específico en base a su ID." +
                     " Se devuelve una lista de objetos ShowProductDTO que representan los productos del vendedor.",
-            tags = {"productos", "usuario", "vendedor", "id", "get"}
+            tags = {"productos", "vendedor", "varios", "todos", "auth_usuario", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -47,7 +47,7 @@ public class UserAuthProductController {
                     content = { @Content(schema = @Schema())}
             )
     })
-    @GetMapping("/{sellerId}")
+    @GetMapping("/seller/{sellerId}")
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorVendedor(@PathVariable Integer sellerId) {
         List<ShowProductDTO> productos = userAuthProductService.obtenerProductosPorVendedor(sellerId);
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
@@ -57,7 +57,7 @@ public class UserAuthProductController {
             summary = "Obtener productos por la ID de un vendedor y curso",
             description = "Permite a un usuario registrado obtener una lista de productos ofrecidos por un vendedor específico en base a su ID y el ID de un curso." +
                     " Se devuelve una lista de objetos ShowProductDTO que representan los productos de un vendedor para ese curso.",
-            tags = {"productos", "usuario", "vendedor", "curso", "id", "get"}
+            tags = {"productos", "vendedor", "curso", "varios", "filtro", "auth_usuario", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -76,7 +76,7 @@ public class UserAuthProductController {
                     content = { @Content(schema = @Schema())}
             )
     })
-    @GetMapping("/{sellerId}/course/{courseId}")
+    @GetMapping("/seller/{sellerId}/course/{courseId}")
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorVendedorYCurso(
             @PathVariable Integer sellerId, @PathVariable Integer courseId) {
         List<ShowProductDTO> productos = userAuthProductService.obtenerProductosPorVendedorYCurso(sellerId, courseId);
@@ -87,7 +87,7 @@ public class UserAuthProductController {
             summary = "Obtener productos por la ID de un vendedor y carrera",
             description = "Permite a un usuario registrado obtener una lista de productos ofrecidos por un vendedor específico en base a su ID y el ID de una carrera." +
                     " Se devuelve una lista de objetos ShowProductDTO que representan los productos de un vendedor para esa carrera.",
-            tags = {"productos", "usuario", "vendedor", "carrera", "id", "get"}
+            tags = {"productos", "vendedor", "carrera", "varios", "filtro", "auth_usuario", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -106,7 +106,7 @@ public class UserAuthProductController {
                     content = { @Content(schema = @Schema())}
             )
     })
-    @GetMapping("/{sellerId}/career/{careerId}")
+    @GetMapping("/seller/{sellerId}/career/{careerId}")
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorVendedorYCarrera(
             @PathVariable Integer sellerId, @PathVariable Integer careerId) {
         List<ShowProductDTO> productos = userAuthProductService.obtenerProductosPorVendedorYCarrera(sellerId, careerId);
@@ -117,7 +117,7 @@ public class UserAuthProductController {
             summary = "Obtener productos por la ID de un vendedor y categoría",
             description = "Permite a un usuario registrado obtener una lista de productos ofrecidos por un vendedor específico en base a su ID y el ID de una categoría." +
                     " Se devuelve una lista de objetos ShowProductDTO que representan los productos de un vendedor para esa categoría.",
-            tags = {"productos", "usuario", "vendedor", "categoría", "id", "get"}
+            tags = {"productos", "usuario", "vendedor", "categoría", "varios", "filtro", "auth_usuario", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -136,7 +136,7 @@ public class UserAuthProductController {
                     content = { @Content(schema = @Schema())}
             )
     })
-    @GetMapping("/{sellerId}/category/{categoryId}")
+    @GetMapping("/seller/{sellerId}/category/{categoryId}")
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorVendedorYCategoria(
             @PathVariable Integer sellerId, @PathVariable Integer categoryId) {
         List<ShowProductDTO> productos = userAuthProductService.obtenerProductosPorVendedorYCategoria(sellerId, categoryId);
@@ -148,7 +148,7 @@ public class UserAuthProductController {
     @Operation(
             summary = "Sumar una vista al producto",
             description = "Cada vez que un usuario visualiza un producto, se incrementa en 1 el contador de vistas.",
-            tags = {"Productos", "Vistas", "put"}
+            tags = {"productos", "vista", "id", "auth_usuario", "put"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -173,7 +173,7 @@ public class UserAuthProductController {
     @Operation(
             summary = "Obtener productos por vendedor ordenados por vistas",
             description = "Obtiene todos los productos publicados por un vendedor especifico y los ordena segun el numero de vistas.",
-            tags = {"Productos", "Vistas", "Vendedores", "get"}
+            tags = {"productos", "vistas", "vendedor", "varios", "todos", "auth_usuario", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -203,7 +203,7 @@ public class UserAuthProductController {
     @Operation(
             summary = "Obtener productos recomendados por carrera",
             description = "Muestra una lista de productos recomendados para la carrera indicada, ordenados por vistas de mayor a menor.",
-            tags = {"Productos", "Recomendaciones", "Carreras", "Vistas", "get"}
+            tags = {"productos", "carrera", "vistas", "varios", "recomendados", "auth_usuario", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -233,7 +233,5 @@ public class UserAuthProductController {
 
         return new ResponseEntity<>(productos, HttpStatus.OK);
     }
-
-
 
 }

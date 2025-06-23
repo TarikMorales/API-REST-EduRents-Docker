@@ -4,9 +4,12 @@ import com.ingsoft.tf.api_edurents.dto.product.AlertDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowAlertDTO;
 import com.ingsoft.tf.api_edurents.mapper.AlertMapper;
 import com.ingsoft.tf.api_edurents.model.entity.product.Alert;
+import com.ingsoft.tf.api_edurents.model.entity.product.AlertType;
+import com.ingsoft.tf.api_edurents.model.entity.product.FollowedProduct;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
 import com.ingsoft.tf.api_edurents.repository.product.AlertRepository;
+import com.ingsoft.tf.api_edurents.repository.product.FollowedProductRepository;
 import com.ingsoft.tf.api_edurents.repository.product.ProductRepository;
 import com.ingsoft.tf.api_edurents.repository.user.UserRepository;
 import com.ingsoft.tf.api_edurents.service.Interface.auth.user.UserAuthAlertService;
@@ -14,8 +17,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +31,7 @@ public class UserAuthAlertServiceImpl implements UserAuthAlertService {
     private final AlertMapper alertMapper;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+
 
     @Override
     public AlertDTO createAlert(AlertDTO dto) {

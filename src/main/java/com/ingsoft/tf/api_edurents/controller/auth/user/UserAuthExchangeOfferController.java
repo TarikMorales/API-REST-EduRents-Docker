@@ -21,7 +21,7 @@ import java.util.List;
 @Tag(name = "Ofertas de Intercambio_Usuario", description = "API de Gestion de ofertas de intercambio para un usuario registrado")
 @RestController
 @RequestMapping("/user/auth/exchanges")
-@PreAuthorize("hasAnyRole('USER', 'SELLER')")
+@PreAuthorize("hasAnyRole('USER', 'SELLER','ADMIN')")
 public class UserAuthExchangeOfferController {
 
     private final UserAuthExchangeOfferService userAuthExchangeOfferService;
@@ -32,7 +32,7 @@ public class UserAuthExchangeOfferController {
             description = "Permite a un usuario registrado crear una oferta de intercambio para un producto. " +
                     "Se espera un objeto ExchangeOfferDTO con los detalles del intercambio, " +
                     "y se devuelve un objeto ShowExchangeOfferDTO con la oferta de intercambio creada.",
-            tags = {"intercambios", "usuario", "post"}
+            tags = {"intercambios", "auth_usuario", "post"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -59,7 +59,7 @@ public class UserAuthExchangeOfferController {
             summary = "Obtener un intercambio por su ID y el ID del usuario",
             description = "Permite a un usuario obtener los detalles de un intercambio específico por el ID de la oferta y su ID de usuario. " +
                     "Se devuelve un objeto ShowExchangeOfferDTO con los detalles del intercambio.",
-            tags = {"intercambios", "usuario", "id", "get"}
+            tags = {"intercambios", "usuario", "id", "auth_usuario", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -85,7 +85,7 @@ public class UserAuthExchangeOfferController {
             summary = "Obtener todos los intercambios hechos por un usuario",
             description = "Permite a un usuario obtener una lista de todas sus ofertas de intercambio hechas. " +
                     "Se devuelve una lista de objetos ShowExchangeOfferDTO con los detalles de cada intercambio.",
-            tags = {"intercambios", "usuario", "todos", "get"}
+            tags = {"intercambios", "usuario", "varios", "todos", "auth_usuario", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -114,7 +114,7 @@ public class UserAuthExchangeOfferController {
             summary = "Obtener todos los intercambios hechos por un vendedor",
             description = "Permite a un usuario obtener una lista de todas las ofertas de intercambio hechas hacia un vendedor. " +
                     "Se devuelve una lista de objetos ShowExchangeOfferDTO con los detalles de cada intercambio.",
-            tags = {"intercambios", "usuario", "vendedor", "todos", "get"}
+            tags = {"intercambios", "vendedor", "varios", "todos", "auth_usuario", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -144,7 +144,7 @@ public class UserAuthExchangeOfferController {
             description = "Permite a un usuario registrado actualizar los detalles de un intercambio específico por su ID. " +
                     "Se espera un objeto ExchangeOfferDTO con los nuevos detalles del intercambio, " +
                     "y se devuelve un objeto ShowExchangeOfferDTO con la oferta de intercambio actualizada.",
-            tags = {"intercambios", "usuario", "put"}
+            tags = {"intercambios", "id", "auth_usuario", "put"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -170,7 +170,7 @@ public class UserAuthExchangeOfferController {
             summary = "Eliminar un intercambio por su ID",
             description = "Permite a un usuario registrado eliminar un intercambio específico por su ID. " +
                     "No devuelve contenido, pero indica que la operación se realizó con éxito.",
-            tags = {"intercambios", "usuario", "delete"}
+            tags = {"intercambios", "id", "auth_usuario", "delete"}
     )
     @ApiResponses(value = {
             @ApiResponse(

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name="Producto_Vendedor", description = "API de Gestion de Productos para un vendedor registrado")
 @RestController
 @RequestMapping("/seller/auth/products")
-@PreAuthorize("hasRole('SELLER')")
+@PreAuthorize("hasAnyRole('SELLER','ADMIN')")
 public class SellerAuthProductController {
 
     private final SellerAuthProductService sellerAuthProductService;
@@ -30,7 +30,7 @@ public class SellerAuthProductController {
             description = "Permite a un vendedor registrado publicar un nuevo producto en la plataforma. " +
                     "Se devuelve un objeto ShowProductDTO con los detalles del producto creado, como su ID, nombre, " +
                     "descripción, precio y estado de disponibilidad. ",
-            tags = {"productos", "vendedor", "post"}
+            tags = {"productos", "auth_vendedor", "post"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -58,7 +58,7 @@ public class SellerAuthProductController {
             description = "Permite a un vendedor registrado actualizar los detalles de un producto específico por su ID. " +
                     "Se devuelve un objeto ShowProductDTO con los detalles del producto, como su nombre, descripción, " +
                     "precio y estado de disponibilidad.",
-            tags = {"productos", "vendedor", "put"}
+            tags = {"productos", "id", "auth_vendedor", "put"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -84,7 +84,7 @@ public class SellerAuthProductController {
             summary = "Eliminar un producto por su ID",
             description = "Permite a un vendedor registrado eliminar un producto específico por su ID. " +
                     "No devuelve contenido, pero indica que la operación se realizó con éxito.",
-            tags = {"productos", "vendedor", "delete"}
+            tags = {"productos", "id", "auth_vendedor", "delete"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -114,7 +114,7 @@ public class SellerAuthProductController {
     @Operation(summary = "Actualizar stock disponible",
             description = "Permite actualizar manualmente la cantidad disponible del producto." +
                     "Se devuelve el producto actualizado con nuevo stock",
-            tags = {"productos", "stock", "vendedor", "put"})
+            tags = {"productos", "stock", "id", "auth_vendedor", "put"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Stock actualizado correctamente"),
             @ApiResponse(responseCode = "400", description = "Cantidad negativa no permitida"),
@@ -131,7 +131,7 @@ public class SellerAuthProductController {
     @Operation(summary = "Actualizar fecha de expiración del producto",
             description = "Permite modificar la fecha de expiración de la oferta del producto." +
                     "Se devuelve el producto actualizado con nueva fecha de expiracion",
-            tags = {"productos", "fecha-expiracion", "vendedor", "put"})
+            tags = {"productos", "fecha-expiracion", "id", "auth_vendedor", "put"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Fecha actualizada correctamente"),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")

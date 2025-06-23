@@ -31,7 +31,7 @@ public class PublicSellerController {
 
     @Operation(summary = "Obtener perfil público del vendedor",
             description = "Devuelve la información pública del vendedor por su ID.",
-            tags = {"vendedor", "publico", "id", "get"})
+            tags = {"vendedores", "publico", "id", "get"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Perfil del vendedor obtenido correctamente"),
             @ApiResponse(responseCode = "404", description = "Vendedor no encontrado")
@@ -43,7 +43,7 @@ public class PublicSellerController {
 
     @Operation(summary = "Buscar vendedor por nombre completo de usuario",
             description = "Busca el perfil público de un vendedor usando su nombre completo.",
-            tags = {"vendedor", "publico", "nombre", "get"})
+            tags = {"vendedores", "publico", "nombre", "get"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Vendedor encontrado"),
             @ApiResponse(responseCode = "404", description = "Vendedor no encontrado")
@@ -55,7 +55,7 @@ public class PublicSellerController {
 
     @Operation(summary = "Consultar reputación del vendedor",
             description = "Devuelve la reputación del vendedor (confianza, atención, sin demoras).",
-            tags = {"vendedor","reputacion","publico","get"})
+            tags = {"vendedores","id","reputacion","publico","get"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Reputación obtenida correctamente"),
             @ApiResponse(responseCode = "404", description = "Vendedor no encontrado")
@@ -67,7 +67,7 @@ public class PublicSellerController {
 
     @Operation(summary = "Obtener productos publicados por el vendedor",
             description = "Devuelve una lista de productos publicados por el vendedor con el ID dado.",
-            tags = {"vendedor","publico","id","productos","get"})
+            tags = {"vendedor","publico","id","producto","varios","todos","get"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de productos obtenida correctamente"),
             @ApiResponse(responseCode = "404", description = "Vendedor no encontrado")

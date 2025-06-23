@@ -3,6 +3,7 @@ package com.ingsoft.tf.api_edurents.service.auth.user;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.model.entity.product.FollowedProduct;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
+import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
 import com.ingsoft.tf.api_edurents.model.entity.user.User;
 import com.ingsoft.tf.api_edurents.repository.product.FollowedProductRepository;
 import com.ingsoft.tf.api_edurents.repository.product.ProductRepository;
@@ -42,6 +43,13 @@ public class UserAuthFollowedProductServiceUnitTest {
         MockitoAnnotations.openMocks(this);
         mockUser = new User(); mockUser.setId(1);
         mockProduct = new Product(); mockProduct.setId(1);
+
+        Seller vendedor = new Seller();
+        User otroUsuario = new User();
+        otroUsuario.setId(2); // Usuario diferente al que sigue el producto
+        vendedor.setUsuario(otroUsuario);
+        mockProduct.setVendedor(vendedor);
+
         followedProduct = new FollowedProduct();
         followedProduct.setUsuario(mockUser);
         followedProduct.setProducto(mockProduct);

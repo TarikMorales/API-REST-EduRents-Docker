@@ -20,17 +20,17 @@ import java.util.List;
 @Tag(name = "Ofertas de Intercambio_Vendedor", description = "API de Gestion de ofertas de intercambio para un vendedor registrado")
 @RestController
 @RequestMapping("/seller/auth/exchanges")
-@PreAuthorize("hasRole('SELLER')")
+@PreAuthorize("hasAnyRole('SELLER','ADMIN')")
 public class SellerAuthExchangeOfferController {
 
     private final SellerAuthExchangeOfferService sellerAuthExchangeOfferService;
 
     // HU 02
     @Operation(
-            summary = "Obtener un intercambio por su ID y el ID del vendedor",
+            summary = "Obtener intercambios por ID del producto y el ID del vendedor",
             description = "Permite a un vendedor obtener los detalles de un intercambio para un producto específico " +
                     "por su ID y el ID del vendedor. Se devuelve un objeto ShowExchangeOfferDTO con los detalles del intercambio.",
-            tags = {"intercambios", "vendedor", "get"}
+            tags = {"intercambios", "producto", "vendedor", "varios", "auth_vendedor", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(

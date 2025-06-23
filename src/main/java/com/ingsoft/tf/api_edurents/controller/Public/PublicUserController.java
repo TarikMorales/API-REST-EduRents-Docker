@@ -29,7 +29,7 @@ public class PublicUserController {
     @Operation(summary = "Registrarse como usuario",
             description = "Permite al estudiante todavia no registrado crear su usuario con datos necesarios para su registro." +
                     "Se devuelve el usuario creado para posteriormente iniciar sesion.",
-            tags = {"registrar", "usuario", "post"}
+            tags = {"registrar", "usuarios", "post"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -52,8 +52,8 @@ public class PublicUserController {
     }
 
     @Operation(summary = "Iniciar sesion",
-            description = "Permite al estudiante iniciar sesion para acceder al usuario ya registrado",
-            tags = {"iniciar_sesion", "usuario", "post"}
+            description = "Permite al estudiante iniciar sesion para acceder al usuario ya registrado, obtiene token de sesión",
+            tags = {"iniciar_sesion", "usuarios", "token", "post"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -79,7 +79,7 @@ public class PublicUserController {
     @Operation(summary = "Recuperar contraseña para el estudiante sin iniciar sesion aun",
             description = "Permite al estudiante tener la oportunidad de recuperar su contraseña en caso de haberlo olvidado" +
                     "Se devuelve un token el cual tendrá que verificar",
-            tags = {"recuperar_contra", "publico", "post"}
+            tags = {"usuarios", "contraseña", "publico", "post"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -103,7 +103,7 @@ public class PublicUserController {
 
     @Operation(summary = "Verificar token para recuperar contraseña",
             description = "Permite al usuario verificar el token recibido",
-            tags = {"verificar", "token", "post"}
+            tags = {"usuarios", "contraseña", "token", "verificar", "post"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -128,7 +128,7 @@ public class PublicUserController {
     @Operation(summary = "Reiniciar contraseña desde el token verificado",
             description = "Permite al estudiante reiniciar su contraseña para tener una nueva e iniciar sesion correctamente. " +
                     "Se devuelve la nueva contraseña",
-            tags = {"verificar", "token", "post"}
+            tags = {"usuarios", "reiniciar", "contraseña", "token", "post"}
     )
     @ApiResponses(value = {
             @ApiResponse(

@@ -19,4 +19,6 @@ public interface FollowedProductRepository extends JpaRepository<FollowedProduct
     Optional<FollowedProduct> findByUsuarioIdAndProductoId(Integer idUsuario, Integer idProducto);
 
     List<FollowedProduct> findByUsuarioId(Integer idUsuario);
+
+    List<FollowedProduct> findByProductoId(Integer idProducto);
 }

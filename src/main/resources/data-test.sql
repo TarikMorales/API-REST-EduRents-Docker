@@ -1,26 +1,91 @@
+-- =============================
+-- Inserción de roles
+-- =============================
+INSERT INTO roles (nombre)
+SELECT 'ADMIN'
+    WHERE NOT EXISTS (SELECT 1 FROM roles WHERE nombre = 'ADMIN');
+
+INSERT INTO roles (nombre)
+SELECT 'USER'
+    WHERE NOT EXISTS (SELECT 1 FROM roles WHERE nombre = 'USER');
+
+INSERT INTO roles (nombre)
+SELECT 'SELLER'
+    WHERE NOT EXISTS (SELECT 1 FROM roles WHERE nombre = 'SELLER');
+
+
+-- =============================
+-- Inserción de categorías
+-- =============================
 INSERT INTO categorias (nombre)
-VALUES
-    ('Tecnología'),
-    ('Libros'),
-    ('Electrodomésticos');
+SELECT 'Tecnología'
+    WHERE NOT EXISTS (SELECT 1 FROM categorias WHERE nombre = 'Tecnología');
+
+INSERT INTO categorias (nombre)
+SELECT 'Libros'
+    WHERE NOT EXISTS (SELECT 1 FROM categorias WHERE nombre = 'Libros');
+
+INSERT INTO categorias (nombre)
+SELECT 'Electrodomésticos'
+    WHERE NOT EXISTS (SELECT 1 FROM categorias WHERE nombre = 'Electrodomésticos');
+
+
+-- =============================
+-- Inserción de carreras
+-- =============================
+INSERT INTO carreras (nombre, codigo)
+SELECT 'Ingeniería de Sistemas', 'IS01'
+    WHERE NOT EXISTS (SELECT 1 FROM carreras WHERE codigo = 'IS01');
 
 INSERT INTO carreras (nombre, codigo)
-VALUES
-    ('Ingeniería de Sistemas', 'IS01'),
-    ('Administración de Empresas', 'AE01');
+SELECT 'Administración de Empresas', 'AE01'
+    WHERE NOT EXISTS (SELECT 1 FROM carreras WHERE codigo = 'AE01');
+
+
+-- =============================
+-- Inserción de cursos
+-- =============================
+INSERT INTO cursos (nombre, codigo)
+SELECT 'Estructuras de Datos', 'CS201'
+    WHERE NOT EXISTS (SELECT 1 FROM cursos WHERE codigo = 'CS201');
 
 INSERT INTO cursos (nombre, codigo)
-VALUES
-    ('Estructuras de Datos', 'CS201'),
-    ('Contabilidad Financiera', 'AF101'),
-    ('Programación Avanzada', 'CS301');
+SELECT 'Contabilidad Financiera', 'AF101'
+    WHERE NOT EXISTS (SELECT 1 FROM cursos WHERE codigo = 'AF101');
+
+INSERT INTO cursos (nombre, codigo)
+SELECT 'Programación Avanzada', 'CS301'
+    WHERE NOT EXISTS (SELECT 1 FROM cursos WHERE codigo = 'CS301');
+
+
+-- =============================
+-- Inserción en cursos_carreras
+-- =============================
+-- Solo si las combinaciones no existen aún (usamos subquery con los IDs exactos)
+INSERT INTO cursos_carreras (id_curso, id_carrera)
+SELECT c.id, ca.id
+FROM cursos c, carreras ca
+WHERE c.codigo = 'CS201' AND ca.codigo = 'IS01'
+  AND NOT EXISTS (
+    SELECT 1 FROM cursos_carreras cc
+    WHERE cc.id_curso = c.id AND cc.id_carrera = ca.id
+);
 
 INSERT INTO cursos_carreras (id_curso, id_carrera)
-VALUES
-    (1, 1), -- Estructuras de Datos + Ing. Sistemas
-    (3, 1), -- Programación Avanzada + Ing. Sistemas
-    (2, 2); -- Contabilidad Financiera + Administración
+SELECT c.id, ca.id
+FROM cursos c, carreras ca
+WHERE c.codigo = 'CS301' AND ca.codigo = 'IS01'
+  AND NOT EXISTS (
+    SELECT 1 FROM cursos_carreras cc
+    WHERE cc.id_curso = c.id AND cc.id_carrera = ca.id
+);
 
-INSERT INTO roles (nombre) VALUES ('ADMIN');
-INSERT INTO roles (nombre) VALUES ('USER');
-INSERT INTO roles (nombre) VALUES ('SELLER');
+INSERT INTO cursos_carreras (id_curso, id_carrera)
+SELECT c.id, ca.id
+FROM cursos c, carreras ca
+WHERE c.codigo = 'AF101' AND ca.codigo = 'AE01'
+  AND NOT EXISTS (
+    SELECT 1 FROM cursos_carreras cc
+    WHERE cc.id_curso = c.id AND cc.id_carrera = ca.id
+);
+

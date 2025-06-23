@@ -31,7 +31,7 @@ public class PublicProductController {
             description = "Permite a un usuario obtener los detalles de un producto específico por su ID. " +
                     "Se devuelve un objeto ShowProductDTO con los detalles del producto, como su nombre, descripción, " +
                     "precio y estado de disponibilidad.",
-            tags = {"productos", "publico", "get"}
+            tags = {"productos", "id", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -58,7 +58,7 @@ public class PublicProductController {
             summary = "Obtener todos los productos",
             description = "Permite a un usuario obtener una lista de todos los productos disponibles. " +
                     "Se devuelve una lista de objetos ShowProductDTO, cada uno representando un producto con sus detalles.",
-            tags = {"productos", "publico", "get"}
+            tags = {"productos", "varios", "todos", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -87,7 +87,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por ID de carrera",
             description = "Devuelve una lista de productos asociados a una carrera especifica, identificada por su ID.",
-            tags = {"Productos", "Carreras", "publico", "get"}
+            tags = {"productos", "carrera", "varios", "filtro", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -113,7 +113,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por ID de curso",
             description = "Devuelve una lista de productos asociados a un curso especifico, identificado por su ID.",
-            tags = {"Productos", "Cursos", "publico", "get"}
+            tags = {"productos", "curso", "varios", "filtro", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -139,7 +139,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por curso y carrera",
             description = "Filtra los productos segun el curso y la carrera, ambos identificados por su ID.",
-            tags = {"Productos", "Cursos", "Carreras", "publico", "get"}
+            tags = {"productos", "curso", "carrera", "varios", "filtro", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -165,7 +165,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por ID de categoria",
             description = "Devuelve una lista de productos que pertenecen a una categoria especifica, identificada por su ID.",
-            tags = {"Productos", "Categorias", "publico", "get"}
+            tags = {"productos", "categoria", "varios", "filtro", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -191,7 +191,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por carrera, curso y categoria",
             description = "Filtra los productos combinando los filtros de carrera, curso y categoria. Todos deben ser identificados por su ID.",
-            tags = {"Productos", "Carreras", "Cursos", "Categorias", "publico", "get"}
+            tags = {"productos", "carrera", "curso", "categoria", "varios", "filtro", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -219,7 +219,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por carrera ordenados por vistas",
             description = "Filtra los productos por ID de carrera y los ordena segun la cantidad de vistas de mayor a menor.",
-            tags = {"Productos", "Carreras", "Vistas", "publico", "get"}
+            tags = {"productos", "carrera", "vistas", "varios", "todos", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -245,7 +245,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por curso ordenados por vistas",
             description = "Filtra los productos por ID de curso y los ordena segun la cantidad de vistas de mayor a menor.",
-            tags = {"Productos", "Cursos", "Vistas", "publico", "get"}
+            tags = {"productos", "curso", "vistas", "varios", "filtro", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -271,7 +271,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por carrera y curso ordenados por vistas",
             description = "Filtra los productos por carrera y curso, y los ordena segun la cantidad de vistas de mayor a menor.",
-            tags = {"Productos", "Carreras", "Cursos", "Vistas", "publico", "get"}
+            tags = {"productos", "carrera", "curso", "vistas", "varios", "filtro", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -297,7 +297,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por categoria ordenados por vistas",
             description = "Filtra los productos por ID de categoria y los ordena segun la cantidad de vistas de mayor a menor.",
-            tags = {"Productos", "Categorias", "Vistas", "publico", "get"}
+            tags = {"productos", "categorias", "vistas", "varios", "filtro", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -323,7 +323,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos por carrera, curso y categoria ordenados por vistas",
             description = "Filtra los productos combinando carrera, curso y categoria, y los ordena por vistas de mayor a menor.",
-            tags = {"Productos", "Carreras", "Cursos", "Categorias", "Vistas", "publico", "get"}
+            tags = {"productos", "carrera", "curso", "categoria", "vistas", "varios", "filtro", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -350,7 +350,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos trendy (mas vistos)",
             description = "Retorna un top de productos basado en la cantidad de vistas. El top es un 10% o 5% del total de productos, segun la cantidad disponible.",
-            tags = {"Productos", "Tendencias", "Vistas", "publico", "get"}
+            tags = {"productos", "tendencia", "vistas", "varios", "top", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -376,7 +376,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos con mas propuestas de intercambio",
             description = "Retorna un top de productos basado en la cantidad de propuestas de intercambio recibidas. Se calcula segun la cantidad de registros en la tabla exchangeOffer. El top es un 10% o 5% del total de productos.",
-            tags = {"Productos", "Intercambios", "Propuestas", "publico", "get"}
+            tags = {"productos", "intercambio", "varios", "top", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -402,7 +402,7 @@ public class PublicProductController {
     @Operation(
             summary = "Obtener productos recientes",
             description = "Retorna productos ordenados por fecha de creacion descendente. Puede considerarse solo un orden o un top limitado segun definicion futura.",
-            tags = {"Productos", "Recientes", "Fechas", "publico", "get"}
+            tags = {"productos", "recientes", "fecha", "varios", "top", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -427,7 +427,8 @@ public class PublicProductController {
 
     // HU10
     // HU10 - Endpoint 01: Obtener cantidad disponible
-    @Operation(summary = "Consultar stock disponible", description = "Devuelve la cantidad disponible (stock) de un producto por su ID.")
+    @Operation(summary = "Consultar stock disponible", description = "Devuelve la cantidad disponible (stock) de un producto por su ID.",
+                tags = {"productos", "stock", "publico", "get"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cantidad disponible obtenida correctamente"),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
@@ -450,7 +451,8 @@ public class PublicProductController {
     }
 
     // HU10 - Endpoint 03: Obtener estado
-    @Operation(summary = "Consultar estado del producto", description = "Devuelve el estado actual del producto (nuevo, usado, etc.).")
+    @Operation(summary = "Consultar estado del producto", description = "Devuelve el estado actual del producto (nuevo, usado, etc.).",
+            tags = {"productos", "estado", "publico", "get"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Estado del producto obtenido correctamente"),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
@@ -462,7 +464,8 @@ public class PublicProductController {
     }
 
     // HU10 - Endpoint 04: Consultar si acepta intercambio
-    @Operation(summary = "Consultar si el producto acepta intercambio", description = "Indica si el producto está disponible para intercambio.")
+    @Operation(summary = "Consultar si el producto acepta intercambio", description = "Indica si el producto está disponible para intercambio.",
+            tags = {"productos", "intercambio", "publico", "get"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Información obtenida correctamente"),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")

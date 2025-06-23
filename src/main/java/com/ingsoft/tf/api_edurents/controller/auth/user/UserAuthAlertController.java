@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/user/auth/alerts")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('USER', 'SELLER')")
+@PreAuthorize("hasAnyRole('USER', 'SELLER','ADMIN')")
 public class UserAuthAlertController {
 
     private final UserAuthAlertServiceImpl alertService;
@@ -27,7 +27,7 @@ public class UserAuthAlertController {
 
     @Operation(summary = "Crear alerta para un producto",
             description = "Crea una nueva alerta que vincula a un usuario con un producto seguido.",
-            tags = {"alertas", "usuario", "post"})
+            tags = {"alertas", "auth_usuario", "post"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Alerta creada exitosamente"),
             @ApiResponse(responseCode = "404", description = "Usuario o producto no encontrado")
@@ -38,7 +38,8 @@ public class UserAuthAlertController {
         return ResponseEntity.ok(created);
     }
 
-    @Operation(summary = "Eliminar una alerta", description = "Elimina una alerta específica por su ID.")
+    @Operation(summary = "Eliminar una alerta", description = "Elimina una alerta específica por su ID.",
+    tags = {"alertas", "id", "auth_usuario", "delete"})
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Alerta eliminada exitosamente"),
             @ApiResponse(responseCode = "404", description = "Alerta no encontrada")
@@ -52,7 +53,7 @@ public class UserAuthAlertController {
     @Operation(summary = "Listar alertas de un usuario",
             description = "Permite al usuario observar todas las alertas con las que cuenta." +
                     "Devuelve todas las alertas del usuario ordenadas de más reciente a más antigua.",
-            tags = {"alertas", "usuario", "todos", "get"})
+            tags = {"alertas", "usuario", "varios", "todos", "auth_usuario", "get"})
     @ApiResponse(responseCode = "200", description = "Alertas obtenidas exitosamente")
     @GetMapping("/user/{idUser}")
     public ResponseEntity<List<ShowAlertDTO>> getAlertsByUser(@PathVariable Integer idUser) {
@@ -62,7 +63,7 @@ public class UserAuthAlertController {
 
     @Operation(summary = "Marcar una alerta como vista",
             description = "Permite al usuario actualiza el estado de un alerta a 'vista'." ,
-            tags = {"alertas", "usuario", "vista", "put"})
+            tags = {"alertas", "visto", "id", "auth_usuario", "put"})
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Alerta marcada como vista"),
             @ApiResponse(responseCode = "404", description = "Alerta no encontrada")

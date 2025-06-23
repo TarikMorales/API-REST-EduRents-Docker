@@ -2,9 +2,4 @@ target/
 .idea/
 *.iml
 *.log
-*.md
-.DS_Store
 .git
-.gitignore
-.env
-*.swp

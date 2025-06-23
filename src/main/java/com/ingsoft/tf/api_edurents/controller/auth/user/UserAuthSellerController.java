@@ -21,26 +21,26 @@ import java.util.List;
 @RestController
 @RequestMapping("/user/auth/sellers")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('USER', 'SELLER')")
+@PreAuthorize("hasAnyRole('USER', 'SELLER','ADMIN')")
 public class UserAuthSellerController {
 
     private final UserAuthSellerService sellerService;
 
     @Operation(summary = "Crear perfil de vendedor si no existe",
             description = "Crea el perfil de vendedor para un usuario autenticado si aún no ha sido creado.",
-            tags = {"Vendedor", "Usuario", "post"})
+            tags = {"vendedores", "usuario", "auth_usuario", "post"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Perfil de vendedor creado o ya existente"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    @PostMapping("/{idUser}")
+    @PostMapping("/user/{idUser}")
     public ResponseEntity<SellerDTO> createSeller(@PathVariable Integer idUser) {
         return ResponseEntity.ok(sellerService.createSellerIfNotExists(idUser));
     }
 
     @Operation(summary = "Obtener transacciones de un vendedor",
             description = "Devuelve todas las transacciones realizadas por un vendedor identificado por su ID.",
-            tags = {"vendedores", "transacciones", "usuarios", "todos", "get"})
+            tags = {"vendedores", "transaccion", "varios", "todos", "auth_usuario", "get"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de transacciones obtenida correctamente"),
             @ApiResponse(responseCode = "404", description = "Vendedor no encontrado o sin transacciones")

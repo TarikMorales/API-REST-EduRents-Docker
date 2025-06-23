@@ -56,7 +56,7 @@ public class AdminTransactionController {
             summary = "Obtener todas las transacciones",
             description = "Obtienes todas las transacciones creadas en la plataforma" +
                     "Se devuelve una lista de transacciones con ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y estado actual. ",
-            tags = {"transacciones", "todos", "get"})
+            tags = {"transacciones", "todos", "admin", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),

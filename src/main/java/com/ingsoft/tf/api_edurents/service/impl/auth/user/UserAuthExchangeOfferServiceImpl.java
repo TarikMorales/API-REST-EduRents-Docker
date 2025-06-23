@@ -7,7 +7,11 @@ import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.mapper.ExchangeOfferMapper;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeStatus;
+import com.ingsoft.tf.api_edurents.model.entity.product.Product;
+import com.ingsoft.tf.api_edurents.model.entity.user.User;
 import com.ingsoft.tf.api_edurents.repository.exchanges.ExchangeOfferRepository;
+import com.ingsoft.tf.api_edurents.repository.product.ProductRepository;
+import com.ingsoft.tf.api_edurents.repository.user.UserRepository;
 import com.ingsoft.tf.api_edurents.service.Interface.auth.user.UserAuthExchangeOfferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +30,48 @@ public class UserAuthExchangeOfferServiceImpl implements UserAuthExchangeOfferSe
     @Autowired
     private ExchangeOfferMapper exchangeOfferMapper;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
     // HU 02
 
     @Transactional
     @Override
     public ShowExchangeOfferDTO crearIntercambio(ExchangeOfferDTO intercambioDTO) {
+
+        User usuario = userRepository.findById(intercambioDTO.getId_usuario())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id " + intercambioDTO.getId_usuario()));
+
+        Product producto = productRepository.findById(intercambioDTO.getId_producto())
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id " + intercambioDTO.getId_producto()));
+
+        // No se puede intercambiar el producto si es propio
+        if (producto.getVendedor().getUsuario().getId().equals(usuario.getId())) {
+            throw new BadRequestException("No puedes ofrecer intercambio sobre tu propio producto.");
+        }
+
+        // No se puede hacer más de un intercambio sobre el mismo producto
+        boolean yaExisteIntercambio = exchangeOfferRepository
+                .existsByUsuarioIdAndProductoId(intercambioDTO.getId_usuario(), intercambioDTO.getId_producto());
+
+        if (yaExisteIntercambio) {
+            throw new BadRequestException("Ya has enviado una oferta de intercambio para este producto.");
+        }
+
+        // Crear nuevo intercambio
         ExchangeOffer intercambio = new ExchangeOffer();
         intercambio = exchangeOfferMapper.toEntity(intercambio, intercambioDTO, "crear");
-        // Convertimos a DTO para devolver
-        ShowExchangeOfferDTO intercambioDTOMostrar = exchangeOfferMapper.toResponse(intercambio);
-        return intercambioDTOMostrar;
+        intercambio.setProducto(producto);
+        intercambio.setUsuario(usuario);
+
+        // Guardar e ir a DTO
+        ExchangeOffer guardado = exchangeOfferRepository.save(intercambio);
+        return exchangeOfferMapper.toResponse(guardado);
     }
+
 
 
     @Transactional(readOnly = true)

@@ -27,7 +27,7 @@ public class PublicCourseController {
     @Operation(
             summary = "Obtener cursos por ID de carrera",
             description = "Devuelve una lista de cursos asociados a una carrera específica, identificada por su ID.",
-            tags = {"Cursos", "Carreras", "publico", "get"}
+            tags = {"cursos", "carrera", "varios", "publico", "get"}
     )
     @ApiResponses(value = {
             @ApiResponse(

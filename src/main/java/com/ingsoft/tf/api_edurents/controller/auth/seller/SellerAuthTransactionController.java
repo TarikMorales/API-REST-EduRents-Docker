@@ -22,7 +22,7 @@ import java.util.List;
 @Tag(name = "Transaccion_Vendedor", description = "API de Gestion de Transacciones desde el vendedor registrado")
 @RestController
 @RequestMapping("/seller/auth/transactions")
-@PreAuthorize("hasRole('SELLER')")
+@PreAuthorize("hasAnyRole('SELLER','ADMIN')")
 public class SellerAuthTransactionController {
 
     private final SellerAuthTransactionService sellerAuthTransactionService;
@@ -32,7 +32,7 @@ public class SellerAuthTransactionController {
             summary = "Obtener lista de transacciones creadas en base a tu producto como vendedor",
             description = "Buscas las transacciones creada en base a tu producto (ID producto) como vendedor registrado (ID vendedor)" +
                     "Se devuelve un objeto de transacción con una ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y su estado actual.",
-            tags = {"transacciones", "usuario", "vendedor", "producto", "todos", "get"})
+            tags = {"transacciones", "vendedor", "producto", "varios", "auth_vendedor", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -52,7 +52,7 @@ public class SellerAuthTransactionController {
             summary = "Observar historial de transacciones recibidas como vendedor",
             description = "Observas todo tu historial de transacciones recibidas, con tu ID de vendedor" +
                     "Se devuelve una lista de transacciones con ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y estado actual. ",
-            tags = {"transacciones", "usuario", "vendedor", "todos", "get"})
+            tags = {"transacciones", "vendedor", "varios", "todos", "auth_vendedor", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -67,7 +67,7 @@ public class SellerAuthTransactionController {
             summary = "Filtrar por estado el historial de transacciones recibidas como vendedor",
             description = "Observas todo tu historial de transacciones recibidas, con tu ID de vendedor, y filtro por estado" +
                     "Se devuelve una lista de transacciones con ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y estado actual. ",
-            tags = {"transacciones", "usuario", "vendedor", "estado", "todos", "get"})
+            tags = {"transacciones", "vendedor", "estado", "varios", "filtro", "auth_vendedor", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -84,7 +84,7 @@ public class SellerAuthTransactionController {
             summary = "Filtrar por metodo de pago el historial de transacciones recibidas como vendedor",
             description = "Observas todo tu historial de transacciones recibidas, con tu ID de vendedor, y filtro por metodo de pago" +
                     "Se devuelve una lista de transacciones con ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y estado actual. ",
-            tags = {"transacciones", "usuario", "vendedor", "metodo", "todos", "get"})
+            tags = {"transacciones", "vendedor", "metodo", "varios", "filtro", "auth_vendedor", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
@@ -101,7 +101,7 @@ public class SellerAuthTransactionController {
             summary = "Filtrar por metodo de pago y estado el historial de transacciones recibidas como vendedor",
             description = "Observas todo tu historial de transacciones recibidas, con tu ID de vendedor, y filtro por metodo de pago y estado" +
                     "Se devuelve una lista de transacciones con ID, ID de producto, ID de usuario, metodo de pago, fecha transaccion, y estado actual. ",
-            tags = {"transacciones", "usuario", "vendedor", "metodo", "estado", "todos", "get"})
+            tags = {"transacciones", "vendedor", "metodo", "estado", "varios", "filtro", "auth_vendedor", "get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShowTransactionDTO.class))),}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),

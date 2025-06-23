@@ -18,14 +18,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/user/auth/followed-products")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('USER', 'SELLER')")
+@PreAuthorize("hasAnyRole('USER', 'SELLER','ADMIN')")
 public class UserAuthFollowedProductController {
 
     private final UserAuthFollowedProductService userAuthFollowedProductService;
 
     @Operation(summary = "Seguir producto",
             description = "El usuario empieza a seguir un producto específico para recibir alertas.",
-            tags = {"Seguir", "Producto", "Usuario", "post"})
+            tags = {"productos_seguidos", "producto", "usuario", "auth_usuario", "post"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Producto seguido correctamente"),
             @ApiResponse(responseCode = "404", description = "Usuario o producto no encontrado")
@@ -38,7 +38,7 @@ public class UserAuthFollowedProductController {
 
     @Operation(summary = "Dejar de seguir producto",
             description = "El usuario deja de seguir un producto y deja de recibir alertas relacionadas.",
-            tags = {"Dejar_De_Seguir", "Producto", "Usuario", "delete"})
+            tags = {"productos_seguidos", "producto", "usuario", "delete"})
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Producto dejado de seguir"),
             @ApiResponse(responseCode = "404", description = "El seguimiento no existe")
@@ -49,9 +49,9 @@ public class UserAuthFollowedProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Obtener productos seguidos por usuario",
+    @Operation(summary = "Obtener todos los productos seguidos por un usuario",
             description = "Devuelve una lista de productos que el usuario está siguiendo.",
-            tags = {"Productos_Seguidos", "Usuario", "todos", "get"})
+            tags = {"productos_seguidos", "usuario", "varios", "todos", "auth_usuario", "get"})
     @ApiResponse(responseCode = "200", description = "Productos seguidos obtenidos exitosamente")
     @GetMapping("/user/{idUser}")
     public ResponseEntity<List<ShowProductDTO>> getFollowedProducts(@PathVariable Integer idUser) {

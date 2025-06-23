@@ -9,19 +9,24 @@ import com.ingsoft.tf.api_edurents.mapper.ProductMapper;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.model.entity.product.ProductStatus;
 import com.ingsoft.tf.api_edurents.model.entity.user.Seller;
+import com.ingsoft.tf.api_edurents.repository.product.FollowedProductRepository;
 import com.ingsoft.tf.api_edurents.repository.product.ProductRepository;
 import com.ingsoft.tf.api_edurents.repository.user.SellerRepository;
 import com.ingsoft.tf.api_edurents.service.impl.auth.seller.SellerAuthProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +39,9 @@ public class SellerAuthProductServiceUnitTest {
     private SellerRepository sellerRepository;
 
     @Mock
+    private FollowedProductRepository followedProductRepository;
+
+    @Mock
     private ProductMapper productMapper;
 
     @InjectMocks
@@ -44,11 +52,12 @@ public class SellerAuthProductServiceUnitTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // HU 01
+    // HU01
 
     @Test
     @DisplayName("HU1 - CP01 - Crear producto con datos válidos")
     void crearProducto_validData_returnsCreated() {
+
         ProductDTO productoDTO = new ProductDTO();
         productoDTO.setId_vendedor(1);
         productoDTO.setNombre("Producto de prueba");
@@ -87,7 +96,7 @@ public class SellerAuthProductServiceUnitTest {
         productoDTOMostrar.setVendedor(vendedorDTO);
 
         // Configurar el comportamiento de los mocks
-        when(productMapper.toEntity(productoPrueba, productoDTO, "crear")).thenReturn(producto);
+        when(productMapper.toEntity(any(Product.class), eq(productoDTO), eq("crear"))).thenReturn(producto);
         when(productRepository.save(producto)).thenReturn(producto);
         when(productMapper.toResponse(producto)).thenReturn(productoDTOMostrar);
 
@@ -95,7 +104,6 @@ public class SellerAuthProductServiceUnitTest {
 
         assertNotNull(result);
         assertEquals("Producto de prueba", result.getNombre());
-
     }
 
     @Test
@@ -229,7 +237,5 @@ public class SellerAuthProductServiceUnitTest {
             sellerAuthProductService.eliminarProducto(999);
         });
     }
-
-
 
 }
