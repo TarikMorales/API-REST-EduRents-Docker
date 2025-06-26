@@ -39,6 +39,7 @@ public class WebSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable) // TODO: Desactiva la protección CSRF, ya que en APIs REST no se usa (se autentica con tokens, no con cookies)
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(antMatcher("/auth/login")).permitAll()
+                    .requestMatchers(antMatcher("/auth/login/google")).permitAll()
                     .requestMatchers(antMatcher("/auth/register")).permitAll()
                     .requestMatchers(antMatcher("/auth/forgot-password")).permitAll()
                     .requestMatchers(antMatcher("/auth/verify-token/{id}")).permitAll()
@@ -47,6 +48,7 @@ public class WebSecurityConfig {
                     .requestMatchers(antMatcher("/public/courses")).permitAll()
                     .requestMatchers(antMatcher("/public/products")).permitAll()
                     .requestMatchers(antMatcher("/public/sellers")).permitAll()
+                    .requestMatchers(antMatcher("/public/careers")).permitAll()
                     .requestMatchers("/api/v1/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/webjars/**").permitAll()
                     // TODO: Cualquier otra solicitud requiere autenticación (JWT u otra autenticación configurada)
                     .anyRequest().authenticated()

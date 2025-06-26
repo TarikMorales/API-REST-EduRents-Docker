@@ -1,11 +1,13 @@
 package com.ingsoft.tf.api_edurents.controller.Public;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.ingsoft.tf.api_edurents.dto.auth.RecoverProcessDTO;
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
-import com.ingsoft.tf.api_edurents.dto.user.AuthResponseDTO;
-import com.ingsoft.tf.api_edurents.dto.user.LoginDTO;
-import com.ingsoft.tf.api_edurents.dto.user.RegisterDTO;
-import com.ingsoft.tf.api_edurents.dto.user.UserDTO;
+import com.ingsoft.tf.api_edurents.dto.user.*;
+import com.ingsoft.tf.api_edurents.model.entity.user.User;
 import com.ingsoft.tf.api_edurents.service.Interface.Public.PublicUserService;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.*;
@@ -17,10 +19,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Tag(name = "Usuario_Publico", description = "API de gestion del usuario publico")
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = {"http://localhost:4200/"})
 public class PublicUserController {
 
     private final PublicUserService publicUserService;
@@ -150,4 +159,10 @@ public class PublicUserController {
         publicUserService.resetPassword(id, token, newPassword);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/login/google")
+    public ResponseEntity<?> loginConGoogle(@RequestBody GoogleTokenDTO tokenDTO) {
+        return publicUserService.loginGoogle(tokenDTO.getIdToken());
+    }
+
 }

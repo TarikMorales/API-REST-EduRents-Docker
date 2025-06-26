@@ -25,6 +25,35 @@ public class PublicProductController {
 
     private final PublicProductService publicProductService;
 
+    @Operation(
+            summary = "Buscar productos por nombre",
+            description = "Permite a un usuario buscar productos por su nombre. " +
+                    "Se devuelve una lista de objetos ShowProductDTO que coinciden con el nombre proporcionado.",
+            tags = {"productos", "nombre", "publico", "get"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ShowProductDTO.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    content = { @Content(schema = @Schema())}
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    content = { @Content(schema = @Schema())}
+            )
+    })
+    @GetMapping("/search/{nombre}")
+    public ResponseEntity<List<ShowProductDTO>> buscarProductoPorNombre(@PathVariable String nombre) {
+        List<ShowProductDTO> productos = publicProductService.obtenerProductoPorNombre(nombre);
+        return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
     //HU 01
     @Operation(
             summary = "Obtener un producto por su ID",
