@@ -129,9 +129,9 @@ public class PublicUserController {
             )
     })
     @PostMapping("/verify-token/{id}")
-    public ResponseEntity<String> verifyToken(@PathVariable Integer id, @RequestParam String token) {
+    public ResponseEntity<Map<String, String>> verifyToken(@PathVariable Integer id, @RequestParam String token) {
         String response = publicUserService.verifyToken(id, token);
-        return new ResponseEntity<String>(response, HttpStatus.OK);
+        return new ResponseEntity<Map<String, String>>(Map.of("message", response), HttpStatus.OK);
     }
 
     @Operation(summary = "Reiniciar contraseña desde el token verificado",
