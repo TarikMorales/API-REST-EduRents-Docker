@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/seller/auth/products")
 @PreAuthorize("hasAnyRole('SELLER','ADMIN')")
+@CrossOrigin(origins = {"http://localhost:4200/"})
 public class SellerAuthProductController {
 
     private final SellerAuthProductService sellerAuthProductService;
