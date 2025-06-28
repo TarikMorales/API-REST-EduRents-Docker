@@ -20,7 +20,7 @@ import java.util.List;
 @Tag(name = "Categoria_publica", description = "API de Gestion de Categorias")
 @RestController
 @RequestMapping("/public/categories")
-@CrossOrigin(origins = {"http://localhost:4200/"})
+@CrossOrigin(origins = {"http://localhost:4200/", "https://edurents.vercel.app"})
 public class PublicCategoryController {
 
     private final PublicCategoryService publicCategoryService;

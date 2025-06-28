@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "Carrera_publica", description = "API de Gestion de Carreras")
 @RestController
 @RequestMapping("/public/careers")
-@CrossOrigin(origins = {"http://localhost:4200/"})
+@CrossOrigin(origins = {"http://localhost:4200/", "https://edurents.vercel.app"})
 public class PublicCareerController {
 
     private final PublicCareerService publicCareerService;

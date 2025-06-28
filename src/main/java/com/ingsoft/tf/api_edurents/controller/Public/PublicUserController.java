@@ -29,7 +29,7 @@ import java.util.Optional;
 @Tag(name = "Usuario_Publico", description = "API de gestion del usuario publico")
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = {"http://localhost:4200/"})
+@CrossOrigin(origins = {"http://localhost:4200/", "https://edurents.vercel.app"})
 public class PublicUserController {
 
     private final PublicUserService publicUserService;

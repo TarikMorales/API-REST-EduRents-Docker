@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/public/courses")
-@CrossOrigin(origins = {"http://localhost:4200/"})
+@CrossOrigin(origins = {"http://localhost:4200/", "https://edurents.vercel.app"})
 public class PublicCourseController {
 
     private final PublicCourseService publicCourseService;

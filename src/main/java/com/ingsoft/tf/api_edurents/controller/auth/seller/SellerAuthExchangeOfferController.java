@@ -4,11 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ingsoft.tf.api_edurents.dto.exchanges.ShowExchangeOfferDTO;
 import com.ingsoft.tf.api_edurents.service.Interface.auth.seller.SellerAuthExchangeOfferService;
@@ -26,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/seller/auth/exchanges")
 @PreAuthorize("hasAnyRole('SELLER','ADMIN')")
+@CrossOrigin(origins = {"http://localhost:4200/", "https://edurents.vercel.app"})
 public class SellerAuthExchangeOfferController {
 
     private final SellerAuthExchangeOfferService sellerAuthExchangeOfferService;
