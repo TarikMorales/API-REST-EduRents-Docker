@@ -19,14 +19,14 @@ public class Transaction {
     @Column(name = "metodo_pago", nullable = false)
     private PaymentMethod metodoPago;
 
-    @Column(name = "fecha_transaccion", nullable = false)
+    @Column(name = "fecha_transaccion")
     private LocalDateTime fecha_transaccion;
 
-    @Column(name = "estado", nullable = false)
+    @Column(name = "estado")
     @Enumerated(EnumType.STRING)
     private TransactionStatus estado;
 
-    @Column(name = "fecha_confirmacion_entrega", nullable = false)
+    @Column(name = "fecha_confirmacion_entrega")
     private LocalDateTime fecha_confirmacion_entrega;
 
     @Column(name = "motivo_reclamo", length = 500)
