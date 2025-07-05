@@ -42,17 +42,22 @@ public class TransactionsMapper {
 
     public ShowTransactionDTO toResponse(Transaction transaction) {
         ShowTransactionDTO dto = new ShowTransactionDTO();
-
+    
         dto.setId(transaction.getId());
         dto.setMetodo_pago(transaction.getMetodoPago());
         dto.setFecha_transaccion(transaction.getFecha_transaccion());
         dto.setEstado(transaction.getEstado());
         dto.setFecha_confirmacion_entrega(transaction.getFecha_confirmacion_entrega());
         dto.setMotivo_reclamo(transaction.getMotivo_reclamo());
-
-        dto.setProducto(productMapper.toResponse(transaction.getProducto()));
-        dto.setUsuario(userMapper.toResponse(transaction.getUsuario()));
-
+    
+        if (transaction.getProducto() != null) {
+            dto.setProducto(productMapper.toResponse(transaction.getProducto()));
+        }
+    
+        if (transaction.getUsuario() != null) {
+            dto.setUsuario(userMapper.toResponse(transaction.getUsuario()));
+        }
+    
         return dto;
     }
 
