@@ -2,6 +2,7 @@ package com.ingsoft.tf.api_edurents.controller.Public;
 
 import com.ingsoft.tf.api_edurents.dto.product.ShowProductDTO;
 import com.ingsoft.tf.api_edurents.dto.product.StockDTO;
+import com.ingsoft.tf.api_edurents.model.entity.product.ProductStatus;
 import com.ingsoft.tf.api_edurents.service.Interface.Public.PublicProductService;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.media.*;
@@ -239,6 +240,22 @@ public class PublicProductController {
     public ResponseEntity<List<ShowProductDTO>> obtenerProductosPorCarreraCursoCategoria(@PathVariable Integer idCareer, @PathVariable Integer idCourse, @PathVariable Integer idCategory) {
         List<ShowProductDTO> productos = publicProductService.obtenerProductosPorCarreraCursoYCategoria(idCareer, idCourse, idCategory);
         return new ResponseEntity<List<ShowProductDTO>>(productos, HttpStatus.OK);
+    }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<ShowProductDTO>> filtrarProductos(
+            @RequestParam(required = false) List<Integer> carrera,
+            @RequestParam(required = false) List<Integer> curso,
+            @RequestParam(required = false) List<Integer> categoria,
+            @RequestParam(required = false) Double precioMin,
+            @RequestParam(required = false) Double precioMax,
+            @RequestParam(required = false, defaultValue = "false") boolean ordenarPorVistas,
+            @RequestParam(required = false) ProductStatus estado
+    ) {
+        List<ShowProductDTO> productos = publicProductService.obtenerProductosConFiltros(
+                carrera, curso, categoria, precioMin, precioMax, ordenarPorVistas, estado
+        );
+        return ResponseEntity.ok(productos);
     }
 
     // HU 05

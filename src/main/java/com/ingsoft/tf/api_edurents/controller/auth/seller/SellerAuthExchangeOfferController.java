@@ -55,5 +55,35 @@ public class SellerAuthExchangeOfferController {
         return ResponseEntity.ok(intercambios);
     }
 
+    @Operation(
+            summary = "Aceptar o rechazar un intercambio",
+            description = "Permite a un vendedor aceptar o rechazar un intercambio. " +
+                    "El vendedor debe proporcionar el ID del intercambio, su ID y un booleano que indica si acepta o rechaza el intercambio.",
+            tags = {"intercambios", "vendedor", "auth_vendedor", "patch"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = { @Content(schema = @Schema()) }
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    content = { @Content(schema = @Schema()) }
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    content = { @Content(schema = @Schema()) }
+            )
+    })
+    @PatchMapping("/{idExchangeOffer}/seller/{idSeller}")
+    public ResponseEntity<Void> aceptarIntercambio(
+            @PathVariable Integer idExchangeOffer,
+            @PathVariable Integer idSeller,
+            @RequestParam Boolean aceptar) {
+
+        sellerAuthExchangeOfferService.aceptarIntercambio(idExchangeOffer, idSeller, aceptar);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

@@ -8,4 +8,6 @@ public interface SellerAuthExchangeOfferService {
 
     List<ShowExchangeOfferDTO> obtenerIntercambiosPorProductoPorVendedor(Integer idProduct, Integer idSeller);
 
+    void aceptarIntercambio(Integer idExchangeOffer, Integer idSeller, Boolean aceptar);
+
 }

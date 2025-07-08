@@ -5,6 +5,7 @@ import com.ingsoft.tf.api_edurents.exception.BadRequestException;
 import com.ingsoft.tf.api_edurents.exception.ResourceNotFoundException;
 import com.ingsoft.tf.api_edurents.mapper.ExchangeOfferMapper;
 import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeOffer;
+import com.ingsoft.tf.api_edurents.model.entity.exchanges.ExchangeStatus;
 import com.ingsoft.tf.api_edurents.model.entity.product.Product;
 import com.ingsoft.tf.api_edurents.repository.exchanges.ExchangeOfferRepository;
 import com.ingsoft.tf.api_edurents.repository.product.ProductRepository;
@@ -46,6 +47,26 @@ public class SellerAuthExchangeOfferServiceImpl implements SellerAuthExchangeOff
         return intercambios.stream()
                 .map(exchangeOfferMapper::toResponse)
                 .toList();
+    }
+
+    @Transactional
+    @Override
+    public void aceptarIntercambio(Integer idExchangeOffer, Integer idSeller, Boolean aceptar) {
+        ExchangeOffer intercambio = exchangeOfferRepository.findById(idExchangeOffer)
+                .orElseThrow(() -> new ResourceNotFoundException("Intercambio con ID " + idExchangeOffer + " no encontrado"));
+
+        // Validar que el intercambio pertenezca al vendedor
+        if (!intercambio.getProducto().getVendedor().getId().equals(idSeller)) {
+            throw new BadRequestException("El intercambio no pertenece al vendedor con ID " + idSeller);
+        }
+
+        // Actualizar el estado del intercambio
+        if (aceptar) {
+            intercambio.setEstado(ExchangeStatus.ACEPTADO);
+        } else {
+            intercambio.setEstado(ExchangeStatus.RECHAZADO);
+        }
+        exchangeOfferRepository.save(intercambio);
     }
 
 
