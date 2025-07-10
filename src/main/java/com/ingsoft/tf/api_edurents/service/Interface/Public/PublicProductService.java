@@ -63,4 +63,6 @@ public interface PublicProductService {
 
     ShowProductDTO obtenerEstadoAceptaIntercambio(Integer id);
 
+    void aumentarVistas(Integer idProducto);
+
 }

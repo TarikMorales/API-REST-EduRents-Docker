@@ -358,6 +358,14 @@ public class PublicProductServiceImpl implements PublicProductService {
         return dto;
     }
 
+    @Override
+    public void aumentarVistas(Integer idProducto) {
+        Product producto = productRepository.findById(idProducto)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + idProducto));
+
+        producto.setVistas(producto.getVistas() + 1);
+        productRepository.save(producto);
+    }
 
 
 }

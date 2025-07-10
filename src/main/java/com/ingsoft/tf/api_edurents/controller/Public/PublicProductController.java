@@ -520,6 +520,32 @@ public class PublicProductController {
         return ResponseEntity.ok(dto);
     }
 
+    @Operation(
+            summary = "Aumentar vistas de un producto",
+            description = "Incrementa el contador de vistas de un producto especificado por su ID. " +
+                    "Este endpoint se utiliza para registrar la visualización de un producto por parte de un usuario.",
+            tags = {"productos", "vistas", "publico", "post"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Vistas incrementadas correctamente"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Producto no encontrado"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Error interno del servidor"
+            )
+    })
+    @PostMapping("/{id}/views")
+    public ResponseEntity<Void> aumentarVistas(@PathVariable Integer id) {
+        publicProductService.aumentarVistas(id);
+        return ResponseEntity.ok().build();
+    }
+
 
 
 
